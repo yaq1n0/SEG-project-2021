@@ -11,14 +11,16 @@ import org.apache.logging.log4j.Logger;
  * JavaFX Application class: Viewer part of MVC Pattern.
  */
 public class App extends Application {
+
+    private static final Logger logger = LogManager.getLogger(App.class);
     
     public static void main(String[] args) {
-        System.out.println("Launching viewer...");
+        logger.info("Launching Application...");
         launch(args);
     }
     
     public void init() {
-        System.out.println("Initialising...");
+        logger.info("Initialising...");
     }
     
     public void start(Stage stage) {
@@ -27,7 +29,7 @@ public class App extends Application {
         
         // Create an initial scene with a Pane root node.
         Pane rootNode = new Pane();
-        Scene initialScene = new Scene(rootNode, 300, 200);
+        Scene initialScene = new Scene(rootNode, 800, 600);
         
         // Set the initial scene.
         stage.setScene(initialScene);
@@ -37,7 +39,7 @@ public class App extends Application {
     }
     
     public void stop() {
-        System.out.println("Stopping...");
+        logger.info("Stopping...");
     }
     
 }
