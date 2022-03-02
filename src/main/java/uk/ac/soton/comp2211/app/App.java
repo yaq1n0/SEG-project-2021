@@ -40,16 +40,19 @@ public class App extends Application {
         // Set the stage's title.
         stage.setTitle("Runway Redeclaration App");
         
-        Parent root = null;
+        Parent root;
+        FXMLLoader loader = null;
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/base.fxml"));
+            loader = new FXMLLoader(getClass().getResource("/base.fxml"));
             root = loader.load();
         } catch (IOException e) {
             logger.info("Could not load base.fxml");
             this.stop();
             return;
         }
-        
+
+        MainController controller = loader.<MainController>getController();
+        controller.setQuitListener(this::stop);
         Scene scene = new Scene(root, 800, 600);
         
         // Set the initial scene.

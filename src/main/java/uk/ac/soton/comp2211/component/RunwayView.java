@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.canvas.Canvas;
 
 import javafx.event.ActionEvent;
+import uk.ac.soton.comp2211.event.QuitListener;
 
 /**
  * Custom component to draw runway visualisation from parameters.
@@ -36,6 +37,5 @@ public class RunwayView extends Canvas {
             System.out.println("Draw Side On");
         }
     }
-    
     
 }
