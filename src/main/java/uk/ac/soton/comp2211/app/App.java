@@ -1,10 +1,13 @@
 package uk.ac.soton.comp2211.app;
 
 import javafx.application.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp2211.scene.BaseScene;
+import java.io.IOException;
 
 /**
  * JavaFX Application class: Viewer part of MVC Pattern.
@@ -36,14 +39,25 @@ public class App extends Application {
     public void start(Stage stage) {
         // Set the stage's title.
         stage.setTitle("Runway Redeclaration App");
-
-        BaseScene scene = new BaseScene();
+        
+        Parent root = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/base.fxml"));
+            root = loader.load();
+        } catch (IOException e) {
+            logger.info("Could not load base.fxml");
+            this.stop();
+            return;
+        }
+        
+        Scene scene = new Scene(root, 800, 600);
         
         // Set the initial scene.
         stage.setScene(scene);
         
         // Show the stage and the initial scene.
         stage.show();
+        
     }
     
     /**
@@ -51,6 +65,9 @@ public class App extends Application {
      */
     public void stop() {
         logger.info("Stopping...");
+        // Seems scuffed.
+        Platform.exit();
+        System.exit(0);
     }
     
 }
