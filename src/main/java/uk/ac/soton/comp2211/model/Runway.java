@@ -1,34 +1,70 @@
 package uk.ac.soton.comp2211.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Runway {
     private String runwayDesignator;
     
     private RunwayValues originalValues;
     private RunwayValues currentValues;
 
-    private List<Obstacle> obstacles;
+    private Obstacle obstacle;
     
     public Runway(String _runwayDesignator, RunwayValues _runwayValues) {
         runwayDesignator = _runwayDesignator;
 
         originalValues = _runwayValues;
         currentValues = _runwayValues;
-
-        obstacles = new ArrayList<Obstacle>();
     }
 
+    public String getRunwayDesignator() { return runwayDesignator; }
+
     public RunwayValues getOriginalValues() { return originalValues; }
-    public RunwayValues getCRunwayValues() { return currentValues; }
+    public RunwayValues getCurrentValues() { return currentValues; }
 
-    public void addObstacle(Obstacle _newObstacle) { obstacles.add(_newObstacle); }
+    public void setObstacle(Obstacle _obstacle) { obstacle = _obstacle; }
+    public void removeObstacle(int _index) { obstacle = null; }
+    public Obstacle getObstacles() { return obstacle; }
 
-    public void removeObstacle(Obstacle _existingObstacle) { obstacles.remove(_existingObstacle); }
-    public void removeObstacle(int _index) { obstacles.remove(_index); }
+    /**
+     * If takeOffOrLand is 0, then plane is taking off.
+     *                  is 1, then plane is landing.
+     * 
+     * _aToB is true if the plance is moving from point A to point B on the runway.
+     *       is false if the plance is moving from point B to point A on the runway.
+     * 
+     * @param takeOffOrLand
+     * @param direction
+     */
+    public void calculateValues(int _takeOffOrLand, boolean _aToB) {
+        if (obstacle == null) currentValues = originalValues.clone();
+        else {
+            boolean closerToA = (originalValues.getTODA() / 2) < obstacle.getPosition().getY();
 
-    public List<Obstacle> getObstacles() { return obstacles; }
+            // Plane is taking 
+            if (_takeOffOrLand == 0) {
+                if (_aToB ^ closerToA) calculateTakeOffAwayFromTheObstacle();
+                else calculateTakeOffTowardsTheObstacle();
 
-    public void calculateValues() { System.out.println("Caculating Values!"); }
+            // Plane is landing.
+            } else if (_takeOffOrLand == 1) {
+                if (_aToB ^ closerToA) calculateLandingOverTheObstacle();
+                else calculateLandingTowardsTheObstacle();
+            }
+        }
+    }
+    
+    private void calculateLandingOverTheObstacle() {
+
+    }
+
+    private void calculateLandingTowardsTheObstacle() {
+
+    }
+
+    private void calculateTakeOffTowardsTheObstacle() {
+
+    }
+
+    private void calculateTakeOffAwayFromTheObstacle() {
+
+    }
 }

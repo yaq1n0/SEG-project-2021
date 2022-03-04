@@ -26,4 +26,6 @@ public class RunwayValues {
     public int getASDA() { return asda; }
     public int getLSA() { return lsa; }
     public int getDisplacedThreshold() { return displacedThreshold; }
+
+    public RunwayValues clone() { return new RunwayValues(toda, toda, asda, lsa, displacedThreshold); }
 }

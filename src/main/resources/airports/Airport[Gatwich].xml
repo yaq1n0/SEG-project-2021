@@ -1,0 +1,19 @@
+<airport name="Gatwich">
+    <runway id="1">
+        <designator></designator>
+        <tora></tora>
+        <toda></toda>
+        <asda></asda>
+        <lsa></lsa>
+        <threshold></threshold>
+    </runway>
+
+    <runway id="2">
+        <designator></designator>
+        <tora></tora>
+        <toda></toda>
+        <asda></asda>
+        <lsa></lsa>
+        <threshold></threshold>
+    </runway>
+</airport>
