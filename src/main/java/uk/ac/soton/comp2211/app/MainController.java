@@ -14,6 +14,9 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.RunwayView;
 
 import javafx.event.ActionEvent;
+import uk.ac.soton.comp2211.event.ImportAirportListener;
+import uk.ac.soton.comp2211.event.InsertObstacleListener;
+import uk.ac.soton.comp2211.event.ChooseAirportListener;
 import uk.ac.soton.comp2211.event.QuitListener;
 
 import java.net.URL;
@@ -31,7 +34,12 @@ public class MainController implements Initializable {
     
     private RunwayView runwayView;
     private final BooleanProperty topView;
+    
+    //Listeners
     private QuitListener quitListener;
+    private InsertObstacleListener insertObstacleListener;
+    private ChooseAirportListener chooseAirportListener;
+    private ImportAirportListener importAirportListener;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
@@ -62,6 +70,30 @@ public class MainController implements Initializable {
     public void setQuitListener(QuitListener listener) {
         this.quitListener = listener;
     }
+
+    /**
+     * Set the insertObstacle listener for the controller
+     * @param listener insertObstacle listener
+     */
+    public void setInsertObstacleListener(InsertObstacleListener listener) {
+        this.insertObstacleListener = listener;
+    }
+
+    /**
+     * Set the openAirport listener for the controller
+     * @param listener openAirport listener
+     */
+    public void setOpenAirportListener(ChooseAirportListener listener) {
+        this.chooseAirportListener = listener;
+    }
+
+    /**
+     * Set the importAirport listener for the controller
+     * @param listener listener
+     */
+    public void setImportAirportListener(ImportAirportListener listener) {
+        this.importAirportListener = listener;
+    }
     
     /**
      * Ran when user selects Top-Down in Menu>View
@@ -82,12 +114,21 @@ public class MainController implements Initializable {
     }
     
     /**
-     * Ran when user selects Open... in Menu>File
+     * Ran when user selects Open Airport in Menu>File
      * @param actionEvent event
      */
     @FXML
     private void openAirport(ActionEvent actionEvent) {
-        System.out.println("Open airport.xml");    
+        this.chooseAirportListener.openAirportDialogue();
+    }
+
+    /**
+     * Ran when user selects Import From... in Menu>File
+     * @param actionEvent event
+     */
+    @FXML
+    private void importAirport(ActionEvent actionEvent) {
+        this.importAirportListener.importAirport();
     }
 
     /**
@@ -143,6 +184,24 @@ public class MainController implements Initializable {
     @FXML
     private void showInstructions(ActionEvent actionEvent) {
         System.out.print("Instructions");
+    }
+
+    /**
+     * Ran when user selects Insert Obstacles in Menu>Run
+     * @param actionEvent event
+     */
+    @FXML
+    private void openObstacleDialogue(ActionEvent actionEvent) {
+        this.insertObstacleListener.openObstacleDialogue();
+    }
+
+    /**
+     * Ran when user selects Run Redeclaration in Menu>Run
+     * @param actionEvent event
+     */
+    @FXML
+    private void runRedeclaration(ActionEvent actionEvent) {
+        System.out.println("Run redeclaration");
     }
     
 }

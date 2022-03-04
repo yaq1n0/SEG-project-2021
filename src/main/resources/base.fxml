@@ -53,7 +53,8 @@
       <menus>
         <Menu mnemonicParsing="false" text="File">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#openAirport" text="Open…" />
+                  <MenuItem mnemonicParsing="false" onAction="#openAirport" text="Open Airport" />
+            <MenuItem mnemonicParsing="false" onAction="#importAirport" text="Import From..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#closeAirport" text="Close" />
             <MenuItem mnemonicParsing="false" onAction="#exportAs" text="Export As..." />
@@ -69,15 +70,16 @@
             <MenuItem mnemonicParsing="false" onAction="#selectSideView" text="Side-On" />
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Window">
+        <Menu mnemonicParsing="false" text="Run">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Unspecified Action" />
+                  <MenuItem mnemonicParsing="false" onAction="#openObstacleDialogue" text="Insert Obstacle" />
+                  <MenuItem mnemonicParsing="false" onAction="#runRedeclaration" text="Run Redeclaration" />
                </items>
         </Menu>
             <Menu mnemonicParsing="false" text="Help">
                <items>
-                  <MenuItem mnemonicParsing="false" text="About" />
-                  <MenuItem mnemonicParsing="false" text="Instructions" />
+                  <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
+                  <MenuItem mnemonicParsing="false" onAction="#showInstructions" text="Instructions" />
                </items>
             </Menu>
       </menus>

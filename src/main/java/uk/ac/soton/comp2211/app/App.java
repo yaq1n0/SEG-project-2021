@@ -1,12 +1,20 @@
 package uk.ac.soton.comp2211.app;
 
 import javafx.application.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -52,7 +60,53 @@ public class App extends Application {
         }
 
         MainController controller = loader.<MainController>getController();
+        
+        // Set the listeners
         controller.setQuitListener(this::stop);
+        controller.setInsertObstacleListener(() -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+            
+            VBox dialogVbox = new VBox(20);
+            dialogVbox.getChildren().add(new Text("Insert Obstacle:"));
+            
+            Scene dialogScene = new Scene(dialogVbox, 300, 200);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        });
+        controller.setOpenAirportListener(() -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+
+            VBox dialogVbox = new VBox(20);
+            HBox titleBox = new HBox();
+            titleBox.setAlignment(Pos.CENTER);
+            titleBox.getChildren().add(new Text("Open Airport:"));
+            
+            HBox buttonBox = new HBox();
+            buttonBox.setAlignment(Pos.CENTER);
+            Button cancel = new Button("Cancel");
+            cancel.setOnAction((ActionEvent event) -> {
+                dialog.close();
+            });
+            buttonBox.getChildren().add(cancel);
+            dialogVbox.getChildren().addAll(titleBox, buttonBox);
+
+            Scene dialogScene = new Scene(dialogVbox, 300, 200);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        });
+        controller.setImportAirportListener(() -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open Airport File");
+            File file = fileChooser.showOpenDialog(stage);
+            if (file != null) {
+                //openFile(file);
+            }
+        });
+        
         Scene scene = new Scene(root, 800, 600);
         
         // Set the initial scene.
