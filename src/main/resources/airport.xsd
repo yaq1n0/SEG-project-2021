@@ -1,0 +1,33 @@
+<?xml version = "1.0"?>
+
+<xs:schema xmlns:xs = "http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="airport">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name = 'tarmac' type = 'TarmacType' minOccurs = '1' maxOccurs = 'unbounded' />
+            </xs:sequence>
+            <xs:attribute name = 'name' type = 'xs:string'/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name = "TarmacType">
+        <xs:sequence>
+            <xs:element name = "runway" type = "RunwayType" minOccurs = '1' maxOccurs = '2' />
+        </xs:sequence>
+        <xs:attribute name = 'id' type = 'xs:positiveInteger'/>
+   </xs:complexType>
+
+    <xs:complexType name = "RunwayType">
+        <xs:sequence>
+            <xs:element name = "designator" type = "xs:string"/>
+            <xs:element name = "tora" type = "xs:nonNegativeInteger"/>
+            <xs:element name = "toda" type = "xs:nonNegativeInteger"/>
+            <xs:element name = "asda" type = "xs:nonNegativeInteger"/>
+            <xs:element name = "lsa" type = "xs:nonNegativeInteger"/>
+            <xs:element name = "threshold" type = "xs:nonNegativeInteger"/>
+        </xs:sequence>
+        <xs:attribute name = 'id' type = 'xs:positiveInteger'/>
+   </xs:complexType>
+
+</xs:schema>

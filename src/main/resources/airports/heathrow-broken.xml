@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<airport name="Heathrow">
+    <tarmac id="1">
+        <runway id="1">
+            <designator>09L</designator>
+            <tora>-3902</tora>
+            <toda>3902</toda>
+            <asda>-3902</asda>
+            <lsa>3595</lsa>
+            <threshold>306</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>27R</designator>
+            <tora>3884</tora>
+            <toda>3962</toda>
+            <asda>3884</asda>
+            <lsa>3884</lsa>
+            <threshold>-0</threshold>
+        </runway>
+    </tarmac>
+
+    <tarmac id="2">
+        <runway id="1">
+            <designator>09R</designator>
+            <tora>3660</tora>
+            <toda>3660</toda>
+            <asda>3660</asda>
+            <lsa>3353</lsa>
+            <threshold>307</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>27L</designator>
+            <tora>3660</tora>
+            <toda>3660</toda>
+            <asda>3660</asda>
+            <lsa>3660</lsa>
+            <threshold>0</threshold>
+        </runway>
+
+        <runway id="3">
+            <designator>27L</designator>
+            <tora>3660</tora>
+            <toda>3660</toda>
+            <asda>3660</asda>
+            <lsa>3660</lsa>
+            <threshold>0</threshold>
+        </runway>
+    </tarmac>
+</airport>

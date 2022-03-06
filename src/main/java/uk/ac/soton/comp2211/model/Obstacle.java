@@ -7,7 +7,7 @@ public class Obstacle {
     private int width;
     private int height;
 
-    private Position position; // Distance from point A on the runway to the start of the obstacle.
+    private Position position; // Posistion of obstacle from centre of runway.
 
     public Obstacle(String _name, int _length, int _width, int _height) {
         name = _name;

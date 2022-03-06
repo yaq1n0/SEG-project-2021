@@ -28,4 +28,11 @@ public class RunwayValues {
     public int getDisplacedThreshold() { return displacedThreshold; }
 
     public RunwayValues clone() { return new RunwayValues(toda, toda, asda, lsa, displacedThreshold); }
+    public void copy(RunwayValues _runway) {
+        tora = _runway.getTORA();
+        toda = _runway.getTODA();
+        asda = _runway.getASDA();
+        lsa = _runway.getLSA();
+        displacedThreshold = _runway.getDisplacedThreshold();
+    }
 }
