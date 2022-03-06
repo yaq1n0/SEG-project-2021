@@ -24,7 +24,7 @@
             <xs:element name = "tora" type = "xs:nonNegativeInteger"/>
             <xs:element name = "toda" type = "xs:nonNegativeInteger"/>
             <xs:element name = "asda" type = "xs:nonNegativeInteger"/>
-            <xs:element name = "lsa" type = "xs:nonNegativeInteger"/>
+            <xs:element name = "lda" type = "xs:nonNegativeInteger"/>
             <xs:element name = "threshold" type = "xs:nonNegativeInteger"/>
         </xs:sequence>
         <xs:attribute name = 'id' type = 'xs:positiveInteger'/>

@@ -88,8 +88,8 @@ public class DataReader {
                 int lsa = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/lsa", document, XPathConstants.NUMBER)).intValue();
                 int threshold = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/threshold", document, XPathConstants.NUMBER)).intValue();
 
-                RunwayValues runwayValues = new RunwayValues(tora, toda, asda, lsa, threshold);
-                Runway runway = new Runway(designator, tarmac, runwayValues);
+                RunwayValues runwayValues = new RunwayValues(tora, toda, asda, lsa);
+                Runway runway = new Runway(designator, tarmac, runwayValues, threshold);
 
                 runways[runwayIndex] = runway;
                 runwayIndex++;

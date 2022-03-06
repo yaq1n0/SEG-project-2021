@@ -7,14 +7,18 @@ public class Runway {
 
     private RunwayValues originalValues;
     private RunwayValues currentValues;
+
+    private int displacedThreshold;
     
-    public Runway(String _runwayDesignator, Tarmac _tarmac, RunwayValues _originalValues) {
+    public Runway(String _runwayDesignator, Tarmac _tarmac, RunwayValues _originalValues, int _displacedThreshold) {
         runwayDesignator = _runwayDesignator;
 
         tarmac = _tarmac;
 
         originalValues = _originalValues;
         currentValues = _originalValues.clone();
+
+        displacedThreshold = _displacedThreshold;
     }
 
     public String getRunwayDesignator() { return runwayDesignator; }
@@ -24,15 +28,15 @@ public class Runway {
     public RunwayValues getOriginalValues() { return originalValues; }
     public RunwayValues getCurrentValues() { return currentValues; }
 
+    public int getDisplacedThreshold() { return displacedThreshold; }
+
     public void calculateValues(boolean takingOff, int blastAllowance) {
-        if (tarmac.getObstacle() == null) currentValues.copy(originalValues);
-        else {
-            // currentValues.setLSA(originalValues.);
-        }
     }
 
 
-    private int distanceToObstacle() {
+    private int obstacleDistanceFromThreshold() {
         return 0;
     }
+
+    private int calculateSlope() { return tarmac.getObstacle().getHeight() * 50; }
 }

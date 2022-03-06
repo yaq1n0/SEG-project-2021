@@ -7,7 +7,7 @@
             <tora>3902</tora>
             <toda>3902</toda>
             <asda>3902</asda>
-            <lsa>3595</lsa>
+            <lda>3595</lda>
             <threshold>306</threshold>
         </runway>
 
@@ -16,7 +16,7 @@
             <tora>3884</tora>
             <toda>3962</toda>
             <asda>3884</asda>
-            <lsa>3884</lsa>
+            <lda>3884</lda>
             <threshold>0</threshold>
         </runway>
     </tarmac>
@@ -27,7 +27,7 @@
             <tora>3660</tora>
             <toda>3660</toda>
             <asda>3660</asda>
-            <lsa>3353</lsa>
+            <lda>3353</lda>
             <threshold>307</threshold>
         </runway>
 
@@ -36,7 +36,7 @@
             <tora>3660</tora>
             <toda>3660</toda>
             <asda>3660</asda>
-            <lsa>3660</lsa>
+            <lda>3660</lda>
             <threshold>0</threshold>
         </runway>
     </tarmac>
