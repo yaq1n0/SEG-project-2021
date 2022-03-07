@@ -11,6 +11,7 @@ public class Tarmac {
     }
 
     public int getID() { return id; }
+    public int getLength() { return length; }
 
     public void setObstacle(Obstacle _obstacle) { obstacle = _obstacle; }
     public void removeObstacle(int _index) { obstacle = null; }
