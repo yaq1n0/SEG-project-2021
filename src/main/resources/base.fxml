@@ -38,8 +38,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -84,27 +84,45 @@
             </Menu>
       </menus>
     </MenuBar>
-    <SplitPane focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
-      <items>
-        <AnchorPane>
+      <Label fx:id="airportName" alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Airport Name" textAlignment="CENTER" wrapText="false">
+         <font>
+            <Font size="18.0" fx:id="x11" />
+         </font>
+         <textFill>
+            <Color red="0.624" green="0.624" blue="0.624" fx:id="x21" />
+         </textFill>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </Label>
+      <ScrollPane prefHeight="200.0" prefWidth="200.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <VBox fx:id="runwayContainer" alignment="CENTER">
+                  <VBox fx:id="airportContainer" prefHeight="200.0" >
                      <children>
-                  <Label fx:id="label" alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Runway Visualisation" textAlignment="CENTER" wrapText="false">
-                    <font>
-                      <Font size="18.0" fx:id="x1" />
-                    </font>
-                    <textFill>
-                      <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
-                    </textFill>
-                  </Label>
-                        <Button fx:id="testButton" mnemonicParsing="false" text="Button" />
+                        <VBox fx:id="runwayContainer">
+                           <children>
+                        <Label fx:id="label" minWidth="60.0" style="&#10;" text="Runway Name" textAlignment="CENTER">
+                          <font>
+                            <Font size="18.0" fx:id="x1" />
+                          </font>
+                          <textFill>
+                            <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
+                          </textFill>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </VBox.margin>
+                        </Label>
+                              <Button fx:id="testButton" mnemonicParsing="false" text="Button" />
+                           </children>
+                        </VBox>
                      </children>
                   </VBox>
                </children>
-        </AnchorPane>
-      </items>
-    </SplitPane>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
     <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
       <children>
         <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">

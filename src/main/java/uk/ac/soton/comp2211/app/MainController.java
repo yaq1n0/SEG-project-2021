@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,14 @@ public class MainController implements Initializable {
     private static final Logger logger = LogManager.getLogger(MainController.class);
     
     @FXML
+    private Label airportName;
+    
+    @FXML 
+    private VBox airportContainer;
+    
+    @FXML
     private VBox runwayContainer;
+    
     @FXML
     private Button testButton;
     
