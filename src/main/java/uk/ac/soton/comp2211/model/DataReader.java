@@ -30,7 +30,7 @@ public class DataReader {
     /**
      * Load XML file into memory so data can be extracted.
      * 
-     * The XML file is validated against the corrsponding XSD schema file.
+     * The XML file is validated against the corresponding XSD schema file.
      * 
      * @param _file
      * @throws Exception

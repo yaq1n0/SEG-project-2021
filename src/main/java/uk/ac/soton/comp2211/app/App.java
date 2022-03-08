@@ -13,6 +13,11 @@ import javafx.scene.text.Text;
 import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp2211.component.AirportSelect;
+import uk.ac.soton.comp2211.component.ObstacleSelect;
+import uk.ac.soton.comp2211.model.Airport;
+import uk.ac.soton.comp2211.model.Obstacle;
+import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +28,10 @@ import java.io.IOException;
 public class App extends Application {
 
     private static final Logger logger = LogManager.getLogger(App.class);
-
+    
+    private String[][] airportNames;
+    private Obstacle[] obstacles;
+    
     /**
      * Launch the JavaFx Application
      * @param args command-line arguments
@@ -38,6 +46,18 @@ public class App extends Application {
      */
     public void init() {
         logger.info("Initialising...");
+        
+        // Initialise model
+        SystemModel.loadSchemas();
+        this.airportNames = SystemModel.listAirports();
+        
+        try {
+            SystemModel.loadObstacles();
+        } catch (Exception e) {
+            logger.error("Could not load obstacles.");
+        }
+                
+        this.obstacles = SystemModel.getObstacles();
     }
 
     /**
@@ -67,11 +87,11 @@ public class App extends Application {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
+
+            ObstacleSelect obstacleSelect = new ObstacleSelect(dialog, this.obstacles);
+            obstacleSelect.setPassObstacleListener(this::getObstacleChoice);
             
-            VBox dialogVbox = new VBox(20);
-            dialogVbox.getChildren().add(new Text("Insert Obstacle:"));
-            
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
+            Scene dialogScene = new Scene(obstacleSelect, 300, 200);
             dialog.setScene(dialogScene);
             dialog.show();
         });
@@ -80,21 +100,10 @@ public class App extends Application {
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
 
-            VBox dialogVbox = new VBox(20);
-            HBox titleBox = new HBox();
-            titleBox.setAlignment(Pos.CENTER);
-            titleBox.getChildren().add(new Text("Open Airport:"));
+            AirportSelect airportSelect = new AirportSelect(dialog, this.airportNames);
+            airportSelect.setPassAirportListener(this::getAirportChoice);
             
-            HBox buttonBox = new HBox();
-            buttonBox.setAlignment(Pos.CENTER);
-            Button cancel = new Button("Cancel");
-            cancel.setOnAction((ActionEvent event) -> {
-                dialog.close();
-            });
-            buttonBox.getChildren().add(cancel);
-            dialogVbox.getChildren().addAll(titleBox, buttonBox);
-
-            Scene dialogScene = new Scene(dialogVbox, 300, 200);
+            Scene dialogScene = new Scene(airportSelect, 300, 200);
             dialog.setScene(dialogScene);
             dialog.show();
         });
@@ -125,6 +134,18 @@ public class App extends Application {
         // Seems scuffed.
         Platform.exit();
         System.exit(0);
+    }
+
+    /**
+     * Receive airport selection from user.
+     * @param airportPath path of relevant airport.xml
+     */
+    public void getAirportChoice(String airportPath) {
+        System.out.println(airportPath);
+    }
+    
+    public void getObstacleChoice(Obstacle obstacle) {
+        System.out.println(obstacle.getName());
     }
     
 }

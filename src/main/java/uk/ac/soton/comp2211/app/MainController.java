@@ -19,6 +19,7 @@ import uk.ac.soton.comp2211.event.ImportAirportListener;
 import uk.ac.soton.comp2211.event.InsertObstacleListener;
 import uk.ac.soton.comp2211.event.ChooseAirportListener;
 import uk.ac.soton.comp2211.event.QuitListener;
+import uk.ac.soton.comp2211.model.Airport;
 
 import java.net.URL;
 import java.util.ResourceBundle;
