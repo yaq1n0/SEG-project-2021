@@ -1,25 +1,23 @@
 package uk.ac.soton.comp2211.app;
 
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp2211.component.RunwayView;
-
+import uk.ac.soton.comp2211.component.AirportContainer;
 import javafx.event.ActionEvent;
 import uk.ac.soton.comp2211.event.ImportAirportListener;
 import uk.ac.soton.comp2211.event.InsertObstacleListener;
 import uk.ac.soton.comp2211.event.ChooseAirportListener;
 import uk.ac.soton.comp2211.event.QuitListener;
-import uk.ac.soton.comp2211.model.Airport;
+import uk.ac.soton.comp2211.model.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,20 +29,14 @@ public class MainController implements Initializable {
     
     @FXML
     private Label airportName;
-    
-    @FXML 
-    private VBox airportContainer;
-    
     @FXML
-    private VBox runwayContainer;
+    private AnchorPane airportParent;
     
-    @FXML
-    private Button testButton;
-    
-    private RunwayView runwayView;
+    private AirportContainer airportContainer;
     private final BooleanProperty topView;
     
     //Listeners
+    
     private QuitListener quitListener;
     private InsertObstacleListener insertObstacleListener;
     private ChooseAirportListener chooseAirportListener;
@@ -56,20 +48,14 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.runwayView = new RunwayView();
-        this.runwayContainer.getChildren().add(this.runwayView);
-        this.testButton.setOnAction(this.runwayView::update);
+        this.airportContainer = new AirportContainer();
         
         // Bind the boolean properties to show which profile the runway view should be.
-        this.runwayView.bindViewProperty(this.topView);
-    }
-
-    private void doSomething(ActionEvent actionEvent) {
-        Platform.runLater(() -> {
-            GraphicsContext gc = this.runwayView.getGraphicsContext2D();
-            gc.setFill(Color.RED);
-            gc.fillRect(0, 60,0, 80);
-        });
+        this.airportContainer.bindViewProperty(this.topView);
+        
+        // Add airport container to scene
+        this.airportParent.getChildren().add(this.airportContainer);
+        VBox.setVgrow(this.airportContainer, Priority.ALWAYS);
     }
 
     /**
@@ -211,6 +197,28 @@ public class MainController implements Initializable {
     @FXML
     private void runRedeclaration(ActionEvent actionEvent) {
         System.out.println("Run redeclaration");
+    }
+
+    /**
+     * Receive airport selection from user.
+     * @param airportPath path of relevant airport.xml
+     */
+    public void setAirport(String airportPath) {
+        try {
+            /*
+            SystemModel.loadAirport(airportPath);
+            this.airportContainer.updateAirport(SystemModel.getAirport());
+            */
+            RunwayValues testValues = new RunwayValues(3902, 3902, 3902, 3596);
+            Runway testRunway = new Runway("09L", null, testValues, 306);
+            Runway testRunway2 = new Runway("16R", null, testValues, 300);
+            Airport testAirport = new Airport("Heathrow", new Runway[] {testRunway, testRunway2});
+            
+            this.airportName.setText(testAirport.getName());
+            this.airportContainer.updateAirport(testAirport);
+        } catch (Exception e) {
+            logger.error("Could not load airport! {}", airportPath);
+        }
     }
     
 }

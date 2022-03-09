@@ -1,21 +1,14 @@
 package uk.ac.soton.comp2211.app;
 
 import javafx.application.*;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
 import uk.ac.soton.comp2211.component.ObstacleSelect;
-import uk.ac.soton.comp2211.model.Airport;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.SystemModel;
 
@@ -101,7 +94,7 @@ public class App extends Application {
             dialog.initOwner(stage);
 
             AirportSelect airportSelect = new AirportSelect(dialog, this.airportNames);
-            airportSelect.setPassAirportListener(this::getAirportChoice);
+            airportSelect.setPassAirportListener(controller::setAirport);
             
             Scene dialogScene = new Scene(airportSelect, 300, 200);
             dialog.setScene(dialogScene);
@@ -112,7 +105,7 @@ public class App extends Application {
             fileChooser.setTitle("Open Airport File");
             File file = fileChooser.showOpenDialog(stage);
             if (file != null) {
-                //openFile(file);
+                controller.setAirport(file.getPath());
             }
         });
         
@@ -134,14 +127,6 @@ public class App extends Application {
         // Seems scuffed.
         Platform.exit();
         System.exit(0);
-    }
-
-    /**
-     * Receive airport selection from user.
-     * @param airportPath path of relevant airport.xml
-     */
-    public void getAirportChoice(String airportPath) {
-        System.out.println(airportPath);
     }
     
     public void getObstacleChoice(Obstacle obstacle) {
