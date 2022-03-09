@@ -3,6 +3,7 @@ package uk.ac.soton.comp2211.component;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.css.Size;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,7 +40,7 @@ public class ParameterBox extends VBox {
         
         updateValues(values);
 
-        double width = 100;
+        double width = 150;
         
         Label recalculatedLabel = new Label("Recalculated Values:");
         
@@ -108,6 +109,9 @@ public class ParameterBox extends VBox {
         ogAsdaBox.setPrefWidth(width);
         ogLdaBox.setPrefWidth(width);
         originalValues.getChildren().addAll(ogToraBox, ogTodaBox, ogAsdaBox, ogLdaBox);
+        
+        recalculatedLabel.setPadding(new Insets(10, 0, 5, 0));
+        originalLabel.setPadding(new Insets(10, 0, 5, 0));
         
         this.getChildren().addAll(recalculatedLabel, recalculatedHeaders, recalculatedValues);
         this.getChildren().addAll(originalLabel, originalHeaders, originalValues);

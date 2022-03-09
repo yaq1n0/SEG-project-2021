@@ -13,6 +13,7 @@ import uk.ac.soton.comp2211.model.Runway;
 public class AirportContainer extends VBox {
     
     private final BooleanProperty topView = new SimpleBooleanProperty();
+    private RunwayContainer[] runwayContainers;
     
     public AirportContainer() {
         this.topView.set(true);
@@ -31,12 +32,22 @@ public class AirportContainer extends VBox {
      */
     public void updateAirport(Airport airport) {
         this.getChildren().clear();
+        Runway[] rws = airport.getRunways();
+        this.runwayContainers = new RunwayContainer[rws.length];
         
-        for (Runway runway : airport.getRunways()) {
-            RunwayContainer runwayContainer = new RunwayContainer(runway);
+        for (int i = 0; i < rws.length; i++) {
+            RunwayContainer runwayContainer = new RunwayContainer(rws[i]);
             VBox.setVgrow(runwayContainer, Priority.ALWAYS);
             this.getChildren().add(runwayContainer);
+            this.runwayContainers[i] = runwayContainer;
         }
     }
 
+    /**
+     * Delete all runway containers.
+     */
+    public void closeAirport() {
+        this.getChildren().clear();
+    }
+    
 }

@@ -4,7 +4,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
@@ -13,10 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportContainer;
 import javafx.event.ActionEvent;
-import uk.ac.soton.comp2211.event.ImportAirportListener;
-import uk.ac.soton.comp2211.event.InsertObstacleListener;
-import uk.ac.soton.comp2211.event.ChooseAirportListener;
-import uk.ac.soton.comp2211.event.QuitListener;
+
+import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.model.*;
 
 import java.net.URL;
@@ -132,7 +129,8 @@ public class MainController implements Initializable {
      */
     @FXML
     private void closeAirport(ActionEvent actionEvent) {
-        System.out.println("Close file.");
+        this.airportName.setText("");
+        this.airportContainer.closeAirport();
     }
 
     /**
@@ -182,42 +180,20 @@ public class MainController implements Initializable {
     }
 
     /**
-     * Ran when user selects Insert Obstacles in Menu>Run
-     * @param actionEvent event
-     */
-    @FXML
-    private void openObstacleDialogue(ActionEvent actionEvent) {
-        this.insertObstacleListener.openObstacleDialogue();
-    }
-
-    /**
-     * Ran when user selects Run Redeclaration in Menu>Run
-     * @param actionEvent event
-     */
-    @FXML
-    private void runRedeclaration(ActionEvent actionEvent) {
-        System.out.println("Run redeclaration");
-    }
-
-    /**
      * Receive airport selection from user.
      * @param airportPath path of relevant airport.xml
      */
     public void setAirport(String airportPath) {
         try {
-            /*
             SystemModel.loadAirport(airportPath);
-            this.airportContainer.updateAirport(SystemModel.getAirport());
-            */
-            RunwayValues testValues = new RunwayValues(3902, 3902, 3902, 3596);
-            Runway testRunway = new Runway("09L", null, testValues, 306);
-            Runway testRunway2 = new Runway("16R", null, testValues, 300);
-            Airport testAirport = new Airport("Heathrow", new Runway[] {testRunway, testRunway2});
+            Airport airport = SystemModel.getAirport();
+            this.airportName.setText(airport.getName());
+            this.airportContainer.updateAirport(airport);
             
-            this.airportName.setText(testAirport.getName());
-            this.airportContainer.updateAirport(testAirport);
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
+            closeAirport(new ActionEvent());
+            this.airportName.setText("Error loading airport file: " + airportPath);
         }
     }
     

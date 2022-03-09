@@ -28,11 +28,11 @@ public class Runway {
 
     public void recalculate(int blastAllowance) {
         Obstacle obs = tarmac.getObstacle();
-        int obsLength = obs.getLength();
-        int obsHeight = obs.getHeight();
-        int obsPos = obs.getPosition().getX();
-
+        
         if (obs != null) {
+            int obsLength = obs.getLength();
+            int obsHeight = obs.getHeight();
+            int obsPos = obs.getPosition().getX();
             if (obsPos <= originalValues.getTORA() / 2) {
                 //closer to start of runway, can replace tarmac.getLength() with originalValues.getTORA()
 

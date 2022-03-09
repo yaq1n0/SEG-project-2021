@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
 import uk.ac.soton.comp2211.component.ObstacleSelect;
 import uk.ac.soton.comp2211.model.Obstacle;
+import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
@@ -131,6 +132,14 @@ public class App extends Application {
     
     public void getObstacleChoice(Obstacle obstacle) {
         System.out.println(obstacle.getName());
+    }
+
+    /**
+     * Recalculation of runway parameters.
+     * @param runway runway
+     */
+    public void recalculate(Runway runway) {
+        System.out.println(runway.getRunwayDesignator());
     }
     
 }
