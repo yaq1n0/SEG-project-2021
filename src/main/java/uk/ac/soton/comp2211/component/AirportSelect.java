@@ -27,14 +27,17 @@ public class AirportSelect extends VBox {
         this.getChildren().add(titleBox);
         
         for (String[] airport : airports) {
-            HBox airportBox = new HBox();
-            Button airportButton = new Button(airport[1]);
-            airportButton.setOnAction((ActionEvent event) -> {
-                this.passAirportListener.passAirport(airport[0]);
-            });
-            Label path = new Label(airport[0]);
-            airportBox.getChildren().addAll(airportButton, path);
-            this.getChildren().add(airportBox);
+            if (!airport[1].equals("[ERROR] Broken file!")) {
+                HBox airportBox = new HBox();
+                Button airportButton = new Button(airport[1]);
+                airportButton.setOnAction((ActionEvent event) -> {
+                    this.passAirportListener.passAirport(airport[0]);
+                    dialog.close();
+                });
+                Label path = new Label(airport[0]);
+                airportBox.getChildren().addAll(airportButton, path);
+                this.getChildren().add(airportBox);
+            }
         }
 
         HBox buttonBox = new HBox();
