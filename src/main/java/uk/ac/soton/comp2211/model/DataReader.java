@@ -80,12 +80,12 @@ public class DataReader {
             Tarmac tarmac = new Tarmac(i, null);
 
             int tarmacRunwayCount = ((Number) xpath.evaluate("count(//tarmac[@id='" + i + "']/runway)", document, XPathConstants.NUMBER)).intValue();
-            for (int j = 0; i <= tarmacRunwayCount; i++) {
+            for (int j = 1; j <= tarmacRunwayCount; j++) {
                 String designator = (String) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/designator", document, XPathConstants.STRING);
                 int tora = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/tora", document, XPathConstants.NUMBER)).intValue();
                 int toda = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/toda", document, XPathConstants.NUMBER)).intValue();
                 int asda = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/asda", document, XPathConstants.NUMBER)).intValue();
-                int lsa = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/lsa", document, XPathConstants.NUMBER)).intValue();
+                int lsa = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/lda", document, XPathConstants.NUMBER)).intValue();
                 int threshold = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/threshold", document, XPathConstants.NUMBER)).intValue();
 
                 RunwayValues runwayValues = new RunwayValues(tora, toda, asda, lsa);

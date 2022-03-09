@@ -187,12 +187,18 @@ public class MainController implements Initializable {
         try {
             SystemModel.loadAirport(airportPath);
             Airport airport = SystemModel.getAirport();
+            System.out.println(1);
             this.airportName.setText(airport.getName());
+            System.out.println(2);
+            System.out.println(airport);
+            System.out.println(SystemModel.getAirport().getRunways().length);
             this.airportContainer.updateAirport(airport);
+            System.out.println(3);
             
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
-            closeAirport(new ActionEvent());
+            e.printStackTrace();
+            //closeAirport(new ActionEvent());
             this.airportName.setText("Error loading airport file: " + airportPath);
         }
     }

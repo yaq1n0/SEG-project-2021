@@ -36,6 +36,7 @@ public class AirportContainer extends VBox {
         this.runwayContainers = new RunwayContainer[rws.length];
         
         for (int i = 0; i < rws.length; i++) {
+            System.out.println(rws[i]);
             RunwayContainer runwayContainer = new RunwayContainer(rws[i]);
             VBox.setVgrow(runwayContainer, Priority.ALWAYS);
             this.getChildren().add(runwayContainer);

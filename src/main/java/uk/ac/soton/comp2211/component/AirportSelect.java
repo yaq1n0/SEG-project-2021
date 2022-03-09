@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -35,6 +36,8 @@ public class AirportSelect extends VBox {
                     dialog.close();
                 });
                 Label path = new Label(airport[0]);
+                HBox.setHgrow(path, Priority.ALWAYS);
+                path.setAlignment(Pos.CENTER);
                 airportBox.getChildren().addAll(airportButton, path);
                 this.getChildren().add(airportBox);
             }
