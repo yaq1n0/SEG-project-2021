@@ -5,15 +5,27 @@ public class RunwayValues {
     private int toda;
     private int asda;
     private int lda;
+    private int stopway;
+    private int clearway;
 
     public RunwayValues(int _tora, int _toda, int _asda, int _lda) {
         tora = _tora;
         toda = _toda;
         asda = _asda;
         lda = _lda;
+        updateClearwayStopway();
     }
 
-    public void setTORA(int _tora) { toda = _tora; }
+    private void updateClearwayStopway() {
+        if (asda - tora > 0) {
+            stopway = asda - tora;
+        }
+        if (toda - tora > 0) {
+            clearway = toda - tora;
+        }
+    }
+
+    public void setTORA(int _tora) { tora = _tora; }
     public void setTODA(int _toda) { toda = _toda; }
     public void setASDA(int _asda) { asda = _asda; }
     public void setLDA(int _lda) { lda = _lda; }
@@ -28,6 +40,16 @@ public class RunwayValues {
     public int getTODA() { return toda; }
     public int getASDA() { return asda; }
     public int getLDA() { return lda; }
+
+    public int getClearway() {
+        updateClearwayStopway();
+        return clearway;
+    }
+    public int getStopway() {
+        updateClearwayStopway();
+        return stopway;
+    }
+
 
     public RunwayValues clone() { return new RunwayValues(toda, toda, asda, lda); }
     public void copy(RunwayValues _runway) {

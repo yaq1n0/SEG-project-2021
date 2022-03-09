@@ -33,7 +33,7 @@ public class Runway {
         int obsPos = obs.getPosition().getX();
 
         if (obs != null) {
-            if (obsPos <= tarmac.getLength() / 2) {
+            if (obsPos <= originalValues.getTORA() / 2) {
                 //closer to start of runway, can replace tarmac.getLength() with originalValues.getTORA()
 
                 // landing over obstacle
@@ -45,20 +45,20 @@ public class Runway {
                 currentValues.setLDA(currentValues.getLDA() - newLDA);
 
                 // take off away from obstacle
-                int d4 = obsPos + blastAllowance; // include obsLength?
-                currentValues.setTORA(currentValues.getTORA() - d4);
-                currentValues.setTODA(currentValues.getTODA() - d4);
-                currentValues.setASDA(currentValues.getASDA() - d4);
+                int d4 = obsPos + blastAllowance + getDisplacedThreshold(); // include obsLength?
+                currentValues.setTORA(originalValues.getTORA() - d4);
+                currentValues.setTODA(currentValues.getTORA() + originalValues.getStopway());
+                currentValues.setASDA(currentValues.getTORA() + originalValues.getClearway());
 
             } else {
                 //closer to end of runway
 
                 //land towards obstacles
-                currentValues.setLDA(currentValues.getLDA() - RESA - SEV);
+                currentValues.setLDA(obsPos - RESA - SEV);
 
                 // take off towards it
                 int d1 = obsPos - RESA - SEV;
-                int d2 = obsPos - (obsHeight * TOCS);
+                int d2 = obsPos - (obsHeight * TOCS) - SEV + getDisplacedThreshold();
                 currentValues.setTORA(Math.min(d1, d2));
                 // TODA = ASDA = TORA
                 currentValues.setTODA(currentValues.getTORA());
