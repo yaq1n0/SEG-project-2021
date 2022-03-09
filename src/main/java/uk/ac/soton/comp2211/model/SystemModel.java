@@ -11,7 +11,7 @@ public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "./src/main/resources/airports";
     private static final String AIRPORT_SCHEMA = "./src/main/resources/airport.xsd";
     private static final String OBSTACLE_DATA_FILE = "./src/main/resources/obstacles.xml";
-    private static final String OBSTALCE_SCHEMA = "./src/main/resources/obstacles.xsd";
+    private static final String OBSTACLE_SCHEMA = "./src/main/resources/obstacles.xsd";
     private static final String DATA_FILE_REGEX = "[a-zA-Z0-9-_]+.xml";
 
     protected static final Logger LOGGER = LogManager.getLogger(SystemModel.class);
@@ -39,7 +39,7 @@ public class SystemModel {
         LOGGER.info("Loading XSD schema files.");
 
         airportSchemaFile = new File(AIRPORT_SCHEMA);
-        obstalceSchemaFile = new File(OBSTALCE_SCHEMA);
+        obstalceSchemaFile = new File(OBSTACLE_SCHEMA);
     }
 
     /**
