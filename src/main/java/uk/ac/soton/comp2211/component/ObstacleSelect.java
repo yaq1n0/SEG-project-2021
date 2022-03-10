@@ -27,14 +27,16 @@ public class ObstacleSelect extends VBox {
         this.getChildren().add(titleBox);
     
         for (Obstacle obs : obstacles) {
-            HBox obsBox = new HBox();
-            Button obsButton = new Button(obs.getName());
-            obsButton.setOnAction((ActionEvent event) -> {
-                this.passObstacleListener.passAirport(obs);
-                dialog.close();
-            });
-            obsBox.getChildren().addAll(obsButton);
-            this.getChildren().add(obsBox);
+            if (obs != null) {
+                HBox obsBox = new HBox();
+                Button obsButton = new Button(obs.getName());
+                obsButton.setOnAction((ActionEvent event) -> {
+                    this.passObstacleListener.passAirport(obs);
+                    dialog.close();
+                });
+                obsBox.getChildren().addAll(obsButton);
+                this.getChildren().add(obsBox);
+            }
         }
 
         HBox buttonBox = new HBox();

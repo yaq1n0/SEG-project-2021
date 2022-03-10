@@ -21,7 +21,7 @@ public class RunwayContainer extends VBox {
     
     private final RunwayView runwayView;
     private final ParameterBox parameterBox;
-    private ObstacleBox obstacleBox;
+    private final ObstacleBox obstacleBox;
     
     private final Runway runway;
     
@@ -40,12 +40,11 @@ public class RunwayContainer extends VBox {
         Obstacle obs = runway.getTarmac().getObstacle();
         this.obstacleBox = new ObstacleBox(obs);
 
-        this.obstacleBox.setObstacleReturnListener(this::setObstacle);
         this.obstacleBox.setInsertObstacleListener(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
-
+            
             ObstacleSelect obstacleSelect = new ObstacleSelect(dialog, SystemModel.getObstacles());
             obstacleSelect.setPassObstacleListener(this::setObstacle);
 

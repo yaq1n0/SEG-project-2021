@@ -18,7 +18,6 @@ public class ObstacleBox extends VBox {
     private final Label heightLabel;
     private final Label posLabel;
     private final Button obsButton;
-    private ObstacleReturnListener obstacleReturnListener;
     private InsertObstacleListener insertObstacleListener;
     private ObstacleClearListener obstacleClearListener;
     
@@ -67,10 +66,6 @@ public class ObstacleBox extends VBox {
         if (obstacleClearListener != null) {
             obstacleClearListener.reset();
         }
-    }
-
-    public void setObstacleReturnListener(ObstacleReturnListener listener) {
-        this.obstacleReturnListener = listener;
     }
     
     public void setInsertObstacleListener(InsertObstacleListener listener) {

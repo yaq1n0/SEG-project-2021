@@ -8,8 +8,6 @@ import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
-import uk.ac.soton.comp2211.model.Obstacle;
-import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
@@ -21,9 +19,6 @@ import java.io.IOException;
 public class App extends Application {
 
     private static final Logger logger = LogManager.getLogger(App.class);
-    
-    private String[][] airportNames;
-    private Obstacle[] obstacles;
     
     /**
      * Launch the JavaFx Application
@@ -42,12 +37,10 @@ public class App extends Application {
         
         // Initialise model
         SystemModel.loadSchemas();
-        this.airportNames = SystemModel.listAirports();
-        
         try {
             SystemModel.loadObstacles();
         } catch (Exception e) {
-            logger.error("Could not load obstacles.");
+            logger.error("Couldn't load obstacles.");
         }
     }
 
@@ -60,7 +53,7 @@ public class App extends Application {
         stage.setTitle("Runway Redeclaration App");
         
         Parent root;
-        FXMLLoader loader = null;
+        FXMLLoader loader;
         try {
             loader = new FXMLLoader(getClass().getResource("/base.fxml"));
             root = loader.load();
@@ -80,7 +73,7 @@ public class App extends Application {
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
 
-            AirportSelect airportSelect = new AirportSelect(dialog, this.airportNames);
+            AirportSelect airportSelect = new AirportSelect(dialog, SystemModel.listAirports());
             airportSelect.setPassAirportListener(controller::setAirport);
             
             Scene dialogScene = new Scene(airportSelect, 300, 200);
@@ -92,7 +85,7 @@ public class App extends Application {
             fileChooser.setTitle("Open Airport File");
             File file = fileChooser.showOpenDialog(stage);
             if (file != null) {
-                controller.setAirport(file.getPath());
+                controller.importAirport(file.getPath());
             }
         });
         
@@ -114,18 +107,6 @@ public class App extends Application {
         // Seems scuffed.
         Platform.exit();
         System.exit(0);
-    }
-    
-    public void getObstacleChoice(Obstacle obstacle) {
-        System.out.println(obstacle.getName());
-    }
-
-    /**
-     * Recalculation of runway parameters.
-     * @param runway runway
-     */
-    public void recalculate(Runway runway) {
-        System.out.println(runway.getRunwayDesignator());
     }
     
 }

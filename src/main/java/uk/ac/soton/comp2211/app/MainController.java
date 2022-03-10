@@ -193,5 +193,24 @@ public class MainController implements Initializable {
             this.airportName.setText("Error loading airport file: " + airportPath);
         }
     }
+
+    /**
+     * Receive airport selection from user.
+     * @param airportPath path of relevant airport.xml
+     */
+    public void importAirport(String airportPath) {
+        try {
+            SystemModel.importAirport(airportPath);
+            Airport airport = SystemModel.getAirport();
+            this.airportName.setText(airport.getName());
+            this.airportContainer.updateAirport(airport);
+
+        } catch (Exception e) {
+            logger.error("Could not load airport! {}", airportPath);
+            e.printStackTrace();
+            closeAirport(new ActionEvent());
+            this.airportName.setText("Error loading airport file: " + airportPath);
+        }
+    }
     
 }

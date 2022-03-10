@@ -96,6 +96,31 @@ public class SystemModel {
         airport = new Airport(airportName, runways);
     }
 
+    /**
+     * Extract airport data from XML file.
+     *
+     * @param _airportFilename
+     * @throws Exception
+     */
+    public static void importAirport(String _airportFilename) throws Exception {
+        LOGGER.info("Loading airport data from: " + _airportFilename);
+
+        // Get airport data file.
+        File airportFile = new File(_airportFilename);
+
+        // Load the airport data file into the data reader, with the XSD schema.
+        DataReader.loadFile(airportFile, airportSchemaFile);
+
+        // Extract airport name from airport data file.
+        String airportName = DataReader.getAirportName();
+
+        // Extract runway data from airport data file.
+        Runway[] runways = DataReader.getRunways();
+
+        // Instantiate the airport with the airport name and runway data.
+        airport = new Airport(airportName, runways);
+    }
+
     public static Airport getAirport() { return airport; }
 
     public static void loadObstacles() throws Exception {
