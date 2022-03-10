@@ -3,15 +3,14 @@ package uk.ac.soton.comp2211.model;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SystemModel {
-    private static final String AIRPORT_DATA_FOLDER = "./src/main/resources/airports";
-    private static final String AIRPORT_SCHEMA = "./src/main/resources/airport.xsd";
-    private static final String OBSTACLE_DATA_FILE = "./src/main/resources/obstacles.xml";
-    private static final String OBSTACLE_SCHEMA = "./src/main/resources/obstacles.xsd";
+    private static final String AIRPORT_DATA_FOLDER = "/airports";
+    private static final String AIRPORT_SCHEMA = "/airport.xsd";
+    private static final String OBSTACLE_DATA_FILE = "/obstacles.xml";
+    private static final String OBSTACLE_SCHEMA = "/obstacles.xsd";
     private static final String DATA_FILE_REGEX = "[a-zA-Z0-9-_]+.xml";
 
     protected static final Logger LOGGER = LogManager.getLogger(SystemModel.class);
@@ -38,8 +37,8 @@ public class SystemModel {
     public static void loadSchemas() {
         LOGGER.info("Loading XSD schema files.");
 
-        airportSchemaFile = new File(AIRPORT_SCHEMA);
-        obstalceSchemaFile = new File(OBSTACLE_SCHEMA);
+        airportSchemaFile = new File(SystemModel.class.getResource(AIRPORT_SCHEMA).getPath());
+        obstalceSchemaFile = new File(SystemModel.class.getResource(OBSTACLE_SCHEMA).getPath());
     }
 
     /**
@@ -51,7 +50,7 @@ public class SystemModel {
 
         // Get all files within the data folder that have 
         // names that match the data filename format.
-        File folder = new File(AIRPORT_DATA_FOLDER);
+        File folder = new File(SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath());
         FilenameFilter filter = (d, s) -> { return s.matches(DATA_FILE_REGEX); };
         File[] files = folder.listFiles(filter);
 
@@ -81,7 +80,7 @@ public class SystemModel {
         LOGGER.info("Loading airport data from: " + AIRPORT_DATA_FOLDER + "/" + _airportFilename);
 
         // Get airport data file.
-        File airportFile = new File(AIRPORT_DATA_FOLDER, _airportFilename);
+        File airportFile = new File(SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath(), _airportFilename);
 
         // Load the airport data file into the data reader, with the XSD schema.
         DataReader.loadFile(airportFile, airportSchemaFile);
@@ -126,7 +125,7 @@ public class SystemModel {
     public static void loadObstacles() throws Exception {
         LOGGER.info("Loading obstacle data from: " + OBSTACLE_DATA_FILE);
 
-        File obstacleFile = new File(OBSTACLE_DATA_FILE);
+        File obstacleFile = new File(SystemModel.class.getResource(OBSTACLE_DATA_FILE).getPath());
         DataReader.loadFile(obstacleFile, obstalceSchemaFile);
 
         obstacles = DataReader.getObstacles();
