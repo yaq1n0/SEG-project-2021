@@ -28,9 +28,9 @@ public class Runway {
 
     public void recalculate(int blastAllowance) {
         Obstacle obs = tarmac.getObstacle();
-        
+
         if (obs != null) {
-            int obsLength = obs.getLength();
+            int obsLength = obs.getLength(); // not used at the moment
             int obsHeight = obs.getHeight();
             int obsPos = obs.getPosition().getX();
             if (obsPos <= originalValues.getTORA() / 2) {
@@ -42,13 +42,13 @@ public class Runway {
                 int d2 = obsPos + RESA + SEV; // including obsLength?
                 int d3 = obsPos + blastAllowance;
                 newLDA = Math.max(d1, Math.max(d2, d3));
-                currentValues.setLDA(currentValues.getLDA() - newLDA);
+                currentValues.setLDA(originalValues.getLDA() - newLDA);
 
                 // take off away from obstacle
                 int d4 = obsPos + blastAllowance + getDisplacedThreshold(); // include obsLength?
                 currentValues.setTORA(originalValues.getTORA() - d4);
-                currentValues.setTODA(currentValues.getTORA() + originalValues.getStopway());
-                currentValues.setASDA(currentValues.getTORA() + originalValues.getClearway());
+                currentValues.setTODA(currentValues.getTORA() + originalValues.getClearway());
+                currentValues.setASDA(currentValues.getTORA() + originalValues.getStopway());
 
             } else {
                 //closer to end of runway

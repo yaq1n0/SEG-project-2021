@@ -53,7 +53,7 @@ public class RunwayContainer extends VBox {
             dialog.setScene(dialogScene);
             dialog.show();
         });
-        this.obstacleBox.setParameterResetListener(this::resetParameters);
+        this.obstacleBox.setObstacleClearListener(this::clearObstacle);
         
         VBox recalculateBox = new VBox();
         Button recalculate = new Button("Run Calculation");
@@ -94,6 +94,7 @@ public class RunwayContainer extends VBox {
      * @param obstacle obstacle
      */
     public void setObstacle(Obstacle obstacle) {
+        this.parameterBox.resetValues();
         this.runway.getTarmac().setObstacle(obstacle);
         this.obstacleBox.update(obstacle);
     }
@@ -101,7 +102,8 @@ public class RunwayContainer extends VBox {
     /**
      * Reset the parameters of the parameter box.
      */
-    public void resetParameters() {
+    public void clearObstacle() {
+        this.runway.getTarmac().removeObstacle();
         this.parameterBox.resetValues();
     }
 }

@@ -1,6 +1,6 @@
 package uk.ac.soton.comp2211.event;
 
-public interface ParameterResetListener {
+public interface ObstacleClearListener {
     
     void reset();
     

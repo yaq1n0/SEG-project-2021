@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import uk.ac.soton.comp2211.event.InsertObstacleListener;
 import uk.ac.soton.comp2211.event.ObstacleReturnListener;
-import uk.ac.soton.comp2211.event.ParameterResetListener;
+import uk.ac.soton.comp2211.event.ObstacleClearListener;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Position;
 
@@ -20,7 +20,7 @@ public class ObstacleBox extends VBox {
     private final Button obsButton;
     private ObstacleReturnListener obstacleReturnListener;
     private InsertObstacleListener insertObstacleListener;
-    private ParameterResetListener parameterResetListener;
+    private ObstacleClearListener obstacleClearListener;
     
     public ObstacleBox(Obstacle obstacle) {
         super();
@@ -64,8 +64,8 @@ public class ObstacleBox extends VBox {
         this.widLabel.setText("Width: ");
         this.heightLabel.setText("Height: ");
         this.posLabel.setText("Position: ");
-        if (parameterResetListener != null) {
-            parameterResetListener.reset();
+        if (obstacleClearListener != null) {
+            obstacleClearListener.reset();
         }
     }
 
@@ -77,8 +77,8 @@ public class ObstacleBox extends VBox {
         this.insertObstacleListener = listener;
     }
     
-    public void setParameterResetListener(ParameterResetListener listener) {
-        this.parameterResetListener = listener;
+    public void setObstacleClearListener(ObstacleClearListener listener) {
+        this.obstacleClearListener = listener;
     }
     
     public void update(Obstacle obstacle) {
@@ -89,8 +89,5 @@ public class ObstacleBox extends VBox {
         this.heightLabel.setText("Height: " + obstacle.getHeight());
         Position pos = obstacle.getPosition();
         this.posLabel.setText("Position: (" + pos.getX() + ", " + pos.getY() + ")");
-        if (parameterResetListener != null) {
-            parameterResetListener.reset();
-        }
     }
 }
