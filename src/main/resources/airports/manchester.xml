@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<airport name="Manchester">
+    <tarmac id="1">
+        <runway id="1">
+            <designator>05L</designator>
+            <tora>3014</tora>
+            <toda>3229</toda>
+            <asda>3014</asda>
+            <lda>2587</lda>
+            <threshold>0</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>23R</designator>
+            <tora>2897</tora>
+            <toda>3197</toda>
+            <asda>2897</asda>
+            <lda>2714</lda>
+            <threshold>0</threshold>
+        </runway>
+    </tarmac>
+
+    <tarmac id="2">
+        <runway id="1">
+            <designator>05R</designator>
+            <tora>3047</tora>
+            <toda>3347</toda>
+            <asda>3047</asda>
+            <lda>2864</lda>
+            <threshold>0</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>23L</designator>
+            <tora>3200</tora>
+            <toda>3500</toda>
+            <asda>3200</asda>
+            <lda>2864</lda>
+            <threshold>0</threshold>
+        </runway>
+    </tarmac>
+</airport>

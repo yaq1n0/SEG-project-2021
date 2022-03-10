@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<airport name="Gatwick">
+    <tarmac id="1">
+        <runway id="1">
+            <designator>08L</designator>
+            <tora>2561</tora>
+            <toda>3040</toda>
+            <asda>2561</asda>
+            <lda>2241</lda>
+            <threshold>0</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>26R</designator>
+            <tora>2515</tora>
+            <toda>2657</toda>
+            <asda>2515</asda>
+            <lda>2146</lda>
+            <threshold>0</threshold>
+        </runway>
+    </tarmac>
+
+    <tarmac id="2">
+        <runway id="1">
+            <designator>08R</designator>
+            <tora>3159</tora>
+            <toda>3311</toda>
+            <asda>3233</asda>
+            <lda>2765</lda>
+            <threshold>0</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>26L</designator>
+            <tora>3255</tora>
+            <toda>3399</toda>
+            <asda>3317</asda>
+            <lda>2830</lda>
+            <threshold>0</threshold>
+        </runway>
+    </tarmac>
+</airport>

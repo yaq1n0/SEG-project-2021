@@ -12,4 +12,18 @@
         <width>13</width>
         <height>4</height>
     </obstacle>
+
+    <obstacle id="3">
+        <name>AirbusA330</name>
+        <length>63</length>
+        <width>60</width>
+        <height>17</height>
+    </obstacle>
+
+    <obstacle id="4">
+        <name>AirbusA220</name>
+        <length>38</length>
+        <width>35</width>
+        <height>11</height>
+    </obstacle>
 </obstacles>

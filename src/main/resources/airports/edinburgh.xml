@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<airport name="Edinburgh">
+    <tarmac id="1">
+        <runway id="1">
+            <designator>06</designator>
+            <tora>2556</tora>
+            <toda>2616</toda>
+            <asda>2616</asda>
+            <lda>2344</lda>
+            <threshold>0</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>24</designator>
+            <tora>2553</tora>
+            <toda>3002</toda>
+            <asda>2614</asda>
+            <lda>2347</lda>
+            <threshold>0</threshold>
+        </runway>
+    </tarmac>
+</airport>

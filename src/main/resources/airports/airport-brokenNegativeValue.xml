@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<airport name="Southampton">
+    <tarmac id="1">
+        <runway id="1">
+            <designator>02</designator>
+            <tora>1723</tora>
+            <toda>1831</toda>
+            <asda>1723</asda>
+            <lda>1650</lda>
+            <threshold>0</threshold>
+        </runway>
+
+        <runway id="2">
+            <designator>20</designator>
+            <tora>1650</tora>
+            <toda>-1805</toda>
+            <asda>1650</asda>
+            <lda>1605</lda>
+            <threshold>0</threshold>
+        </runway>
+    </tarmac>
+</airport>
