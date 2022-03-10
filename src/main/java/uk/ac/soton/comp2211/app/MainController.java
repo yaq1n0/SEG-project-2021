@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportContainer;
@@ -31,21 +32,24 @@ public class MainController implements Initializable {
     
     private AirportContainer airportContainer;
     private final BooleanProperty topView;
+    private Stage stage;
     
     //Listeners
-    
     private QuitListener quitListener;
-    private InsertObstacleListener insertObstacleListener;
     private ChooseAirportListener chooseAirportListener;
     private ImportAirportListener importAirportListener;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
     }
+    
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.airportContainer = new AirportContainer();
+        this.airportContainer = new AirportContainer(stage);
         
         // Bind the boolean properties to show which profile the runway view should be.
         this.airportContainer.bindViewProperty(this.topView);
@@ -61,14 +65,6 @@ public class MainController implements Initializable {
      */
     public void setQuitListener(QuitListener listener) {
         this.quitListener = listener;
-    }
-
-    /**
-     * Set the insertObstacle listener for the controller
-     * @param listener insertObstacle listener
-     */
-    public void setInsertObstacleListener(InsertObstacleListener listener) {
-        this.insertObstacleListener = listener;
     }
 
     /**
@@ -187,18 +183,13 @@ public class MainController implements Initializable {
         try {
             SystemModel.loadAirport(airportPath);
             Airport airport = SystemModel.getAirport();
-            System.out.println(1);
             this.airportName.setText(airport.getName());
-            System.out.println(2);
-            System.out.println(airport);
-            System.out.println(SystemModel.getAirport().getRunways().length);
             this.airportContainer.updateAirport(airport);
-            System.out.println(3);
             
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();
-            //closeAirport(new ActionEvent());
+            closeAirport(new ActionEvent());
             this.airportName.setText("Error loading airport file: " + airportPath);
         }
     }

@@ -24,6 +24,10 @@ public class ParameterBox extends VBox {
     private final StringProperty toda = new SimpleStringProperty();
     private final StringProperty asda = new SimpleStringProperty();
     private final StringProperty lda = new SimpleStringProperty();
+    private final String ogTora;
+    private final String ogToda;
+    private final String ogAsda;
+    private final String ogLda;
 
     /**
      * Create a parameter box component from runway values.
@@ -33,10 +37,10 @@ public class ParameterBox extends VBox {
         super();
         
         // Initial parameters
-        String ogToda = values.getTODA() + "m";
-        String ogTora = values.getTORA() + "m";
-        String ogAsda = values.getASDA() + "m";
-        String ogLda = values.getLDA() + "m";
+        this.ogTora = values.getTORA() + "m";
+        this.ogToda = values.getTODA() + "m";
+        this.ogAsda = values.getASDA() + "m";
+        this.ogLda = values.getLDA() + "m";
         
         updateValues(values);
 
@@ -126,6 +130,16 @@ public class ParameterBox extends VBox {
         this.toda.set(values.getTODA() + "m");
         this.asda.set(values.getASDA() + "m");
         this.lda.set(values.getLDA() + "m");
+    }
+
+    /**
+     * Reset the parameters to their initial values.
+     */
+    public void resetValues() {
+        this.tora.set(this.ogTora);
+        this.toda.set(this.ogToda);
+        this.asda.set(this.ogAsda);
+        this.lda.set(this.ogLda);
     }
     
 }

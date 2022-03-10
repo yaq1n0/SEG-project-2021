@@ -31,6 +31,7 @@ public class ObstacleSelect extends VBox {
             Button obsButton = new Button(obs.getName());
             obsButton.setOnAction((ActionEvent event) -> {
                 this.passObstacleListener.passAirport(obs);
+                dialog.close();
             });
             obsBox.getChildren().addAll(obsButton);
             this.getChildren().add(obsBox);

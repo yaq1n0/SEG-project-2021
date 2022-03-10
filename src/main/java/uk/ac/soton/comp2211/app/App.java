@@ -8,7 +8,6 @@ import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
-import uk.ac.soton.comp2211.component.ObstacleSelect;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.SystemModel;
@@ -50,8 +49,6 @@ public class App extends Application {
         } catch (Exception e) {
             logger.error("Could not load obstacles.");
         }
-                
-        this.obstacles = SystemModel.getObstacles();
     }
 
     /**
@@ -74,21 +71,10 @@ public class App extends Application {
         }
 
         MainController controller = loader.<MainController>getController();
+        controller.setStage(stage);
         
         // Set the listeners
         controller.setQuitListener(this::stop);
-        controller.setInsertObstacleListener(() -> {
-            final Stage dialog = new Stage();
-            dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initOwner(stage);
-
-            ObstacleSelect obstacleSelect = new ObstacleSelect(dialog, this.obstacles);
-            obstacleSelect.setPassObstacleListener(this::getObstacleChoice);
-            
-            Scene dialogScene = new Scene(obstacleSelect, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.show();
-        });
         controller.setOpenAirportListener(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
