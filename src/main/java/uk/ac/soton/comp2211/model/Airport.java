@@ -1,16 +1,27 @@
 package uk.ac.soton.comp2211.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Airport {
     private String name;
-    private Runway[] runways;
+    private Tarmac[] tarmacs;
 
-    public Airport(String _name, Runway[] _runways) {
+    public Airport(String _name, Tarmac[] _tarmacs) {
         name = _name;
-        runways = _runways;
+        tarmacs = _tarmacs;
     }
 
     public String getName() { return name; }
 
-    public Runway getRunway(int _index) { return runways[_index]; }
-    public Runway[] getRunways() { return runways; }
+    public Tarmac[] getTarmacs() { return tarmacs; }
+    public Runway[] getRunways() { 
+        List<Runway> runways = new ArrayList<Runway>();
+
+        for (Tarmac tarmac : tarmacs)
+            for (Runway runway : tarmac.getRunways())
+                runways.add(runway);
+
+        return (Runway[]) runways.toArray();
+    }
 }

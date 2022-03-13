@@ -2,9 +2,14 @@ package uk.ac.soton.comp2211.model;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -24,21 +29,36 @@ public class SystemModel {
     public static void main(String[] args) throws Exception {
         loadSchemas();
 
-        for (String[] airport : listAirports()) 
-            System.out.println(airport[0] + " : " + airport[1]);
+        // for (String[] airport : listAirports()) 
+        //     System.out.println(airport[0] + " : " + airport[1]);
 
-        loadAirport(listAirports()[1][0]);
+        // loadAirport(listAirports()[1][0]);
         loadObstacles();
     }
 
     /**
      * Load XSD schema files, used to validate XML files.
      */
-    public static void loadSchemas() {
-        LOGGER.info("Loading XSD schema files.");
+    private static void loadSchemas() {
+        LOGGER.info("Loading XSD schema files...");
 
-        airportSchemaFile = new File(SystemModel.class.getResource(AIRPORT_SCHEMA).getPath());
-        obstalceSchemaFile = new File(SystemModel.class.getResource(OBSTACLE_SCHEMA).getPath());
+        String airportSchemaPath;
+        // airportSchemaPath = SystemModel.class.getResource(AIRPORT_SCHEMA).getPath();
+        airportSchemaPath = "./src/main/resources" + AIRPORT_SCHEMA;
+
+        airportSchemaFile = new File(airportSchemaPath);
+
+        if (airportSchemaFile.exists()) LOGGER.info("Airport XSD schema loaded.");
+        else LOGGER.error("Airport XSD schema not found!");
+
+        String obstacleSchemaPath;
+        // obstacleSchemaPath = SystemModel.class.getResource(OBSTACLE_SCHEMA).getPath();
+        obstacleSchemaPath = "./src/main/resources" + OBSTACLE_SCHEMA;
+
+        obstalceSchemaFile = new File(obstacleSchemaPath);
+
+        if (obstalceSchemaFile.exists()) LOGGER.info("Obstacle XSD schema loaded.");
+        else LOGGER.error("Obstacle XSD scheama not found!");
     }
 
     /**
@@ -48,11 +68,16 @@ public class SystemModel {
     public static String[][] listAirports() {
         LOGGER.info("Generating a list of airports from: " + AIRPORT_DATA_FOLDER);
 
+        if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
+
         // Get all files within the data folder that have 
         // names that match the data filename format.
-        File folder = new File(SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath());
+        File airportFolder = new File(SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath());
+
+        if (!airportFolder.exists()) LOGGER.error("Airport folder not found!");
+
         FilenameFilter filter = (d, s) -> { return s.matches(DATA_FILE_REGEX); };
-        File[] files = folder.listFiles(filter);
+        File[] files = airportFolder.listFiles(filter);
 
         String[][] airportList = new String[files.length][2];
         for (int i = 0; i < files.length; i++) {
@@ -77,10 +102,16 @@ public class SystemModel {
      * @throws Exception
      */
     public static void loadAirport(String _airportFilename) throws Exception {
-        LOGGER.info("Loading airport data from: " + AIRPORT_DATA_FOLDER + "/" + _airportFilename);
+        LOGGER.info("Loading airport data from: " + _airportFilename);
+
+        if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
+
+        String airportFolderPath;
+        // airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath();
+        airportFolderPath = "./src/main/resources";
 
         // Get airport data file.
-        File airportFile = new File(SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath(), _airportFilename);
+        File airportFile = new File(airportFolderPath, _airportFilename);
 
         // Load the airport data file into the data reader, with the XSD schema.
         DataReader.loadFile(airportFile, airportSchemaFile);
@@ -97,12 +128,17 @@ public class SystemModel {
 
     /**
      * Extract airport data from XML file.
+     * 
+     * Side effects:
+     *  - Loads schemas if not already loaded.
      *
      * @param _airportFilename
      * @throws Exception
      */
     public static void importAirport(String _airportFilename) throws Exception {
         LOGGER.info("Loading airport data from: " + _airportFilename);
+
+        if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
 
         // Get airport data file.
         File airportFile = new File(_airportFilename);
@@ -120,15 +156,103 @@ public class SystemModel {
         airport = new Airport(airportName, runways);
     }
 
-    public static Airport getAirport() { return airport; }
+    public static Airport getAirport() throws Exception {
+        if (airport == null) throw new Exception("Airport not loaded into model!");
 
-    public static void loadObstacles() throws Exception {
+        return airport; 
+    }
+
+    /**
+     * Extract obstacle data from obstacle XML data file.
+     * 
+     * Side effects:
+     *  - Load schemas if not already loaded.
+     */
+    public static void loadObstacles() {
         LOGGER.info("Loading obstacle data from: " + OBSTACLE_DATA_FILE);
 
-        File obstacleFile = new File(SystemModel.class.getResource(OBSTACLE_DATA_FILE).getPath());
-        DataReader.loadFile(obstacleFile, obstalceSchemaFile);
+        if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
 
-        obstacles = DataReader.getObstacles();
+        String obstacleFilePath;
+        // obstacleFilePath = SystemModel.class.getResource(OBSTACLE_DATA_FILE).getPath();
+        obstacleFilePath = "./src/main/resources" + OBSTACLE_DATA_FILE;
+
+        File obstacleFile = new File(obstacleFilePath);
+
+        if (obstacleFile.exists()) {
+            try {
+                DataReader.loadFile(obstacleFile, obstalceSchemaFile);
+
+                obstacles = DataReader.getObstacles();
+
+                LOGGER.info("Obstacle data loaded.");
+            } catch (Exception e) {
+                LOGGER.error("Failed to load obstacle data!");
+            }
+        } else LOGGER.error("Obstacle data file not found!");
+    }
+
+    /**
+     * Adds a new obstacle to the obstacle data file,
+     * and then reloads the obstacles from that file.
+     * 
+     * @param _newObstacle
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static void addObstacle(Obstacle _newObstacle) throws TransformerException, SAXException, IOException, ParserConfigurationException {
+        LOGGER.info("Adding new obstacle...");
+
+        String obstacleFilePath;
+        // obstacleFilePath = SystemModel.class.getResource(OBSTACLE_DATA_FILE).getPath();
+        obstacleFilePath = "./src/main/resources" + OBSTACLE_DATA_FILE;
+
+        File obstacleFile = new File(obstacleFilePath);
+
+        if (obstacleFile.exists()) {
+            LOGGER.info("Writing obstacle data to XML file...");
+            
+            DataWriter.writeObstacle(_newObstacle, obstacleFile);
+
+            LOGGER.info("New obstacle added successfully.");
+
+        } else LOGGER.error("Obstacle data file not found!");
+
+        loadObstacles();
+    }
+
+    /**
+     * Adds a new airport to a new XML file,
+     * and then loads that airport into the model.
+     * 
+     * @param _newAirport
+     * @param _airportFileName
+     * @throws Exception
+     */
+    public static void addAirport(Airport _newAirport, String _airportFileName) throws Exception {
+        LOGGER.info("Adding new airport...");
+
+        String airportFilePath;
+        // airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _newAirportFileName;
+        airportFilePath = "./src/main/resources" + "/" + _airportFileName;
+
+        File airportFile = new File(airportFilePath);
+
+        if (airportFile.exists()) {
+            LOGGER.error("Cannot write airport data to a file that already exists!");
+
+            return;
+        }
+
+        LOGGER.info("Writing airport data to XML file...");
+
+        DataWriter.writeAirport(_newAirport, airportFile);
+
+        LOGGER.info("New airport added successfully.");
+
+        loadAirport(_airportFileName);
     }
 
     public static Obstacle[] getObstacles() { return obstacles; }
