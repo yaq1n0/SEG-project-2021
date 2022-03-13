@@ -70,30 +70,47 @@ public class DataReader {
         return airport.getAttributes().getNamedItem("name").getTextContent();
     }
 
-    public static Runway[] getRunways() throws XPathExpressionException {
-        int runwayCount = ((Number) xpath.evaluate("count(//runway)", document, XPathConstants.NUMBER)).intValue();
+    public static Tarmac[] getTarmacs() throws XPathExpressionException {
+        int tarmacCount = ((Number) xpath.evaluate("count(//runway)", document, XPathConstants.NUMBER)).intValue();
+        Tarmac[] tarmacs = new Tarmac[tarmacCount];
+
+        for (int tarmacID = 1; tarmacID <= tarmacCount; tarmacID++) {
+            Tarmac tarmac = new Tarmac(tarmacID);
+            tarmac.setRunways(getTarmacRunways(tarmac));
+            tarmacs[tarmacID - 1] = tarmac;
+        }
+
+        return tarmacs;
+    }
+
+    private static Runway[] getTarmacRunways(Tarmac _tarmac) throws XPathExpressionException {
+        int runwayCount = ((Number) xpath.evaluate("count(//tarmac[@id='" + _tarmac.getID()
+                                                    + "']/runway)", document, XPathConstants.NUMBER)).intValue();
         Runway[] runways = new Runway[runwayCount];
 
-        int runwayIndex = 0;
-        int tarmacCount = ((Number) xpath.evaluate("count(//tarmac)", document, XPathConstants.NUMBER)).intValue();
-        for (int i = 1; i <= tarmacCount; i++) {
-            Tarmac tarmac = new Tarmac(i, null);
+        for (int runwayID = 1; runwayID <= runwayCount; runwayID++) {
+            String designator = (String) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                        + "']/runway[@id='" + runwayID
+                                                        + "']/designator", document, XPathConstants.STRING);
+            int tora = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                + "']/runway[@id='" + runwayID
+                                                + "']/tora", document, XPathConstants.NUMBER)).intValue();
+            int toda = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                + "']/runway[@id='" + runwayID 
+                                                + "']/toda", document, XPathConstants.NUMBER)).intValue();
+            int asda = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                + "']/runway[@id='" + runwayID 
+                                                + "']/asda", document, XPathConstants.NUMBER)).intValue();
+            int lda = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                + "']/runway[@id='" + runwayID 
+                                                + "']/lda", document, XPathConstants.NUMBER)).intValue();
+            int threshold = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                    + "']/runway[@id='" + runwayID 
+                                                    + "']/threshold", document, XPathConstants.NUMBER)).intValue();
 
-            int tarmacRunwayCount = ((Number) xpath.evaluate("count(//tarmac[@id='" + i + "']/runway)", document, XPathConstants.NUMBER)).intValue();
-            for (int j = 1; j <= tarmacRunwayCount; j++) {
-                String designator = (String) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/designator", document, XPathConstants.STRING);
-                int tora = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/tora", document, XPathConstants.NUMBER)).intValue();
-                int toda = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/toda", document, XPathConstants.NUMBER)).intValue();
-                int asda = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/asda", document, XPathConstants.NUMBER)).intValue();
-                int lsa = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/lda", document, XPathConstants.NUMBER)).intValue();
-                int threshold = ((Number) xpath.evaluate("//tarmac[@id='" + i + "']/runway[@id='" + j + "']/threshold", document, XPathConstants.NUMBER)).intValue();
-
-                RunwayValues runwayValues = new RunwayValues(tora, toda, asda, lsa);
-                Runway runway = new Runway(designator, tarmac, runwayValues, threshold);
-
-                runways[runwayIndex] = runway;
-                runwayIndex++;
-            }
+            RunwayValues values = new RunwayValues(tora, toda, asda, lda);
+            
+            runways[runwayID - 1] = new Runway(designator, _tarmac, values, threshold);
         }
 
         return runways;

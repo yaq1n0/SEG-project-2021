@@ -119,11 +119,11 @@ public class SystemModel {
         // Extract airport name from airport data file.
         String airportName = DataReader.getAirportName();
 
-        // Extract runway data from airport data file.
-        Runway[] runways = DataReader.getRunways();
+        // Extract tarmac data from airport data file.
+        Tarmac[] tarmacs = DataReader.getTarmacs();
 
         // Instantiate the airport with the airport name and runway data.
-        airport = new Airport(airportName, runways);
+        airport = new Airport(airportName, tarmacs);
     }
 
     /**
@@ -149,11 +149,11 @@ public class SystemModel {
         // Extract airport name from airport data file.
         String airportName = DataReader.getAirportName();
 
-        // Extract runway data from airport data file.
-        Runway[] runways = DataReader.getRunways();
+        // Extract tarmac data from airport data file.
+        Tarmac[] tarmacs = DataReader.getTarmacs();
 
         // Instantiate the airport with the airport name and runway data.
-        airport = new Airport(airportName, runways);
+        airport = new Airport(airportName, tarmacs);
     }
 
     public static Airport getAirport() throws Exception {

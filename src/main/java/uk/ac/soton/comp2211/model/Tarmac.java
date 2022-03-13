@@ -7,10 +7,7 @@ public class Tarmac {
 
     private Runway[] runways;
 
-    public Tarmac(int _id, Obstacle _obstacle) {
-        id = _id;
-        obstacle = _obstacle;
-    }
+    public Tarmac(int _id) { id = _id; }
 
     public int getID() { return id; }
     public int getLength() { return length; }
@@ -19,5 +16,6 @@ public class Tarmac {
     public void removeObstacle() { obstacle = null; }
     public Obstacle getObstacle() { return obstacle; }
 
+    public void setRunways(Runway[] _runways) { runways = _runways; }
     public Runway[] getRunways() { return runways; }
 }
