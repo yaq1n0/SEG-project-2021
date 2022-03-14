@@ -3,20 +3,23 @@ package uk.ac.soton.comp2211.model;
 public class Obstacle {
     private String name;
 
-    private int length; // Lenght parallel to the runway.
-    private int width;
+    private int length; // Length parallel to the runway.
+    private int width; // Length perpendicular to the runway.
     private int height;
 
     private Position position; // Posistion of obstacle from centre of runway.
 
-    public Obstacle(String _name, int _length, int _width, int _height) {
+    public Obstacle(String _name, int _length, int _width, int _height) throws SizeException {
         name = _name;
 
-        length = _length;
-        width = _width;
-        height = _height;
+        if (_length >= 0) length = _length;
+        else throw new SizeException("Length must be positive!");
 
-        position = new Position(0, 0);
+        if (_width >= 0) width = _width;
+        else throw new SizeException("Width must be positive!");
+
+        if (_height >= 0) height = _height;
+        else throw new SizeException("Height must be positive!");
     }
 
     public String getName() { return name; }
@@ -26,5 +29,10 @@ public class Obstacle {
     public int getHeight() { return height; }
 
     public void setPosition(Position _position) { position = _position; }
-    public Position getPosition() { return position; }
+    
+    public Position getPosition() throws PositionException { 
+        if (position == null) throw new PositionException("Position of obstacle not set!");
+
+        return position; 
+    }
 }

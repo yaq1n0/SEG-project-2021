@@ -116,8 +116,10 @@ public class DataWriter {
         Element obstacleHeight = document.createElement("height");
         obstacleHeight.appendChild(document.createTextNode(String.valueOf(_obstacle.getHeight())));
 
+        int obstacleCount = document.getElementsByTagName("obstacle").getLength();
+
         Element newObstacle = document.createElement("obstacle");
-        newObstacle.setAttribute("id", "10");
+        newObstacle.setAttribute("id", String.valueOf(obstacleCount));
         newObstacle.appendChild(obstacleName);
         newObstacle.appendChild(obstacleLength);
         newObstacle.appendChild(obstacleWidth);

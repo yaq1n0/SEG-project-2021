@@ -167,8 +167,9 @@ public class SystemModel {
      * 
      * Side effects:
      *  - Load schemas if not already loaded.
+     * @throws Exception
      */
-    public static void loadObstacles() {
+    public static void loadObstacles() throws Exception {
         LOGGER.info("Loading obstacle data from: " + OBSTACLE_DATA_FILE);
 
         if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
@@ -187,7 +188,9 @@ public class SystemModel {
 
                 LOGGER.info("Obstacle data loaded.");
             } catch (Exception e) {
-                LOGGER.error("Failed to load obstacle data!");
+                LOGGER.error("Failed to load obstacle data: " + e.getMessage());
+
+                throw e;
             }
         } else LOGGER.error("Obstacle data file not found!");
     }
@@ -197,12 +200,9 @@ public class SystemModel {
      * and then reloads the obstacles from that file.
      * 
      * @param _newObstacle
-     * @throws TransformerException
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
+     * @throws Exception
      */
-    public static void addObstacle(Obstacle _newObstacle) throws TransformerException, SAXException, IOException, ParserConfigurationException {
+    public static void addObstacle(Obstacle _newObstacle) throws Exception {
         LOGGER.info("Adding new obstacle...");
 
         String obstacleFilePath;
@@ -218,7 +218,13 @@ public class SystemModel {
 
             LOGGER.info("New obstacle added successfully.");
 
-        } else LOGGER.error("Obstacle data file not found!");
+        } else {
+            String errorMessage = "Obstacle data file not found!";
+
+            LOGGER.error(errorMessage);
+
+            throw new Exception(errorMessage);
+        }
 
         loadObstacles();
     }
@@ -241,9 +247,11 @@ public class SystemModel {
         File airportFile = new File(airportFilePath);
 
         if (airportFile.exists()) {
-            LOGGER.error("Cannot write airport data to a file that already exists!");
+            String errorMessage = "Cannot write airport data to a file that already exists!";
 
-            return;
+            LOGGER.error(errorMessage);
+
+            throw new Exception(errorMessage);
         }
 
         LOGGER.info("Writing airport data to XML file...");

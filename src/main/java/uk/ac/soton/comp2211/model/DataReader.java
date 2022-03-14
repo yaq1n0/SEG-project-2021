@@ -116,7 +116,7 @@ public class DataReader {
         return runways;
     }
 
-    public static Obstacle[] getObstacles() {
+    public static Obstacle[] getObstacles() throws SizeException {
         int obstacleCount = document.getElementsByTagName("obstacle").getLength();
 
         Obstacle[] obstacles = new Obstacle[obstacleCount];
