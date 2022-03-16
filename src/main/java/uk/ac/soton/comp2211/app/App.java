@@ -36,7 +36,6 @@ public class App extends Application {
         logger.info("Initialising...");
         
         // Initialise model
-        SystemModel.loadSchemas();
         try {
             SystemModel.loadObstacles();
         } catch (Exception e) {

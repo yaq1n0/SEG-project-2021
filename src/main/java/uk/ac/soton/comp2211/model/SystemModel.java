@@ -43,8 +43,8 @@ public class SystemModel {
         LOGGER.info("Loading XSD schema files...");
 
         String airportSchemaPath;
-        // airportSchemaPath = SystemModel.class.getResource(AIRPORT_SCHEMA).getPath();
-        airportSchemaPath = "./src/main/resources" + AIRPORT_SCHEMA;
+        airportSchemaPath = SystemModel.class.getResource(AIRPORT_SCHEMA).getPath();
+        // airportSchemaPath = "./src/main/resources" + AIRPORT_SCHEMA;
 
         airportSchemaFile = new File(airportSchemaPath);
 
@@ -52,8 +52,8 @@ public class SystemModel {
         else LOGGER.error("Airport XSD schema not found!");
 
         String obstacleSchemaPath;
-        // obstacleSchemaPath = SystemModel.class.getResource(OBSTACLE_SCHEMA).getPath();
-        obstacleSchemaPath = "./src/main/resources" + OBSTACLE_SCHEMA;
+        obstacleSchemaPath = SystemModel.class.getResource(OBSTACLE_SCHEMA).getPath();
+        // obstacleSchemaPath = "./src/main/resources" + OBSTACLE_SCHEMA;
 
         obstalceSchemaFile = new File(obstacleSchemaPath);
 
@@ -107,8 +107,8 @@ public class SystemModel {
         if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
 
         String airportFolderPath;
-        // airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath();
-        airportFolderPath = "./src/main/resources";
+        airportFolderPath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath();
+        // airportFolderPath = "./src/main/resources";
 
         // Get airport data file.
         File airportFile = new File(airportFolderPath, _airportFilename);
@@ -175,8 +175,8 @@ public class SystemModel {
         if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
 
         String obstacleFilePath;
-        // obstacleFilePath = SystemModel.class.getResource(OBSTACLE_DATA_FILE).getPath();
-        obstacleFilePath = "./src/main/resources" + OBSTACLE_DATA_FILE;
+        obstacleFilePath = SystemModel.class.getResource(OBSTACLE_DATA_FILE).getPath();
+        // obstacleFilePath = "./src/main/resources" + OBSTACLE_DATA_FILE;
 
         File obstacleFile = new File(obstacleFilePath);
 
@@ -241,8 +241,8 @@ public class SystemModel {
         LOGGER.info("Adding new airport...");
 
         String airportFilePath;
-        // airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _newAirportFileName;
-        airportFilePath = "./src/main/resources" + "/" + _airportFileName;
+        airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _airportFileName;
+        // airportFilePath = "./src/main/resources" + "/" + _airportFileName;
 
         File airportFile = new File(airportFilePath);
 

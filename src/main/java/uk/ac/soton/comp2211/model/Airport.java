@@ -1,6 +1,8 @@
 package uk.ac.soton.comp2211.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Airport {
@@ -15,13 +17,12 @@ public class Airport {
     public String getName() { return name; }
 
     public Tarmac[] getTarmacs() { return tarmacs; }
-    public Runway[] getRunways() { 
+    public Runway[] getRunways() {
         List<Runway> runways = new ArrayList<Runway>();
 
-        for (Tarmac tarmac : tarmacs)
-            for (Runway runway : tarmac.getRunways())
-                runways.add(runway);
-
-        return (Runway[]) runways.toArray();
+        for (Tarmac tarmac : tarmacs) {
+            runways.addAll(Arrays.asList(tarmac.getRunways()));
+        }   
+        return runways.toArray(new Runway[0]);
     }
 }

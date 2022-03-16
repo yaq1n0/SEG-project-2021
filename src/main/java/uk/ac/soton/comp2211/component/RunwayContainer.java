@@ -2,6 +2,9 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,14 +13,16 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import uk.ac.soton.comp2211.model.Obstacle;
-import uk.ac.soton.comp2211.model.Runway;
-import uk.ac.soton.comp2211.model.SystemModel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp2211.model.*;
 
 /**
  * Component to contain data on each runway for an airport.
  */
 public class RunwayContainer extends VBox {
+
+    private static final Logger logger = LogManager.getLogger(RunwayContainer.class);
     
     private final RunwayView runwayView;
     private final ParameterBox parameterBox;
@@ -30,7 +35,8 @@ public class RunwayContainer extends VBox {
         
         this.runway = runway;
         
-        this.runwayView = new RunwayView();
+        this.runwayView = new RunwayView(750, 300);
+        this.runwayView.test();
         
         HBox dataBox = new HBox();
         this.parameterBox = new ParameterBox(runway.getOriginalValues());
@@ -84,10 +90,18 @@ public class RunwayContainer extends VBox {
      */
     public void recalculate(ActionEvent event) {
         this.parameterBox.resetValues();
-        this.runway.recalculate(300);
-        this.parameterBox.updateValues(this.runway.getCurrentValues());
+        try {
+            this.runway.recalculate(300);
+        } catch (RunwayException re) {
+            logger.error(re.getStackTrace());
+            logger.error("Could not recalculate runway parameters.");
+            this.parameterBox.updateValues(this.runway.getCurrentValues());
+        } catch (PositionException pe) {
+            logger.error(pe.getStackTrace());
+            logger.error("Could not recalculate runway parameters.");
+        }
     }
-
+    
     /**
      * Set the tarmac obstacle.
      * @param obstacle obstacle

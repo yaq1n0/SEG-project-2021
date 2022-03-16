@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2211.event.PassAirportListener;
+import uk.ac.soton.comp2211.model.SystemModel;
 
 /**
  * Component that allows the user to select an airport to display.
@@ -32,6 +33,7 @@ public class AirportSelect extends VBox {
                 HBox airportBox = new HBox();
                 Button airportButton = new Button(airport[1]);
                 airportButton.setOnAction((ActionEvent event) -> {
+                    System.out.println(airport[0]);
                     this.passAirportListener.passAirport(airport[0]);
                     dialog.close();
                 });

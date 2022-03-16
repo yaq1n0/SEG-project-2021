@@ -3,7 +3,7 @@
 <airport name="Edinburgh">
     <tarmac id="1">
         <runway id="1">
-            <designator>06</designator>
+            <designator>09</designator>
             <tora>2556</tora>
             <toda>2616</toda>
             <asda>2616</asda>
@@ -12,7 +12,7 @@
         </runway>
 
         <runway id="2">
-            <designator>24</designator>
+            <designator>27</designator>
             <tora>2553</tora>
             <toda>3002</toda>
             <asda>2614</asda>

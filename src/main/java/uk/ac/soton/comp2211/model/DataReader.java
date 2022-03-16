@@ -32,7 +32,8 @@ public class DataReader {
      * 
      * The XML file is validated against the corresponding XSD schema file.
      * 
-     * @param _file
+     * @param _xmlFile xml
+     * @param _xsdFile xsd
      * @throws Exception
      */
     public static void loadFile(File _xmlFile, File _xsdFile) throws Exception {
