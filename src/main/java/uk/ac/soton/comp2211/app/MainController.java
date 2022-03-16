@@ -40,6 +40,7 @@ public class MainController implements Initializable {
     private ChooseAirportListener chooseAirportListener;
     private ImportAirportListener importAirportListener;
     private CreateAirportListener createAirportListener;
+    private CreateObstacleListener createObstacleListener;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
@@ -230,5 +231,22 @@ public class MainController implements Initializable {
      */
     public void setCreateAirportListener(CreateAirportListener listener) {
         this.createAirportListener = listener;
+    }
+
+    /**
+     * Ran when user selects Menu>Create Obstacle
+     * @param event event
+     */
+    @FXML
+    public void createObstacle(ActionEvent event) {
+        this.createObstacleListener.openCreateDialogue();
+    }
+
+    /**
+     * Set create obstacle listener
+     * @param listener listener
+     */
+    public void setCreateObstacleListener(CreateObstacleListener listener) {
+        this.createObstacleListener = listener;
     }
 }

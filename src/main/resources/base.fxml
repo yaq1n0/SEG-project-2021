@@ -55,6 +55,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#openAirport" text="Open Airport" />
             <MenuItem mnemonicParsing="false" onAction="#importAirport" text="Import From..." />
               <MenuItem mnemonicParsing="false" onAction="#createAirport" text="New Airport" />
+              <MenuItem mnemonicParsing="false" onAction="#createObstacle" text="Create Obstacle" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#closeAirport" text="Close" />
             <MenuItem mnemonicParsing="false" onAction="#exportAs" text="Export As..." />

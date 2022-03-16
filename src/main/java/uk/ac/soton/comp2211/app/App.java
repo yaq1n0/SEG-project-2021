@@ -9,6 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
 import uk.ac.soton.comp2211.component.CreateAirport;
+import uk.ac.soton.comp2211.component.CreateObstacle;
+import uk.ac.soton.comp2211.event.CreateObstacleListener;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
@@ -93,9 +95,20 @@ public class App extends Application {
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
 
-            CreateAirport airportSelect = new CreateAirport(dialog);
+            CreateAirport airportCreate = new CreateAirport(dialog);
 
-            Scene dialogScene = new Scene(airportSelect, 300, 200);
+            Scene dialogScene = new Scene(airportCreate, 300, 200);
+            dialog.setScene(dialogScene);
+            dialog.show();
+        });
+        controller.setCreateObstacleListener(() -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+
+            CreateObstacle obstacleCreate = new CreateObstacle(dialog);
+
+            Scene dialogScene = new Scene(obstacleCreate, 300, 200);
             dialog.setScene(dialogScene);
             dialog.show();
         });
