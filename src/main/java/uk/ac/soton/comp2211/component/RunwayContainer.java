@@ -35,8 +35,8 @@ public class RunwayContainer extends VBox {
         
         this.runway = runway;
         
-        this.runwayView = new RunwayView(750, 300);
-        this.runwayView.test();
+        this.runwayView = new RunwayView(750, 300, this.runway);
+        this.runwayView.updateTopDown();
         
         HBox dataBox = new HBox();
         this.parameterBox = new ParameterBox(runway.getOriginalValues());

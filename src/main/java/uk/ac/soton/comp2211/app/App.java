@@ -113,7 +113,7 @@ public class App extends Application {
             dialog.show();
         });
         
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 900, 720);
         
         // Set the initial scene.
         stage.setScene(scene);

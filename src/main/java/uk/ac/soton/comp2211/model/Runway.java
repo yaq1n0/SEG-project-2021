@@ -11,6 +11,9 @@ public class Runway {
     private int SEV = 60; // strip end value (meters)
     private int ALS = 50; // approach landing surface slope
     private int TOCS = 50; // take-off climb surface slope
+    
+    private int length;
+    private int width;
 
     public Runway(String _runwayDesignator, Tarmac _tarmac, RunwayValues _originalValues, int _displacedThreshold) {
         runwayDesignator = _runwayDesignator;
@@ -18,6 +21,9 @@ public class Runway {
         originalValues = _originalValues;
         currentValues = _originalValues.clone();
         displacedThreshold = _displacedThreshold;
+        
+        length = originalValues.getTORA();
+        width = 60;
     }
 
     public String getRunwayDesignator() { return runwayDesignator; }
@@ -83,5 +89,13 @@ public class Runway {
             // TODA = ASDA = TORA
             currentValues.setTODA(currentValues.getTORA());
             currentValues.setASDA(currentValues.getTORA());
+    }
+    
+    public int getLength() {
+        return this.length;
+    }
+    
+    public int getWidth() {
+        return this.width;
     }
 }

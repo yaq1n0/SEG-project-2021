@@ -3,6 +3,8 @@ package uk.ac.soton.comp2211.component;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,8 +65,11 @@ public class ObstacleBox extends VBox {
             this.eDistLabel = new Label("Distance from East: ");
             this.wDistLabel = new Label("Distance from West: ");
         }
-
-        this.getChildren().addAll(obsLabel, lenLabel, widLabel, heightLabel, centerLabel, eDistLabel, wDistLabel);
+        
+        VBox leftPart = new VBox();
+        VBox rightPart = new VBox();
+        leftPart.getChildren().addAll(obsLabel, lenLabel, widLabel, heightLabel);
+        rightPart.getChildren().addAll(centerLabel, eDistLabel, wDistLabel);
         
         obsButton.setOnAction((ActionEvent event) -> {
             if (this.insertObstacleListener != null) {
@@ -73,8 +78,14 @@ public class ObstacleBox extends VBox {
         });
         Button clearObs = new Button("Remove Obstacle");
         clearObs.setOnAction(this::clearObstacle);
-        this.getChildren().addAll(obsButton, clearObs);
         
+        leftPart.getChildren().add(obsButton);
+        rightPart.getChildren().add(clearObs);
+        HBox.setHgrow(leftPart, Priority.ALWAYS);
+        HBox.setHgrow(rightPart, Priority.ALWAYS);
+        HBox partBox = new HBox();
+        partBox.getChildren().addAll(leftPart, rightPart);
+        this.getChildren().add(partBox);
     }
 
     private void clearObstacle(ActionEvent actionEvent) {
