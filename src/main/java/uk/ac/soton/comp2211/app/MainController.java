@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportContainer;
 import javafx.event.ActionEvent;
 
+import uk.ac.soton.comp2211.component.CreateAirport;
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.model.*;
 
@@ -38,6 +39,7 @@ public class MainController implements Initializable {
     private QuitListener quitListener;
     private ChooseAirportListener chooseAirportListener;
     private ImportAirportListener importAirportListener;
+    private CreateAirportListener createAirportListener;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
@@ -212,5 +214,21 @@ public class MainController implements Initializable {
             this.airportName.setText("Error loading airport file: " + airportPath);
         }
     }
-    
+
+    /**
+     * Ran when user selects Menu>New Airport
+     * @param event event
+     */
+    @FXML
+    public void createAirport(ActionEvent event) {
+        this.createAirportListener.openCreateDialogue();
+    }
+
+    /**
+     * Set create airport listener
+     * @param listener listener
+     */
+    public void setCreateAirportListener(CreateAirportListener listener) {
+        this.createAirportListener = listener;
+    }
 }

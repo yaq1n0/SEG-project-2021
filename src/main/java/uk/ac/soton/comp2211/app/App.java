@@ -8,6 +8,7 @@ import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
+import uk.ac.soton.comp2211.component.CreateAirport;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
@@ -86,6 +87,17 @@ public class App extends Application {
             if (file != null) {
                 controller.importAirport(file.getPath());
             }
+        });
+        controller.setCreateAirportListener(() -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+
+            CreateAirport airportSelect = new CreateAirport(dialog);
+
+            Scene dialogScene = new Scene(airportSelect, 300, 200);
+            dialog.setScene(dialogScene);
+            dialog.show();
         });
         
         Scene scene = new Scene(root, 800, 600);
