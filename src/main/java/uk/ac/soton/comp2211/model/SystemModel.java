@@ -6,7 +6,9 @@ import java.io.FilenameFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import uk.ac.soton.comp2211.exceptions.ExtractionException;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
+import uk.ac.soton.comp2211.exceptions.SchemaException;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -96,8 +98,9 @@ public class SystemModel {
                 airportList[i][1] = DataReader.getAirportName();
 
             } catch (Exception e) {
+                LOGGER.error("Couldn't read " + files[i].getName() + ": " + e.getMessage());
                 airportList[i][1] = "[ERROR] Broken file!";
-            }
+            } 
         }
 
         return airportList;

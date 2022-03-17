@@ -20,6 +20,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import uk.ac.soton.comp2211.exceptions.ExtractionException;
+import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.SchemaException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 
@@ -40,17 +42,27 @@ public class DataReader {
      * @param _xsdFile xsd
      * @throws SchemaException
      */
-    public static void loadFile(File _xmlFile, File _xsdFile) throws ParserConfigurationException, SchemaException, SAXException, IOException {
+    public static void loadFile(File _xmlFile, File _xsdFile) throws SchemaException, LoadingException {
         if (documentBuilderFactory == null || documentBuilder == null) {
-            documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            try {
+                documentBuilderFactory = DocumentBuilderFactory.newInstance();
+                documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-            factory = XPathFactory.newInstance();
-            xpath = factory.newXPath();
+                factory = XPathFactory.newInstance();
+                xpath = factory.newXPath();
+            } catch (Exception e) {
+                throw new LoadingException("Couldn't create XML document builder!");
+            }
         }
 
-        if (validateSchema(_xmlFile, _xsdFile)) document = documentBuilder.parse(_xmlFile);
-        else {
+        if (validateSchema(_xmlFile, _xsdFile)) {
+            try { document = documentBuilder.parse(_xmlFile); }
+            catch (Exception e) { 
+                document = null;
+                
+                throw new LoadingException("Can't parse XML file: " + _xmlFile); 
+            } 
+        } else {
             document = null;
 
             throw new SchemaException(_xmlFile.getName() + " doesn't match the schema in " + _xsdFile.getName() + "!");
@@ -64,16 +76,19 @@ public class DataReader {
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(_xmlFile));
         } catch (IOException | SAXException e) {
-            e.printStackTrace();
             return false;
         }
 
         return true;
     }
 
-    public static String getAirportName() throws XPathExpressionException {
-        Node airport = (Node) xpath.evaluate("/airport", document, XPathConstants.NODE);
-        return airport.getAttributes().getNamedItem("name").getTextContent();
+    public static String getAirportName() throws ExtractionException {
+        try {
+            Node airport = (Node) xpath.evaluate("/airport", document, XPathConstants.NODE);
+            return airport.getAttributes().getNamedItem("name").getTextContent();
+        } catch (XPathExpressionException e) {
+            throw new ExtractionException("Failed to extract airport name from XML file!");
+        }
     }
 
     public static Tarmac[] getTarmacs() throws XPathExpressionException {
