@@ -1,5 +1,8 @@
 package uk.ac.soton.comp2211.model;
 
+import uk.ac.soton.comp2211.exceptions.PositionException;
+import uk.ac.soton.comp2211.exceptions.SizeException;
+
 public class Obstacle {
     private String name;
 

@@ -75,12 +75,17 @@ public class App extends Application {
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
 
-            AirportSelect airportSelect = new AirportSelect(dialog, SystemModel.listAirports());
-            airportSelect.setPassAirportListener(controller::setAirport);
-            
-            Scene dialogScene = new Scene(airportSelect, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.show();
+            AirportSelect airportSelect;
+            try {
+                airportSelect = new AirportSelect(dialog, SystemModel.listAirports());
+                airportSelect.setPassAirportListener(controller::setAirport);
+
+                Scene dialogScene = new Scene(airportSelect, 300, 200);
+                dialog.setScene(dialogScene);
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         controller.setImportAirportListener(() -> {
             FileChooser fileChooser = new FileChooser();

@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -19,6 +21,12 @@ public class CreateAirport extends VBox {
         HBox titleBox = new HBox();
         titleBox.setAlignment(Pos.CENTER);
         titleBox.getChildren().add(new Text("Create Airport:"));
+
+        HBox airportParameters = new HBox();
+        airportParameters.setAlignment(Pos.CENTER);
+        TextField inputRunwayNumber = new TextField();
+        inputRunwayNumber.setPromptText("0");
+        airportParameters.getChildren().add(inputRunwayNumber);
 
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);

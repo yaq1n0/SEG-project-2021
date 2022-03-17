@@ -1,11 +1,16 @@
 package uk.ac.soton.comp2211.model;
 
+import uk.ac.soton.comp2211.exceptions.PositionException;
+import uk.ac.soton.comp2211.exceptions.RunwayException;
+
 public class Runway {
     private String runwayDesignator;
     private Tarmac tarmac; // Corresponding physical runway.
     private RunwayValues originalValues;
     private RunwayValues currentValues;
     private int displacedThreshold;
+    private int stopway;
+    private int clearway;
 
     private int RESA = 240; // runway end safety area (meters)
     private int SEV = 60; // strip end value (meters)
@@ -15,15 +20,21 @@ public class Runway {
     private int length;
     private int width;
 
-    public Runway(String _runwayDesignator, Tarmac _tarmac, RunwayValues _originalValues, int _displacedThreshold) {
+    public Runway(String _runwayDesignator, Tarmac _tarmac, RunwayValues _originalValues, 
+                  int _displacedThreshold, int _stopway, int _clearway) {
         runwayDesignator = _runwayDesignator;
         tarmac = _tarmac;
         originalValues = _originalValues;
         currentValues = _originalValues.clone();
         displacedThreshold = _displacedThreshold;
+<<<<<<< Updated upstream
         
         length = originalValues.getTORA();
         width = 60;
+=======
+        stopway = _stopway;
+        clearway = _clearway;
+>>>>>>> Stashed changes
     }
 
     public String getRunwayDesignator() { return runwayDesignator; }
@@ -31,6 +42,8 @@ public class Runway {
     public RunwayValues getOriginalValues() { return originalValues; }
     public RunwayValues getCurrentValues() { return currentValues; }
     public int getDisplacedThreshold() { return displacedThreshold; }
+    public int getStopway() { return stopway; }
+    public int getClearway() { return clearway; }
 
     public void recalculate(int _blastAllowance) throws RunwayException, PositionException {
         Obstacle obstacle = tarmac.getObstacle();

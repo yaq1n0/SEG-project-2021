@@ -1,5 +1,7 @@
 package uk.ac.soton.comp2211.model;
 
+import uk.ac.soton.comp2211.exceptions.PositionException;
+
 public class Position {
     private int distanceFromWest; // Horizonyal distance from the west end of the runway.
     private int distanceFromEast; // Horizontal distance from the east end of the runway.

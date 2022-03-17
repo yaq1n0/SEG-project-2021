@@ -6,7 +6,7 @@
         <height>13</height>
     </obstacle>
 
-    <obstacle id="2">
+    <!-- <obstacle id="2">
         <name>Hawker400</name>
         <length>15</length>
         <width>13</width>
@@ -18,12 +18,12 @@
         <length>63</length>
         <width>60</width>
         <height>17</height>
-    </obstacle>
+    </obstacle> -->
 
-    <obstacle id="4">
+    <!-- <obstacle id="4">
         <name>AirbusA220</name>
         <length>38</length>
         <width>35</width>
         <height>11</height>
-    </obstacle>
+    </obstacle> -->
 </obstacles>

@@ -10,9 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.event.InsertObstacleListener;
 import uk.ac.soton.comp2211.event.ObstacleClearListener;
+import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Position;
-import uk.ac.soton.comp2211.model.PositionException;
 
 public class ObstacleBox extends VBox {
 

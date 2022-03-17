@@ -80,6 +80,12 @@ public class DataWriter {
                 Element thresholdNode = document.createElement("threshold");
                 thresholdNode.setTextContent(String.valueOf(runway.getDisplacedThreshold()));
 
+                Element stopwayNode = document.createElement("stopway");
+                stopwayNode.setTextContent(String.valueOf(runway.getStopway()));
+
+                Element clearwayNode = document.createElement("clearway");
+                clearwayNode.setTextContent(String.valueOf(runway.getClearway()));
+
                 Element runwayNode = document.createElement("runway");
                 runwayNode.setAttribute("id", String.valueOf(runwayID));
                 runwayNode.appendChild(designatorNode);
@@ -88,6 +94,8 @@ public class DataWriter {
                 runwayNode.appendChild(asdaNode);
                 runwayNode.appendChild(ldaNode);
                 runwayNode.appendChild(thresholdNode);
+                runwayNode.appendChild(stopwayNode);
+                runwayNode.appendChild(clearwayNode);
 
                 runwayID++;
             }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -18,6 +19,9 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+
+import uk.ac.soton.comp2211.exceptions.SchemaException;
+import uk.ac.soton.comp2211.exceptions.SizeException;
 
 public class DataReader {
     private static DocumentBuilderFactory documentBuilderFactory;
@@ -34,9 +38,9 @@ public class DataReader {
      * 
      * @param _xmlFile xml
      * @param _xsdFile xsd
-     * @throws Exception
+     * @throws SchemaException
      */
-    public static void loadFile(File _xmlFile, File _xsdFile) throws Exception {
+    public static void loadFile(File _xmlFile, File _xsdFile) throws ParserConfigurationException, SchemaException, SAXException, IOException {
         if (documentBuilderFactory == null || documentBuilder == null) {
             documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -49,7 +53,7 @@ public class DataReader {
         else {
             document = null;
 
-            throw new Exception(_xmlFile.getName() + " doesn't match the schema in " + _xsdFile.getName() + "!");
+            throw new SchemaException(_xmlFile.getName() + " doesn't match the schema in " + _xsdFile.getName() + "!");
         }
     }
 
@@ -60,6 +64,7 @@ public class DataReader {
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(_xmlFile));
         } catch (IOException | SAXException e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -108,10 +113,16 @@ public class DataReader {
             int threshold = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway[@id='" + runwayID 
                                                     + "']/threshold", document, XPathConstants.NUMBER)).intValue();
+            int stopway = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                    + "']/runway[@id='" + runwayID
+                                                    + "']/stopway", document, XPathConstants.NUMBER)).intValue();
+            int clearway = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
+                                                    + "']/runway[@id='" + runwayID
+                                                    + "']/stopway", document, XPathConstants.NUMBER)).intValue();                                     
 
             RunwayValues values = new RunwayValues(tora, toda, asda, lda);
             
-            runways[runwayID - 1] = new Runway(designator, _tarmac, values, threshold);
+            runways[runwayID - 1] = new Runway(designator, _tarmac, values, threshold, stopway, clearway);
         }
 
         return runways;
