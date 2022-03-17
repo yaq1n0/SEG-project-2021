@@ -27,14 +27,11 @@ public class Runway {
         originalValues = _originalValues;
         currentValues = _originalValues.clone();
         displacedThreshold = _displacedThreshold;
-<<<<<<< Updated upstream
-        
+
         length = originalValues.getTORA();
         width = 60;
-=======
         stopway = _stopway;
         clearway = _clearway;
->>>>>>> Stashed changes
     }
 
     public String getRunwayDesignator() { return runwayDesignator; }

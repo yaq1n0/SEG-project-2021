@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
 import uk.ac.soton.comp2211.component.CreateAirport;
 import uk.ac.soton.comp2211.component.CreateObstacle;
-import uk.ac.soton.comp2211.event.CreateObstacleListener;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;

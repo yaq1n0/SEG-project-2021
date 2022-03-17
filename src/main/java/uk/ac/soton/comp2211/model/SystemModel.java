@@ -6,8 +6,7 @@ import java.io.FilenameFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javafx.fxml.LoadException;
-import uk.ac.soton.comp2211.exceptions.SchemaException;
+import uk.ac.soton.comp2211.exceptions.LoadingException;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -29,7 +28,7 @@ public class SystemModel {
      * 
      * @throws LoadingException
      */
-    private static void loadSchemas() throws LoadException {
+    private static void loadSchemas() throws LoadingException {
         LOGGER.info("Loading XSD schema files...");
 
         try {
@@ -39,7 +38,7 @@ public class SystemModel {
         } catch (Exception e) {
             String errorMessage = "Airport XSD schema not found!";
             LOGGER.error(errorMessage);
-            throw new LoadException(errorMessage);
+            throw new LoadingException(errorMessage);
         }
 
         try {
@@ -49,16 +48,16 @@ public class SystemModel {
         } catch (Exception e) {
             String errorMessage = "Obstacle XSD schema not found!";
             LOGGER.error(errorMessage);
-            throw new LoadException(errorMessage);
+            throw new LoadingException(errorMessage);
         }
     }
 
     /**
      * Generates a list of airport names from 
      * the available airport XML data files.
-     * @throws SchemaException
+     * @throws LoadingException
      */
-    public static String[][] listAirports() throws LoadException {
+    public static String[][] listAirports() throws LoadingException {
         LOGGER.info("Generating a list of airports from: " + AIRPORT_DATA_FOLDER);
 
         if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
@@ -71,7 +70,7 @@ public class SystemModel {
         } catch (Exception e) {
             String errorMessage = "Airport data folder not found!";
             LOGGER.error(errorMessage);
-            throw new LoadException(errorMessage);
+            throw new LoadingException(errorMessage);
         }
 
         File airportFolder = new File(airportFolderPath);
@@ -85,7 +84,7 @@ public class SystemModel {
         if (files == null) {
             String errorMessage = "No airport data files loaded!";
             LOGGER.error(errorMessage);
-            throw new LoadException(errorMessage);
+            throw new LoadingException(errorMessage);
         }
 
         String[][] airportList = new String[files.length][2];
