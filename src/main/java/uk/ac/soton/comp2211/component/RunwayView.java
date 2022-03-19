@@ -11,7 +11,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import uk.ac.soton.comp2211.model.Runway;
-import uk.ac.soton.comp2211.model.RunwayValues;
 
 
 /**
@@ -39,8 +38,10 @@ public class RunwayView extends Group {
     
     public void updateTopDown() {
         // Reset canvas
-        this.gc.setFill(Color.LIGHTGREEN);
-        this.gc.fillRect(0, 0, this.w, this.h);
+        this.getChildren().clear();
+        Rectangle bg = new Rectangle(0, 0, this.w - 1, this.h - 1);
+        bg.setFill(Color.LIGHTGREEN);
+        this.getChildren().add(bg);
 
         // Draw cleared and Graded Area
         Polygon clearedAndGradedArea;
@@ -159,6 +160,11 @@ public class RunwayView extends Group {
             this.getChildren().add(stopwayRec);
             stopwayRec.toFront();
         }
+        
+        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.BLACK);
+        this.getChildren().add(border);
 
         //draw obstacle
 
@@ -205,9 +211,20 @@ public class RunwayView extends Group {
 
          */
         
-        // Put a final border around the canvas
-        this.gc.setStroke(Color.BLACK);
-        this.gc.strokeRect(0, 0, this.w - 1, this.h - 1);
+    }
+    
+    public void updateSideOn() {
+        // Reset canvas
+        this.getChildren().clear();
+        Rectangle bg = new Rectangle(0, 0, this.w - 1, this.h - 1);
+        bg.setFill(Color.LIGHTGREEN);
+        this.getChildren().add(bg);
+        
+        // Draw border
+        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.BLACK);
+        this.getChildren().add(border);
     }
     
 }

@@ -1,10 +1,9 @@
 package uk.ac.soton.comp2211.component;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,6 +29,7 @@ public class RunwayContainer extends VBox {
     private final RunwayView runwayView;
     private final ParameterBox parameterBox;
     private final ObstacleBox obstacleBox;
+    private final BooleanProperty topView = new SimpleBooleanProperty();
     
     private final Runway runway;
     
@@ -37,6 +37,7 @@ public class RunwayContainer extends VBox {
         super();
         
         this.runway = runway;
+        this.topView.addListener((obs, oldVal, newVal) -> this.updateVisual());
         
         this.runwayView = new RunwayView(750, 300, this.runway);
         this.runwayView.updateTopDown();
@@ -103,6 +104,7 @@ public class RunwayContainer extends VBox {
             logger.error(pe.getStackTrace());
             logger.error("Could not recalculate runway parameters.");
         }
+        updateVisual();
     }
     
     /**
@@ -121,5 +123,23 @@ public class RunwayContainer extends VBox {
     public void clearObstacle() {
         this.runway.getTarmac().removeObstacle();
         this.parameterBox.resetValues();
+    }
+
+    /**
+     * Bind view property from controller. True:Top, False:Side
+     */
+    public void bindViewProperty(BooleanProperty viewProperty) {
+        this.topView.bind(viewProperty);
+    }
+
+    /**
+     * Call the correct update method in the runwayView object.
+     */
+    public void updateVisual() {
+        if (this.topView.get()) {
+            this.runwayView.updateTopDown();
+        } else {
+            this.runwayView.updateSideOn();
+        }
     }
 }
