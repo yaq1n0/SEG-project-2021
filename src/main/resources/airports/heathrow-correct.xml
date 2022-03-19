@@ -9,6 +9,8 @@
             <asda>3902</asda>
             <lda>3595</lda>
             <threshold>306</threshold>
+            <stopway>0</stopway>
+            <clearway>0</clearway>
         </runway>
 
         <runway id="2">
@@ -18,6 +20,8 @@
             <asda>3884</asda>
             <lda>3884</lda>
             <threshold>0</threshold>
+            <stopway>0</stopway>
+            <clearway>78</clearway>
         </runway>
     </tarmac>
 
@@ -29,6 +33,8 @@
             <asda>3660</asda>
             <lda>3353</lda>
             <threshold>307</threshold>
+            <stopway>0</stopway>
+            <clearway>0</clearway>
         </runway>
 
         <runway id="2">
@@ -38,6 +44,8 @@
             <asda>3660</asda>
             <lda>3660</lda>
             <threshold>0</threshold>
+            <stopway>0</stopway>
+            <clearway>0</clearway>
         </runway>
     </tarmac>
 </airport>

@@ -51,7 +51,7 @@ public class RunwayValues {
     }
 
 
-    public RunwayValues clone() { return new RunwayValues(toda, toda, asda, lda); }
+    public RunwayValues clone() { return new RunwayValues(tora, toda, asda, lda); }
     public void copy(RunwayValues _runway) {
         tora = _runway.getTORA();
         toda = _runway.getTODA();

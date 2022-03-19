@@ -133,7 +133,7 @@ public class DataReader {
                                                     + "']/stopway", document, XPathConstants.NUMBER)).intValue();
             int clearway = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway[@id='" + runwayID
-                                                    + "']/stopway", document, XPathConstants.NUMBER)).intValue();                                     
+                                                    + "']/clearway", document, XPathConstants.NUMBER)).intValue();
 
             RunwayValues values = new RunwayValues(tora, toda, asda, lda);
             
