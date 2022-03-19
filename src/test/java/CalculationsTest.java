@@ -24,6 +24,7 @@ public class CalculationsTest {
 
     @Test
     void test09LScenario1() {
+        System.out.println("Testing Scenario 1 on runway 09L");
         obs1.setPosition(new Position(-50,0));
         tarmac09L.setObstacle(obs1);
         runway09L.recalculate(300);
@@ -32,10 +33,12 @@ public class CalculationsTest {
         Assertions.assertEquals(3346, runway09L.getCurrentValues().getTODA());
         Assertions.assertEquals(3346, runway09L.getCurrentValues().getASDA());
         Assertions.assertEquals(2985, runway09L.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
 
     @Test
     void test27RScenario1() {
+        System.out.println("Testing Scenario 1 on runway 27R");
         obs1.setPosition(new Position(3646,0));
         tarmac09L.setObstacle(obs1);
         runway27R.recalculate(300);
@@ -44,10 +47,12 @@ public class CalculationsTest {
         Assertions.assertEquals(2986, runway27R.getCurrentValues().getTODA());
         Assertions.assertEquals(2986, runway27R.getCurrentValues().getASDA());
         Assertions.assertEquals(3346, runway27R.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
 
     @Test
     void test09RScenario2() {
+        System.out.println("Testing Scenario 2 on runway 09R");
         obs2.setPosition(new Position(2853,20));
         tarmac09R.setObstacle(obs2);
         runway09R.recalculate(300);
@@ -56,10 +61,12 @@ public class CalculationsTest {
         Assertions.assertEquals(1850, runway09R.getCurrentValues().getTODA());
         Assertions.assertEquals(1850, runway09R.getCurrentValues().getASDA());
         Assertions.assertEquals(2553, runway09R.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
 
     @Test
     void test27LScenario2() {
+        System.out.println("Testing Scenario 2 on runway 27L");
         obs2.setPosition(new Position(500,20));
         tarmac09R.setObstacle(obs2);
         runway27L.recalculate(300);
@@ -68,10 +75,12 @@ public class CalculationsTest {
         Assertions.assertEquals(2860, runway27L.getCurrentValues().getTODA());
         Assertions.assertEquals(2860, runway27L.getCurrentValues().getASDA());
         Assertions.assertEquals(1850, runway27L.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
 
     @Test
     void test09RScenario3() {
+        System.out.println("Testing Scenario 3 on runway 09R");
         obs3.setPosition(new Position(150,60));
         tarmac09R.setObstacle(obs3);
         runway09R.recalculate(300);
@@ -80,10 +89,12 @@ public class CalculationsTest {
         Assertions.assertEquals(2903, runway09R.getCurrentValues().getTODA());
         Assertions.assertEquals(2903, runway09R.getCurrentValues().getASDA());
         Assertions.assertEquals(2393, runway09R.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
 
     @Test
     void test27LScenario3() {
+        System.out.println("Testing Scenario 3 on runway 27L");
         obs3.setPosition(new Position(3203,60));
         tarmac09R.setObstacle(obs3);
         runway27L.recalculate(300);
@@ -92,10 +103,12 @@ public class CalculationsTest {
         Assertions.assertEquals(2393, runway27L.getCurrentValues().getTODA());
         Assertions.assertEquals(2393, runway27L.getCurrentValues().getASDA());
         Assertions.assertEquals(2903, runway27L.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
 
     @Test
     void test09LScenario4() {
+        System.out.println("Testing Scenario 4 on runway 09L");
         obs4.setPosition(new Position(3546,20));
         tarmac09L.setObstacle(obs4);
         runway09L.recalculate(300);
@@ -104,18 +117,21 @@ public class CalculationsTest {
         Assertions.assertEquals(2792, runway09L.getCurrentValues().getTODA());
         Assertions.assertEquals(2792, runway09L.getCurrentValues().getASDA());
         Assertions.assertEquals(3246, runway09L.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
 
     @Test
     void test27RScenario4() {
+        System.out.println("Testing Scenario 4 on runway 27R");
         obs4.setPosition(new Position(50,20));
         tarmac09L.setObstacle(obs4);
         runway27R.recalculate(300);
 
         Assertions.assertEquals(3534, runway27R.getCurrentValues().getTORA());
-        Assertions.assertEquals(3534, runway27R.getCurrentValues().getTODA());
-        Assertions.assertEquals(3612, runway27R.getCurrentValues().getASDA());
+        Assertions.assertEquals(3612, runway27R.getCurrentValues().getTODA());
+        Assertions.assertEquals(3534, runway27R.getCurrentValues().getASDA());
         Assertions.assertEquals(2774, runway27R.getCurrentValues().getLDA());
+        System.out.println("Test successful");
     }
     */
 }
