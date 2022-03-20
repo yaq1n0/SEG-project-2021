@@ -6,19 +6,22 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2211.model.Airport;
+import uk.ac.soton.comp2211.model.Runway;
+import uk.ac.soton.comp2211.model.RunwayValues;
 import uk.ac.soton.comp2211.model.SystemModel;
 import uk.ac.soton.comp2211.model.Tarmac;
 
 
 public class CreateAirport extends VBox {
+
+    private TextField inputAirportName;
+    private VBox vboxTarmacs;
 
     public CreateAirport(Stage dialog) {
         super(20);
@@ -27,15 +30,15 @@ public class CreateAirport extends VBox {
         titleBox.setAlignment(Pos.CENTER);
         titleBox.getChildren().add(new Text("Create Airport:"));
 
-        VBox vboxTarmacs = new VBox();
+        vboxTarmacs = new VBox();
         vboxTarmacs.getChildren().add(new TarmacVBox(1, 1));
 
         HBox airportParameters = new HBox();
         airportParameters.setAlignment(Pos.CENTER);
-        TextField inputAirportName = new TextField();
+        inputAirportName = new TextField();
         inputAirportName.setPromptText("airport name");
         var tarmacCountOptions = FXCollections.observableArrayList("1 tarmac", "2 tarmacs", "3 tarmacs");
-        ComboBox dropdownTarmacCount = new ComboBox(tarmacCountOptions);
+        ComboBox<String> dropdownTarmacCount = new ComboBox<String>(tarmacCountOptions);
         dropdownTarmacCount.setValue(tarmacCountOptions.get(0));
         dropdownTarmacCount.setOnAction(e -> {
             int tarmacCount = 1;
@@ -70,10 +73,11 @@ public class CreateAirport extends VBox {
         });
         Button create = new Button("Create");
         create.setOnAction((ActionEvent event) -> {
-            String airportName = inputAirportName.getText();
-            Tarmac[] tarmacs = new Tarmac[1];
-            Airport airport = new Airport(airportName, tarmacs);
-
+            try {
+                generateAirport();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
         });
         buttonBox.getChildren().add(cancel);
         buttonBox.setAlignment(Pos.CENTER);
@@ -81,9 +85,30 @@ public class CreateAirport extends VBox {
         this.getChildren().addAll(titleBox, airportParameters, vboxTarmacs, buttonBox);
     }
 
+    private void generateAirport() throws Exception {
+        String airportName = inputAirportName.getText();
+
+        int tarmacCount = vboxTarmacs.getChildren().size();
+        Tarmac[] tarmacs = new Tarmac[tarmacCount];
+        for (int i = 0; i < tarmacCount; i++) {
+            TarmacVBox vboxTarmac = (TarmacVBox)vboxTarmacs.getChildren().get(i);
+
+            tarmacs[i] = vboxTarmac.getTarmac();
+        }
+
+        Airport airport = new Airport(airportName, tarmacs);
+        SystemModel.addAirport(airport, airportName + ".xml");
+    }
+
     private class TarmacVBox extends VBox {
-        public TarmacVBox(int tarmacID, int tarmacCount) {
+        public VBox vboxRunways;
+
+        private int tarmacID;
+
+        public TarmacVBox(int _tarmacID, int _tarmacCount) {
             super();
+
+            tarmacID = _tarmacID;
 
             VBox runwaysVBox = new VBox();
             runwaysVBox.getChildren().add(new RunwayVBox("09"));
@@ -93,7 +118,7 @@ public class CreateAirport extends VBox {
             TextField inputTarmacLength = new TextField();
             inputTarmacLength.setPromptText("length");
             ObservableList<String> directionOptions = FXCollections.observableArrayList("unidirectional", "bidirectional");
-            ComboBox direction = new ComboBox(directionOptions);
+            ComboBox<String> direction = new ComboBox<String>(directionOptions);
             direction.setValue(directionOptions.get(0));
             direction.setOnAction(e -> {
                 if (direction.getValue() == directionOptions.get(1))
@@ -104,32 +129,75 @@ public class CreateAirport extends VBox {
 
             this.getChildren().addAll(tarmacParameters, runwaysVBox);
         }
+    
+        public Tarmac getTarmac() {
+            Tarmac tarmac = new Tarmac(tarmacID);
+
+            int runwayCount = vboxRunways.getChildren().size();
+            Runway[] runways = new Runway[runwayCount];
+            for (int i = 0; i < runwayCount; i++) {
+                RunwayVBox vboxRunway = (RunwayVBox)vboxRunways.getChildren().get(i);
+
+                runways[i] = vboxRunway.getRunway(tarmac);
+            }
+
+            tarmac.setRunways(runways);
+
+            return tarmac;
+        } 
     }
 
     private class RunwayVBox extends VBox {
+        private Text textDesignator;
+
+        private TextField inputThreshold;
+        private TextField inputStopway;
+        private TextField inputClearway;
+
+        private TextField inputTORA;
+        private TextField inputTODA;
+        private TextField inputLDA;
+        private TextField inputASDA;
+
         public RunwayVBox(String runwayDesignator) {
             HBox runwayParameters = new HBox();
-            Text textDesignator = new Text(runwayDesignator);
-            TextField inputThreshold = new TextField();
+            textDesignator = new Text(runwayDesignator);
+            inputThreshold = new TextField();
             inputThreshold.setPromptText("displacement threshold");
-            TextField inputStopway = new TextField();
+            inputStopway = new TextField();
             inputStopway.setPromptText("stopway");
-            TextField inputClearway = new TextField();
+            inputClearway = new TextField();
             inputClearway.setPromptText("clearway");
             runwayParameters.getChildren().addAll(textDesignator, inputStopway, inputClearway);
 
             HBox runwayValues = new HBox();
-            TextField inputTORA = new TextField();
+            inputTORA = new TextField();
             inputTORA.setPromptText("tora");
-            TextField inputTODA = new TextField();
+            inputTODA = new TextField();
             inputTODA.setPromptText("toda");
-            TextField inputLDA = new TextField();
+            inputLDA = new TextField();
             inputLDA.setPromptText("lda");
-            TextField inputASDA = new TextField();
+            inputASDA = new TextField();
             inputASDA.setPromptText("asda");
             runwayValues.getChildren().setAll(inputTORA, inputTODA, inputLDA, inputASDA);
 
             this.getChildren().setAll(runwayParameters, runwayValues);
+        }
+    
+        public Runway getRunway(Tarmac _tarmac) {
+            String runwayDesignator = textDesignator.getText();
+
+            int tora = Integer.valueOf(inputTORA.getText());
+            int toda = Integer.valueOf(inputTODA.getText());
+            int lda = Integer.valueOf(inputLDA.getText());
+            int asda = Integer.valueOf(inputASDA.getText());
+            RunwayValues runwayValues = new RunwayValues(tora, toda, asda, lda);
+
+            int displacedThreshold = Integer.valueOf(inputThreshold.getText());
+            int stopway = Integer.valueOf(inputStopway.getText());
+            int clearway = Integer.valueOf(inputClearway.getText());
+
+            return new Runway(runwayDesignator, _tarmac, runwayValues, displacedThreshold, stopway, clearway);
         }
     }
 }
