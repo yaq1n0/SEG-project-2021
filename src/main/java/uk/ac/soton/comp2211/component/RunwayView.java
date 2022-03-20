@@ -139,7 +139,6 @@ public class RunwayView extends Group {
         
         // Draw obstacle
         Obstacle obs = runway.getTarmac().getObstacle();
-        logger.info("Obstacle: {}", obs);
         if (obs != null) {
             try {
                 Position pos = obs.getPosition();
@@ -222,6 +221,26 @@ public class RunwayView extends Group {
             stopwayRec.setFill(Color.CYAN);
             this.getChildren().add(stopwayRec);
             stopwayRec.toFront();
+        }
+        
+        // Draw Obstacle
+        // Draw obstacle
+        Obstacle obs = runway.getTarmac().getObstacle();
+        if (obs != null) {
+            try {
+                Position pos = obs.getPosition();
+                Rectangle obsRect = new Rectangle();
+                obsRect.setX(runwayStart + (pos.getDistanceFromWest() * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setY((this.h * 0.6) - (obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setHeight(obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength());
+                obsRect.setWidth(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength());
+                obsRect.setFill(Color.RED);
+                obsRect.setStroke(Color.BLACK);
+                this.getChildren().add(obsRect);
+                logger.info("Obstacle drawn to side-on.");
+            } catch (PositionException ignored) {
+                logger.info("Obstacle has not position, so is not being drawn.");
+            }
         }
 
         // Draw border
