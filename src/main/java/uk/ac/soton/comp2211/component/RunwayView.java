@@ -10,7 +10,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp2211.exceptions.PositionException;
+import uk.ac.soton.comp2211.model.Obstacle;
+import uk.ac.soton.comp2211.model.Position;
 import uk.ac.soton.comp2211.model.Runway;
 
 
@@ -18,6 +22,8 @@ import uk.ac.soton.comp2211.model.Runway;
  * Custom component to draw runway visualisation from parameters.
  */
 public class RunwayView extends Group {
+
+    protected static final Logger logger = LogManager.getLogger(RunwayView.class);
     
     private Runway runway;
     private final Canvas canvas;
@@ -54,7 +60,7 @@ public class RunwayView extends Group {
     public void updateTopDown() {
         // Reset canvas
         this.getChildren().clear();
-        Rectangle bg = new Rectangle(0, 0, this.w - 1, this.h - 1);
+        Rectangle bg = new Rectangle(0, 0, this.w, this.h);
         bg.setFill(Color.LIGHTGREEN);
         this.getChildren().add(bg);
 
@@ -131,15 +137,25 @@ public class RunwayView extends Group {
             stopwayRec.toFront();
         }
         
-        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
-        border.setFill(Color.TRANSPARENT);
-        border.setStroke(Color.BLACK);
-        this.getChildren().add(border);
-
-        //draw obstacle
-
-        //if (runway.getTarmac().getObstacle() != null)
-        //runway.getTarmac().getObstacle().getPosition();
+        // Draw obstacle
+        Obstacle obs = runway.getTarmac().getObstacle();
+        logger.info("Obstacle: {}", obs);
+        if (obs != null) {
+            try {
+                Position pos = obs.getPosition();
+                Rectangle obsRect = new Rectangle();
+                obsRect.setX(runwayStart + (pos.getDistanceFromWest() * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setY((this.h * 0.5) + (pos.getCentreLineDisplacement() * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setHeight(obs.getWidth() * this.runwayRepresentationSize / this.runway.getLength());
+                obsRect.setWidth(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength());
+                obsRect.setFill(Color.RED);
+                obsRect.setStroke(Color.BLACK);
+                this.getChildren().add(obsRect);
+                logger.info("Obstacle drawn to top-down.");
+            } catch (PositionException ignored) {
+                logger.info("Obstacle has not position, so is not being drawn.");
+            }
+        }
 
 
 
@@ -152,27 +168,25 @@ public class RunwayView extends Group {
 
         // Draw take-off direction and landing direction
 
-
+        // Draw border
+        Rectangle border = new Rectangle(0, 0, this.w, this.h);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.BLACK);
+        this.getChildren().add(border);
         
     }
     
     public void updateSideOn() {
         // Reset canvas and draw ground
         this.getChildren().clear();
-        Rectangle bg = new Rectangle(0, this.h*0.60, this.w - 1, this.h*0.40-1);
+        Rectangle bg = new Rectangle(0, this.h*0.60, this.w, this.h*0.40);
         bg.setFill(Color.LIGHTGREEN);
         this.getChildren().add(bg);
 
         //Draw sky
-        Rectangle sky = new Rectangle(0, 0, this.w - 1, this.h*0.60);
+        Rectangle sky = new Rectangle(0, 0, this.w, this.h*0.60);
         sky.setFill(Color.LIGHTBLUE);
         this.getChildren().add(sky);
-        
-        // Draw border
-        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
-        border.setFill(Color.TRANSPARENT);
-        border.setStroke(Color.BLACK);
-        this.getChildren().add(border);
 
         //Draw value lines
         drawValueLines();
@@ -210,6 +224,11 @@ public class RunwayView extends Group {
             stopwayRec.toFront();
         }
 
+        // Draw border
+        Rectangle border = new Rectangle(0, 0, this.w, this.h);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.BLACK);
+        this.getChildren().add(border);
 
     }
 

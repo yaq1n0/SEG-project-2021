@@ -108,4 +108,8 @@ public class Runway {
     public int getWidth() {
         return this.width;
     }
+    
+    public void reset() {
+        this.currentValues = this.originalValues.clone();
+    }
 }
