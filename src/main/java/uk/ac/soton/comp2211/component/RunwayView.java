@@ -10,6 +10,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import uk.ac.soton.comp2211.model.Runway;
 
 
@@ -23,6 +24,13 @@ public class RunwayView extends Group {
     private GraphicsContext gc;
     private final double w;
     private final double h;
+
+    //Handle size of runway and values lines
+    private double runwayStart;
+    private double runwayRepresentationSize;
+    private double clearwaySize;
+    private double stopwaySize;
+    private double dtSize;
     
     public RunwayView(double width, double height, Runway runway) {
         super();
@@ -34,6 +42,13 @@ public class RunwayView extends Group {
         this.gc = this.canvas.getGraphicsContext2D();
         
         this.getChildren().add(this.canvas);
+
+        //Handle size of runway and values lines
+        runwayStart = this.w * 0.15;
+        runwayRepresentationSize = this.w * 0.7;
+        clearwaySize = Math.min(runway.getClearway()/3, this.w*0.10);
+        stopwaySize = Math.min(runway.getStopway()/3, this.w*0.10);
+        dtSize = Math.min(runway.getDisplacedThreshold()/6, runwayRepresentationSize);
     }
     
     public void updateTopDown() {
@@ -62,10 +77,6 @@ public class RunwayView extends Group {
         clearedAndGradedArea.setFill(Color.LIGHTBLUE);
         this.getChildren().add(clearedAndGradedArea);
 
-        //Handle size of runway and values lines
-        Double runwayStart = this.w * 0.15;
-        Double runwayRepresentationSize = this.w * 0.7;
-
         // Draw tarmac
         Rectangle runwayRectangle = new Rectangle();
         runwayRectangle.setFill(Color.GRAY);
@@ -75,6 +86,13 @@ public class RunwayView extends Group {
         runwayRectangle.setHeight(this.h *0.1);
         this.getChildren().add(runwayRectangle);
         runwayRectangle.toFront();
+        Text runwayDesignatorText = new Text(runway.getRunwayDesignator());
+        runwayDesignatorText.setFont(Font.font("Jersey", FontWeight.BOLD, 15));
+        runwayDesignatorText.setX(runwayStart+10);
+        runwayDesignatorText.setY(this.h*0.52);
+        runwayDesignatorText.setRotate(90);
+        runwayDesignatorText.setFill(Color.WHITE);
+        this.getChildren().add(runwayDesignatorText);
 
         //Draw line middle tarmac
         Line runwayCentreLine = new Line();
@@ -87,6 +105,115 @@ public class RunwayView extends Group {
         runwayCentreLine.setEndY(this.h *0.5-1);
         this.getChildren().add(runwayCentreLine);
 
+        //Draw value lines
+        drawValueLines();
+
+        // Draw displaced threshold
+        if (runway.getDisplacedThreshold()>0) {
+            Line dtLine = new Line(runwayStart+(dtSize), this.h*0.5-10, runwayStart+(dtSize), this.h*0.5+10);
+            dtLine.setStroke(Color.RED);
+            dtLine.setStrokeWidth(5d);
+            this.getChildren().add(dtLine);
+        }
+
+        // Draw clearway
+        if (runway.getClearway()>0) {
+            Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.35, clearwaySize, this.h*0.3);
+            clearwayRec.setFill(Color.CORAL);
+            this.getChildren().add(clearwayRec);
+        }
+
+        // Draw stop-way
+        if (runway.getStopway()>0) {
+            Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.40, stopwaySize, this.h*0.2);
+            stopwayRec.setFill(Color.CYAN);
+            this.getChildren().add(stopwayRec);
+            stopwayRec.toFront();
+        }
+        
+        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.BLACK);
+        this.getChildren().add(border);
+
+        //draw obstacle
+
+        //if (runway.getTarmac().getObstacle() != null)
+        //runway.getTarmac().getObstacle().getPosition();
+
+
+
+        
+
+        // Draw scale indicator
+        // Draw compass
+
+        // Draw color legend
+
+        // Draw take-off direction and landing direction
+
+
+        
+    }
+    
+    public void updateSideOn() {
+        // Reset canvas and draw ground
+        this.getChildren().clear();
+        Rectangle bg = new Rectangle(0, this.h*0.60, this.w - 1, this.h*0.40-1);
+        bg.setFill(Color.LIGHTGREEN);
+        this.getChildren().add(bg);
+
+        //Draw sky
+        Rectangle sky = new Rectangle(0, 0, this.w - 1, this.h*0.60);
+        sky.setFill(Color.LIGHTBLUE);
+        this.getChildren().add(sky);
+        
+        // Draw border
+        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
+        border.setFill(Color.TRANSPARENT);
+        border.setStroke(Color.BLACK);
+        this.getChildren().add(border);
+
+        //Draw value lines
+        drawValueLines();
+
+        // Draw tarmac
+        Rectangle runwayRectangle = new Rectangle();
+        runwayRectangle.setFill(Color.GRAY);
+        runwayRectangle.setX(runwayStart);
+        runwayRectangle.setY(this.h * 0.60);
+        runwayRectangle.setWidth(runwayRepresentationSize);
+        runwayRectangle.setHeight(this.h *0.05);
+        this.getChildren().add(runwayRectangle);
+        runwayRectangle.toFront();
+
+        // Draw displaced threshold
+        if (runway.getDisplacedThreshold()>0) {
+            Line dtLine = new Line(runwayStart+(dtSize), this.h*0.61, runwayStart+(dtSize), this.h*0.64);
+            dtLine.setStroke(Color.RED);
+            dtLine.setStrokeWidth(5d);
+            this.getChildren().add(dtLine);
+        }
+
+        // Draw clearway
+        if (runway.getClearway()>0) {
+            Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.6, clearwaySize, this.h*0.20);
+            clearwayRec.setFill(Color.CORAL);
+            this.getChildren().add(clearwayRec);
+        }
+
+        // Draw stop-way
+        if (runway.getStopway()>0) {
+            Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.6, stopwaySize, this.h*0.12);
+            stopwayRec.setFill(Color.CYAN);
+            this.getChildren().add(stopwayRec);
+            stopwayRec.toFront();
+        }
+
+
+    }
+
+    private void drawValueLines() {
         //Draw value lines
         //tora
         Text toraText = new Text("TORA: " + runway.getCurrentValues().getTORA() + "m");
@@ -108,7 +235,7 @@ public class RunwayView extends Group {
         todaText.setY(45);
         todaText.setFill(Color.BLACK);
         this.getChildren().add(todaText);
-        Line todaLine = new Line(runwayStart, 50, runwayStart+runwayRepresentationSize+(runway.getClearway()), 50);
+        Line todaLine = new Line(runwayStart, 50, runwayStart+runwayRepresentationSize+(clearwaySize), 50);
         todaLine.setStroke(Color.YELLOW);
         todaLine.setStrokeWidth(3d);
         this.getChildren().add(todaLine);
@@ -120,7 +247,7 @@ public class RunwayView extends Group {
         asdaText.setY(65);
         asdaText.setFill(Color.BLACK);
         this.getChildren().add(asdaText);
-        Line asdaLine = new Line(runwayStart, 70, runwayStart+runwayRepresentationSize+(runway.getStopway()), 70);
+        Line asdaLine = new Line(runwayStart, 70, runwayStart+runwayRepresentationSize+(stopwaySize), 70);
         asdaLine.setStroke(Color.PURPLE);
         asdaLine.setStrokeWidth(3d);
         this.getChildren().add(asdaLine);
@@ -128,103 +255,13 @@ public class RunwayView extends Group {
         //lda
         Text ldaText = new Text("LDA: " + runway.getCurrentValues().getLDA() + "m");
         ldaText.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-        ldaText.setX(runwayStart+(runway.getDisplacedThreshold()/6));
+        ldaText.setX(runwayStart+(dtSize));
         ldaText.setY(85);
         ldaText.setFill(Color.BLACK);
         this.getChildren().add(ldaText);
-        Line ldaLine = new Line(runwayStart+(runway.getDisplacedThreshold()/6), 90, runwayStart+runwayRepresentationSize, 90);
+        Line ldaLine = new Line(runwayStart+(dtSize), 90, runwayStart+runwayRepresentationSize, 90);
         ldaLine.setStroke(Color.PINK);
         ldaLine.setStrokeWidth(3d);
         this.getChildren().add(ldaLine);
-
-        // Draw displaced threshold
-        if (runway.getDisplacedThreshold()>0) {
-            Line dtLine = new Line(runwayStart+(runway.getDisplacedThreshold()/6), this.h*0.5-10, runwayStart+(runway.getDisplacedThreshold()/6), this.h*0.5+10);
-            dtLine.setStroke(Color.RED);
-            dtLine.setStrokeWidth(5d);
-            this.getChildren().add(dtLine);
-        }
-
-        // Draw clearway
-        if (runway.getClearway()>0) {
-            //still need to account for bigger clearways/stopways
-            Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.35, runway.getClearway(), this.h*0.3);
-            clearwayRec.setFill(Color.CORAL);
-            this.getChildren().add(clearwayRec);
-        }
-
-        // Draw stop-way
-        if (runway.getStopway()>0) {
-            Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.40, runway.getStopway(), this.h*0.2);
-            stopwayRec.setFill(Color.CYAN);
-            this.getChildren().add(stopwayRec);
-            stopwayRec.toFront();
-        }
-        
-        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
-        border.setFill(Color.TRANSPARENT);
-        border.setStroke(Color.BLACK);
-        this.getChildren().add(border);
-
-        //draw obstacle
-
-        //if (runway.getTarmac().getObstacle() != null)
-        //runway.getTarmac().getObstacle().getPosition();
-
-
-
-        /*
-        // Draw tarmac
-        int l = this.runway.getLength();
-        int w = this.runway.getWidth();
-        this.gc.setFill(Color.GRAY);
-        this.gc.fillRect((this.w/2) - (l/12.0), (this.h/2) - (w/12.0), l/6.0, w/6.0);
-        this.gc.strokeRect((this.w/2) - (l/12.0), (this.h/2) - (w/12.0), l/6.0, w/6.0);
-
-        // Draw parameters
-        RunwayValues values = this.runway.getCurrentValues();
-        int toda = values.getTODA();
-        int tora = values.getTORA();
-        int asda = values.getASDA();
-        int lda = values.getLDA();
-        this.gc.setFill(Color.WHITE);
-        this.gc.strokeLine((this.w/2) - (toda/12.0), 30, (this.w/2) + (toda/12.0), 30);
-        this.gc.fillRect((this.w/2) - (l/12.0) + (toda/12.0) - 20, 20, 80, 20);
-        this.gc.strokeText("TODA: " + toda + "m", (this.w/2) - (l/12.0) + (toda/12.0) - 15, 35);
-        this.gc.strokeLine((this.w/2) - (toda/12.0), 70, (this.w/2) - (toda/12.0) + (tora/6.0), 70);
-        this.gc.fillRect((this.w/2) - (l/12.0) + (toda/12.0) - 20, 60, 80, 20);
-        this.gc.strokeText("TORA: " + tora + "m", (this.w/2) - (l/12.0) + (toda/12.0) - 15, 75);
-        this.gc.strokeLine((this.w/2) - (toda/12.0), 50, (this.w/2) - (toda/12.0) + (asda/6.0), 50);
-        this.gc.fillRect((this.w/2) - (l/12.0) + (toda/12.0) - 20, 40, 80, 20);
-        this.gc.strokeText("ASDA: " + asda + "m", (this.w/2) - (l/12.0) + (toda/12.0) - 15, 55);
-        this.gc.strokeLine((this.w/2) + (toda/12.0) - (lda/6.0), 90, (this.w/2) + (toda/12.0), 90);
-        this.gc.fillRect((this.w/2) + (l/12.0) - (lda/12.0) - 20, 80, 80, 20);
-        this.gc.strokeText("LDA: " + lda + "m", (this.w/2) + (l/12.0) - (lda/12.0) - 15, 95);
-        
-        // Draw displaced threshold
-        int dt = this.runway.getDisplacedThreshold();
-        
-        // Draw clearways
-        // Draw stop-ways
-        // Draw scale indicator
-        // Draw compass
-
-         */
-        
     }
-    
-    public void updateSideOn() {
-        // Reset canvas
-        this.getChildren().clear();
-        Rectangle bg = new Rectangle(0, 0, this.w - 1, this.h - 1);
-        bg.setFill(Color.LIGHTGREEN);
-        this.getChildren().add(bg);
-        
-        // Draw border
-        Rectangle border = new Rectangle(0, 0, this.w - 1, this.h - 1);
-        border.setFill(Color.TRANSPARENT);
-        border.setStroke(Color.BLACK);
-        this.getChildren().add(border);
-    }
-    
 }
