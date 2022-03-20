@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.app;
 
+import com.sun.javafx.css.StyleManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportContainer;
 import javafx.event.ActionEvent;
 
+import uk.ac.soton.comp2211.component.CreateAirport;
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.model.*;
 
@@ -31,9 +33,8 @@ public class MainController implements Initializable {
     private Label airportName;
     @FXML
     private AnchorPane airportParent;
-    @FXML
-    private VBox vboxParent;
-    
+
+
     private AirportContainer airportContainer;
     private final BooleanProperty topView;
     private Stage stage;
@@ -168,13 +169,12 @@ public class MainController implements Initializable {
     }
     @FXML
     private void darkMode(ActionEvent actionEvent) {
-        // Preference menu could be good for later requirements such as colour blind mode?
-        vboxParent.getStylesheets().add("Styles/DarkMode.css");
-        logger.error("preferences was clicked");
+        StyleManager.getInstance().addUserAgentStylesheet("Styles/DarkMode.css");
+
     }
 
     @FXML void lightMode(ActionEvent actionEvent){
-        vboxParent.getStylesheets().remove("Styles/DarkMode.css");
+        StyleManager.getInstance().removeUserAgentStylesheet("Styles/DarkMode.css");
     }
     /**
      * Ran when user selects Quit in Menu>File

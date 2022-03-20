@@ -47,7 +47,7 @@
 <?import javafx.scene.text.Font?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.comp2211.app.MainController" fx:id="vboxParent">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.comp2211.app.MainController" >
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
