@@ -31,6 +31,8 @@ public class MainController implements Initializable {
     private Label airportName;
     @FXML
     private AnchorPane airportParent;
+    @FXML
+    private VBox vboxParent;
     
     private AirportContainer airportContainer;
     private final BooleanProperty topView;
@@ -161,10 +163,19 @@ public class MainController implements Initializable {
      */
     @FXML
     private void preferencesMenu(ActionEvent actionEvent) {
-        // Preference menu could be good for later requirements such as colour blind mode?
+        // Preference menu could be good for later requirements such as colour blind mode
         System.out.println("Preferences");
     }
+    @FXML
+    private void darkMode(ActionEvent actionEvent) {
+        // Preference menu could be good for later requirements such as colour blind mode?
+        vboxParent.getStylesheets().add("Styles/DarkMode.css");
+        logger.error("preferences was clicked");
+    }
 
+    @FXML void lightMode(ActionEvent actionEvent){
+        vboxParent.getStylesheets().remove("Styles/DarkMode.css");
+    }
     /**
      * Ran when user selects Quit in Menu>File
      * @param actionEvent event
