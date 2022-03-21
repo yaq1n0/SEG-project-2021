@@ -12,8 +12,18 @@ public class Tarmac {
     public int getID() { return id; }
     public int getLength() { return length; }
 
-    public void setObstacle(Obstacle _obstacle) { obstacle = _obstacle; }
-    public void removeObstacle() { obstacle = null; }
+    public void setObstacle(Obstacle _obstacle) { 
+        obstacle = _obstacle;
+        for (Runway r : runways) {
+            r.reset();
+        }
+    }
+    public void removeObstacle() { 
+        obstacle = null;
+        for (Runway r : runways) {
+            r.reset();
+        }
+    }
     public Obstacle getObstacle() { return obstacle; }
 
     public void setRunways(Runway[] _runways) { runways = _runways; }

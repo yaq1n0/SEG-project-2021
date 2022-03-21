@@ -1,11 +1,14 @@
 package uk.ac.soton.comp2211.app;
 
+import com.sun.javafx.css.StyleManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -30,10 +33,13 @@ public class MainController implements Initializable {
     private Label airportName;
     @FXML
     private AnchorPane airportParent;
-    
+
+
     private AirportContainer airportContainer;
     private final BooleanProperty topView;
     private Stage stage;
+    private Button openAirportButton;
+    private Label openAirportLabel;
     
     //Listeners
     private QuitListener quitListener;
@@ -52,6 +58,14 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Add button to start to make it obvious how to open an airport.
+        this.openAirportLabel = new Label("Don't know where to start? Why not try: ");
+        this.openAirportButton = new Button("Open Airport");
+        this.openAirportButton.setOnAction(this::openAirport);
+        HBox startBox = new HBox();
+        startBox.getChildren().addAll(this.openAirportLabel, this.openAirportButton);
+        this.airportParent.getChildren().add(startBox);
+        
         this.airportContainer = new AirportContainer(stage);
         
         // Bind the boolean properties to show which profile the runway view should be.
@@ -60,6 +74,7 @@ public class MainController implements Initializable {
         // Add airport container to scene
         this.airportParent.getChildren().add(this.airportContainer);
         VBox.setVgrow(this.airportContainer, Priority.ALWAYS);
+        
     }
 
     /**
@@ -109,7 +124,7 @@ public class MainController implements Initializable {
      * @param actionEvent event
      */
     @FXML
-    private void openAirport(ActionEvent actionEvent) {
+    public void openAirport(ActionEvent actionEvent) {
         this.chooseAirportListener.openAirportDialogue();
     }
 
@@ -130,6 +145,8 @@ public class MainController implements Initializable {
     private void closeAirport(ActionEvent actionEvent) {
         this.airportName.setText("");
         this.airportContainer.closeAirport();
+        this.openAirportButton.setVisible(true);
+        this.openAirportLabel.setVisible(true);
     }
 
     /**
@@ -147,10 +164,18 @@ public class MainController implements Initializable {
      */
     @FXML
     private void preferencesMenu(ActionEvent actionEvent) {
-        // Preference menu could be good for later requirements such as colour blind mode?
+        // Preference menu could be good for later requirements such as colour blind mode
         System.out.println("Preferences");
     }
+    @FXML
+    private void darkMode(ActionEvent actionEvent) {
+        StyleManager.getInstance().addUserAgentStylesheet("Styles/DarkMode.css");
 
+    }
+
+    @FXML void lightMode(ActionEvent actionEvent){
+        StyleManager.getInstance().removeUserAgentStylesheet("Styles/DarkMode.css");
+    }
     /**
      * Ran when user selects Quit in Menu>File
      * @param actionEvent event
@@ -188,7 +213,8 @@ public class MainController implements Initializable {
             Airport airport = SystemModel.getAirport();
             this.airportName.setText(airport.getName());
             this.airportContainer.updateAirport(airport);
-            
+            this.openAirportButton.setVisible(false);
+            this.openAirportLabel.setVisible(false);
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();

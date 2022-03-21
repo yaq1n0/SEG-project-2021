@@ -30,6 +30,7 @@ public class RunwayContainer extends VBox {
     private final ParameterBox parameterBox;
     private final ObstacleBox obstacleBox;
     private final BooleanProperty topView = new SimpleBooleanProperty();
+    private final Button recalculate;
     
     private final Runway runway;
     
@@ -48,7 +49,8 @@ public class RunwayContainer extends VBox {
         
         // get obstacles needs to change for multiple obstacles
         Obstacle obs = runway.getTarmac().getObstacle();
-        this.obstacleBox = new ObstacleBox(obs);
+        this.obstacleBox = new ObstacleBox(obs, this.runway.getLength());
+        this.obstacleBox.setVerifyObstacleListener(this::enableRecalculation);
 
         this.obstacleBox.setInsertObstacleListener(() -> {
             final Stage dialog = new Stage();
@@ -65,9 +67,9 @@ public class RunwayContainer extends VBox {
         this.obstacleBox.setObstacleClearListener(this::clearObstacle);
         
         VBox recalculateBox = new VBox();
-        Button recalculate = new Button("Run Calculation");
-        recalculate.setOnAction(this::recalculate);
-        recalculateBox.getChildren().add(recalculate);
+        this.recalculate = new Button("Run Calculation");
+        this.recalculate.setOnAction(this::recalculate);
+        recalculateBox.getChildren().add(this.recalculate);
 
         HBox.setHgrow(this.parameterBox, Priority.ALWAYS);
         this.parameterBox.setStyle("-fx-border-color: black");
@@ -86,6 +88,8 @@ public class RunwayContainer extends VBox {
         this.getChildren().addAll(new Label(this.runway.getRunwayDesignator()), this.runwayView, this.parameterBox, dataBox);
         this.setStyle("-fx-border-color: black;");
         this.setPadding(new Insets(10, 10, 10, 10));
+
+        this.disableRecalculation();
     }
 
     /**
@@ -93,15 +97,13 @@ public class RunwayContainer extends VBox {
      * @param event event
      */
     public void recalculate(ActionEvent event) {
+        logger.info("Attempting recalculation for runway {}", runway.getRunwayDesignator());
         this.parameterBox.resetValues();
         try {
             this.runway.recalculate(300);
-        } catch (RunwayException re) {
-            logger.error(re.getStackTrace());
-            logger.error("Could not recalculate runway parameters.");
             this.parameterBox.updateValues(this.runway.getCurrentValues());
-        } catch (PositionException pe) {
-            logger.error(pe.getStackTrace());
+        } catch (RunwayException | PositionException re) {
+            logger.error(re.getStackTrace());
             logger.error("Could not recalculate runway parameters.");
         }
         updateVisual();
@@ -114,7 +116,10 @@ public class RunwayContainer extends VBox {
     public void setObstacle(Obstacle obstacle) {
         this.parameterBox.resetValues();
         this.runway.getTarmac().setObstacle(obstacle);
+        this.disableRecalculation();
         this.obstacleBox.update(obstacle);
+        logger.info("Set obstacle {} for runway {}.", obstacle.getName(), runway.getRunwayDesignator());
+        this.updateVisual();
     }
 
     /**
@@ -123,6 +128,9 @@ public class RunwayContainer extends VBox {
     public void clearObstacle() {
         this.runway.getTarmac().removeObstacle();
         this.parameterBox.resetValues();
+        this.disableRecalculation();
+        this.obstacleBox.disablePositionFields();
+        this.updateVisual();
     }
 
     /**
@@ -136,10 +144,28 @@ public class RunwayContainer extends VBox {
      * Call the correct update method in the runwayView object.
      */
     public void updateVisual() {
+        logger.info("Updating view.");
         if (this.topView.get()) {
             this.runwayView.updateTopDown();
         } else {
             this.runwayView.updateSideOn();
         }
+    }
+
+    /**
+     * Stop the user from being able to recalculate.
+     */
+    public void disableRecalculation() {
+        this.updateVisual();
+        this.recalculate.setDisable(true);
+    }
+
+    /**
+     * Allow the user to attempt a recalculation.
+     */
+    public void enableRecalculation() {
+        this.runway.reset();
+        this.updateVisual();
+        this.recalculate.setDisable(false);
     }
 }

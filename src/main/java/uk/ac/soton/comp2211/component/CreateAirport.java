@@ -32,7 +32,6 @@ public class CreateAirport extends VBox {
 
         vboxTarmacs = new VBox();
         vboxTarmacs.getChildren().add(new TarmacVBox(1, 1));
-
         HBox airportParameters = new HBox();
         airportParameters.setAlignment(Pos.CENTER);
         inputAirportName = new TextField();
@@ -83,6 +82,7 @@ public class CreateAirport extends VBox {
         buttonBox.setAlignment(Pos.CENTER);
         
         this.getChildren().addAll(titleBox, airportParameters, vboxTarmacs, buttonBox);
+
     }
 
     private void generateAirport() throws Exception {
