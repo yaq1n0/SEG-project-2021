@@ -4,13 +4,6 @@ import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 
 public class Obstacle {
-    public static final int MIN_LENGTH = 1;
-    public static final int MAX_LENGTH = 1000;
-    public static final int MIN_WIDTH = 1;
-    public static final int MAX_WIDTH = 1000;
-    public static final int MIN_HEIGHT = 1;
-    public static final int MAX_HEIGHT = 1000;
-
     private String name;
 
     private int length; // Length parallel to the runway.
