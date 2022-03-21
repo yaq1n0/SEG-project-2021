@@ -10,7 +10,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2211.event.PassAirportListener;
-import uk.ac.soton.comp2211.model.SystemModel;
 
 /**
  * Component that allows the user to select an airport to display.
