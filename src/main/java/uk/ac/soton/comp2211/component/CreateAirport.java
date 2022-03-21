@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.model.Airport;
 import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.RunwayValues;
@@ -115,7 +116,7 @@ public class CreateAirport extends VBox {
 
             HBox tarmacParameters = new HBox();
             Text textTarmacName = new Text("Tarmac " + tarmacID);
-            TextField inputTarmacLength = new TextField();
+            NumberField inputTarmacLength = new NumberField(Tarmac.MIN_LENGTH, Tarmac.MAX_LENGTH);
             inputTarmacLength.setPromptText("length");
             ObservableList<String> directionOptions = FXCollections.observableArrayList("unidirectional", "bidirectional");
             ComboBox<String> direction = new ComboBox<String>(directionOptions);
@@ -130,7 +131,7 @@ public class CreateAirport extends VBox {
             this.getChildren().addAll(tarmacParameters, runwaysVBox);
         }
     
-        public Tarmac getTarmac() {
+        public Tarmac getTarmac() throws RunwayException {
             Tarmac tarmac = new Tarmac(tarmacID);
 
             int runwayCount = vboxRunways.getChildren().size();
@@ -184,7 +185,7 @@ public class CreateAirport extends VBox {
             this.getChildren().setAll(runwayParameters, runwayValues);
         }
     
-        public Runway getRunway(Tarmac _tarmac) {
+        public Runway getRunway(Tarmac _tarmac) throws RunwayException {
             String runwayDesignator = textDesignator.getText();
 
             int tora = Integer.valueOf(inputTORA.getText());

@@ -4,6 +4,13 @@ import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 
 public class Runway {
+    public static final int MIN_THRESHOLD = 0;
+    public static final int MAX_THRESHOLD = 1000;
+    public static final int MIN_STOPWAY = 0;
+    public static final int MAX_STOPWAY = 1000;
+    public static final int MIN_CLEARWAY = 0;
+    public static final int MAX_CLEARWAY = 1000;
+
     private String runwayDesignator;
     private Tarmac tarmac; // Corresponding physical runway.
     private RunwayValues originalValues;
@@ -21,7 +28,7 @@ public class Runway {
     private int width;
 
     public Runway(String _runwayDesignator, Tarmac _tarmac, RunwayValues _originalValues, 
-                  int _displacedThreshold, int _stopway, int _clearway) {
+                  int _displacedThreshold, int _stopway, int _clearway) throws RunwayException {
         runwayDesignator = _runwayDesignator;
         tarmac = _tarmac;
         originalValues = _originalValues;
@@ -30,8 +37,12 @@ public class Runway {
 
         length = originalValues.getTORA();
         width = 60;
-        stopway = _stopway;
-        clearway = _clearway;
+
+        if (stopway >= MIN_STOPWAY && stopway <= MAX_STOPWAY) stopway = _stopway;
+        else throw new RunwayException("Couldn't create runway, stopway value must be between " + MIN_STOPWAY + " and " + MAX_STOPWAY + "!");
+        
+        if (clearway >= MIN_CLEARWAY && clearway <= MAX_CLEARWAY) clearway = _clearway;
+        else throw new RunwayException("Couldn't create Runway, clearway value must be between " + MIN_CLEARWAY + " and " + MAX_CLEARWAY + "!");
     }
 
     public String getRunwayDesignator() { return runwayDesignator; }

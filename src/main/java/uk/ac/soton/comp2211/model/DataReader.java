@@ -22,6 +22,7 @@ import org.xml.sax.SAXException;
 
 import uk.ac.soton.comp2211.exceptions.ExtractionException;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
+import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.exceptions.SchemaException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 
@@ -91,7 +92,7 @@ public class DataReader {
         }
     }
 
-    public static Tarmac[] getTarmacs() throws XPathExpressionException {
+    public static Tarmac[] getTarmacs() throws XPathExpressionException, RunwayException {
         int tarmacCount = ((Number) xpath.evaluate("count(//runway)", document, XPathConstants.NUMBER)).intValue();
         Tarmac[] tarmacs = new Tarmac[tarmacCount];
 
@@ -104,7 +105,7 @@ public class DataReader {
         return tarmacs;
     }
 
-    private static Runway[] getTarmacRunways(Tarmac _tarmac) throws XPathExpressionException {
+    private static Runway[] getTarmacRunways(Tarmac _tarmac) throws XPathExpressionException, RunwayException {
         int runwayCount = ((Number) xpath.evaluate("count(//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway)", document, XPathConstants.NUMBER)).intValue();
         Runway[] runways = new Runway[runwayCount];

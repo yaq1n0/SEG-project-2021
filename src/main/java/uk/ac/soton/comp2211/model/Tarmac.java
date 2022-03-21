@@ -1,6 +1,9 @@
 package uk.ac.soton.comp2211.model;
 
 public class Tarmac {
+    public static final int MIN_LENGTH = 1;
+    public static final int MAX_LENGTH = 1000;
+
     private int id;
     private int length;
     private Obstacle obstacle;
