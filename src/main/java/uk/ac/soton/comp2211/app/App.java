@@ -53,6 +53,7 @@ public class App extends Application {
         // Set the stage's title.
         stage.setTitle("Runway Redeclaration App");
         
+        logger.info("Attempting to load FXML.");
         Parent root;
         FXMLLoader loader;
         try {
@@ -63,9 +64,12 @@ public class App extends Application {
             this.stop();
             return;
         }
-
-        MainController controller = loader.<MainController>getController();
+        logger.info("FXML file loaded.");
+        
+        MainController controller = loader.getController();
         controller.setStage(stage);
+        
+        logger.info("Main controller loaded with FXML.");
         
         // Set the listeners
         controller.setQuitListener(this::stop);
@@ -116,6 +120,8 @@ public class App extends Application {
             dialog.setScene(dialogScene);
             dialog.show();
         });
+        
+        logger.info("Listeners set for controller.");
         
         Scene scene = new Scene(root, 900, 720);
         

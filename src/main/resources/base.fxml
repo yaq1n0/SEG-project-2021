@@ -45,7 +45,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<!-- <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?> -->
 
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.comp2211.app.MainController" >
   <children>
@@ -65,12 +65,12 @@
                   <items>
                       <MenuItem mnemonicParsing="false" onAction="#darkMode" text="DarkMode ">
                           <graphic>
-                              <FontAwesomeIconView glyphName="EYE" />
+                              <!-- <FontAwesomeIconView glyphName="EYE" /> -->
                           </graphic>
                       </MenuItem>
                       <MenuItem mnemonicParsing="false" onAction="#lightMode" text="LightMode">
                           <graphic>
-                              <FontAwesomeIconView glyphName="BOLT" />
+                              <!-- <FontAwesomeIconView glyphName="BOLT" /> -->
                           </graphic>
                       </MenuItem>
                   </items>
@@ -79,7 +79,7 @@
             <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Quit" />
           </items>
             <graphic>
-                <FontAwesomeIconView glyphName="FILE" />
+                <!-- <FontAwesomeIconView glyphName="FILE" /> -->
             </graphic>
         </Menu>
         <Menu mnemonicParsing="false" text="View">
@@ -88,7 +88,7 @@
             <MenuItem mnemonicParsing="false" onAction="#selectSideView" text="Side-On" />
           </items>
             <graphic>
-                <FontAwesomeIconView glyphName="FILM" />
+                <!-- <FontAwesomeIconView glyphName="FILM" /> -->
             </graphic>
         </Menu>
             <Menu mnemonicParsing="false" text="Help">
@@ -97,7 +97,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#showInstructions" text="Instructions" />
                </items>
                 <graphic>
-                    <FontAwesomeIconView glyphName="QUESTION" />
+                    <!-- <FontAwesomeIconView glyphName="QUESTION" /> -->
                 </graphic>
             </Menu>
       </menus>
