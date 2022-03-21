@@ -31,15 +31,15 @@ public class ObstacleBox extends VBox {
     private InsertObstacleListener insertObstacleListener;
     private ObstacleClearListener obstacleClearListener;
     private VerifyObstacleListener verifyObstacleListener;
-    private int runwayLength;
+    private final int runwayLength;
     private Obstacle obstacle;
-    
+
     public ObstacleBox(Obstacle obstacle, int runwayLength) {
         super();
-        
+
         this.obstacle = obstacle;
         this.runwayLength = runwayLength;
-        
+
         this.obsButton = new Button();
         Label centerLabel = new Label("Centre line Displacement: ");
         Label eDistLabel = new Label("Distance from East: ");
@@ -47,7 +47,7 @@ public class ObstacleBox extends VBox {
         this.centerField = new TextField();
         this.wDistField = new TextField();
         this.eDistField = new TextField();
-        
+
         if (obstacle != null) {
             enablePositionFields();
             this.obsButton.setText("Change Obstacle");
@@ -55,7 +55,7 @@ public class ObstacleBox extends VBox {
             this.lenLabel = new Label("Length: " + obstacle.getLength());
             this.widLabel = new Label("Width: " + obstacle.getWidth());
             this.heightLabel = new Label("Height: " + obstacle.getHeight());
-            
+
             try {
                 Position pos = obstacle.getPosition();
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
@@ -72,7 +72,7 @@ public class ObstacleBox extends VBox {
             this.widLabel = new Label("Width: ");
             this.heightLabel = new Label("Height: ");
         }
-        
+
         VBox leftPart = new VBox();
         VBox rightPart = new VBox();
         HBox centerPair = new HBox();
@@ -83,19 +83,19 @@ public class ObstacleBox extends VBox {
         wDistPair.getChildren().addAll(wDistLabel, wDistField);
         leftPart.getChildren().addAll(obsLabel, lenLabel, widLabel, heightLabel);
         rightPart.getChildren().addAll(centerPair, eDistPair, wDistPair);
-        
+
         obsButton.setOnAction((ActionEvent event) -> {
             if (this.insertObstacleListener != null) {
                 this.insertObstacleListener.openObstacleDialogue();
             }
         });
-        
+
         Button save = new Button("Save");
         save.setOnAction(this::checkParams);
-        
+
         Button clearObs = new Button("Remove Obstacle");
         clearObs.setOnAction(this::clearObstacle);
-        
+
         leftPart.getChildren().add(obsButton);
         rightPart.getChildren().addAll(save, clearObs);
         HBox.setHgrow(leftPart, Priority.ALWAYS);
@@ -110,7 +110,7 @@ public class ObstacleBox extends VBox {
         try {
             center = Integer.parseInt(this.centerField.getText());
             east = Integer.parseInt(this.eDistField.getText());
-            
+
             // Gives east precedence over west, following block avoids the number format exception.
             if (wDistField.getText().length() != 0) {
                 west = Integer.parseInt(this.wDistField.getText());
@@ -124,14 +124,14 @@ public class ObstacleBox extends VBox {
             if (east < 0 || west < 0 || east > runwayLength || west > runwayLength) {
                 throw new PositionException("Position out of bounds.");
             }
-            
+
             if (this.obstacle == null) {
                 throw new PositionException("Can't change position of null obstacle.");
             }
             this.obstacle.setPosition(new Position(west, east, center));
             this.verifyObstacleListener.confirm();
             logger.info("User set obstacle position.");
-            
+
         } catch (NumberFormatException | PositionException nfe) {
             this.centerField.clear();
             this.eDistField.clear();
@@ -152,19 +152,19 @@ public class ObstacleBox extends VBox {
             obstacleClearListener.reset();
         }
     }
-    
+
     public void setInsertObstacleListener(InsertObstacleListener listener) {
         this.insertObstacleListener = listener;
     }
-    
+
     public void setObstacleClearListener(ObstacleClearListener listener) {
         this.obstacleClearListener = listener;
     }
-    
+
     public void setVerifyObstacleListener(VerifyObstacleListener listener) {
         this.verifyObstacleListener = listener;
     }
-    
+
     public void update(Obstacle obstacle) {
         if (obstacle != null) {
             enablePositionFields();

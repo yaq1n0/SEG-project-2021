@@ -2,10 +2,8 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -30,7 +28,6 @@ public class RunwayContainer extends VBox {
     private final ParameterBox parameterBox;
     private final ObstacleBox obstacleBox;
     private final BooleanProperty topView = new SimpleBooleanProperty();
-    private final Button recalculate;
     
     private final Runway runway;
     
@@ -43,7 +40,6 @@ public class RunwayContainer extends VBox {
         this.runwayView = new RunwayView(750, 300, this.runway);
         this.runwayView.updateTopDown();
         
-        HBox dataBox = new HBox();
         this.parameterBox = new ParameterBox(runway.getOriginalValues());
         this.parameterBox.setPadding(new Insets(0, 10, 10, 10));
         
@@ -51,7 +47,6 @@ public class RunwayContainer extends VBox {
         Obstacle obs = runway.getTarmac().getObstacle();
         this.obstacleBox = new ObstacleBox(obs, this.runway.getLength());
         this.obstacleBox.setVerifyObstacleListener(this::enableRecalculation);
-
         this.obstacleBox.setInsertObstacleListener(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
@@ -65,27 +60,17 @@ public class RunwayContainer extends VBox {
             dialog.show();
         });
         this.obstacleBox.setObstacleClearListener(this::clearObstacle);
-        
-        VBox recalculateBox = new VBox();
-        this.recalculate = new Button("Run Calculation");
-        this.recalculate.setOnAction(this::recalculate);
-        recalculateBox.getChildren().add(this.recalculate);
 
         HBox.setHgrow(this.parameterBox, Priority.ALWAYS);
         this.parameterBox.setStyle("-fx-border-color: black");
         HBox.setHgrow(obstacleBox, Priority.ALWAYS);
         this.obstacleBox.setStyle("-fx-border-color: black");
-        HBox.setHgrow(recalculateBox, Priority.ALWAYS);
-        recalculateBox.setStyle("-fx-border-color: black");
 
 
         this.obstacleBox.setPadding(new Insets(10, 10, 10, 10));
-        recalculateBox.setPadding(new Insets(10, 10, 10, 10));
-        
-        dataBox.getChildren().addAll(this.obstacleBox, recalculateBox);
         
         // add runway view later
-        this.getChildren().addAll(new Label(this.runway.getRunwayDesignator()), this.runwayView, this.parameterBox, dataBox);
+        this.getChildren().addAll(new Label(this.runway.getRunwayDesignator()), this.runwayView, this.parameterBox, this.obstacleBox);
         this.setStyle("-fx-border-color: black;");
         this.setPadding(new Insets(10, 10, 10, 10));
 
@@ -94,9 +79,8 @@ public class RunwayContainer extends VBox {
 
     /**
      * Perform the backend calculation and update this container.
-     * @param event event
      */
-    public void recalculate(ActionEvent event) {
+    public void recalculate() {
         logger.info("Attempting recalculation for runway {}", runway.getRunwayDesignator());
         this.parameterBox.resetValues();
         try {
@@ -157,7 +141,6 @@ public class RunwayContainer extends VBox {
      */
     public void disableRecalculation() {
         this.updateVisual();
-        this.recalculate.setDisable(true);
     }
 
     /**
@@ -166,6 +149,6 @@ public class RunwayContainer extends VBox {
     public void enableRecalculation() {
         this.runway.reset();
         this.updateVisual();
-        this.recalculate.setDisable(false);
+        this.recalculate();
     }
 }
