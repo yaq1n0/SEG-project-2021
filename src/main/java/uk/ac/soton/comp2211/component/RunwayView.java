@@ -303,7 +303,7 @@ public class RunwayView extends Group {
                 double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
                 double blastAllowanceR = 300*runwayRepresentationSize/this.runway.getLength();
 
-                if (runway.getTarmac().getObstacle().getPosition().getDistance()>runway.getTarmac().getObstacle().getPosition().getDistanceAlt()) {
+                if (runway.getTarmac().getObstacle().getPosition().getDistance()>(runway.getLength()-runway.getTarmac().getObstacle().getPosition().getDistance())) {
                     toraLine = new Line(runwayStart, 30, runwayStart + (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 30);
                     toraText.setX(runwayStart);
 
