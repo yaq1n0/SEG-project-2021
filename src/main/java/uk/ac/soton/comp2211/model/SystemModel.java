@@ -145,6 +145,7 @@ public class SystemModel {
             airport = new Airport(airportName, tarmacs);
         } catch (Exception e) {
             LOGGER.error("Failed to extract airport data: " + e.getMessage());
+            e.printStackTrace();
 
             throw e;
         }
@@ -291,4 +292,8 @@ public class SystemModel {
     }
 
     public static Obstacle[] getObstacles() { return obstacles; }
+    
+    public static void deleteTarmac(Runway runway) {
+        
+    }
 }

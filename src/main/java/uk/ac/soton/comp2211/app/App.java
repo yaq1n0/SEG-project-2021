@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportSelect;
 import uk.ac.soton.comp2211.component.CreateAirport;
 import uk.ac.soton.comp2211.component.CreateObstacle;
+import uk.ac.soton.comp2211.component.WarnDeletion;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
@@ -118,6 +119,18 @@ public class App extends Application {
             CreateObstacle obstacleCreate = new CreateObstacle(dialog);
 
             Scene dialogScene = new Scene(obstacleCreate, 300, 200);
+            dialog.setScene(dialogScene);
+
+            dialog.show();
+        });
+        controller.setWarnDeletionListener(() -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+            WarnDeletion warnDeletion = new WarnDeletion(dialog);
+            warnDeletion.setConfirmationListener(controller::confirmDeletion);
+
+            Scene dialogScene = new Scene(warnDeletion, 500, 200);
             dialog.setScene(dialogScene);
 
             dialog.show();

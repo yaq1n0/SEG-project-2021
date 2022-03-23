@@ -2,8 +2,11 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -13,6 +16,7 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import uk.ac.soton.comp2211.event.DeleteTarmacListener;
 import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.model.*;
@@ -28,7 +32,7 @@ public class RunwayContainer extends VBox {
     private final ParameterBox parameterBox;
     private final ObstacleBox obstacleBox;
     private final BooleanProperty topView = new SimpleBooleanProperty();
-    
+    private DeleteTarmacListener deleteTarmacListener;
     private final Runway runway;
     
     public RunwayContainer(Runway runway, Stage stage) {
@@ -68,9 +72,21 @@ public class RunwayContainer extends VBox {
 
 
         this.obstacleBox.setPadding(new Insets(10, 10, 10, 10));
+
+        // Delete button for runway
+        Button delete = new Button("Delete Tarmac");
+        delete.setOnAction((ActionEvent event) -> {
+            if (this.deleteTarmacListener != null) {
+                this.deleteTarmacListener.attemptDeletion(this.runway);
+            }
+        });
         
-        // add runway view later
-        this.getChildren().addAll(new Label(this.runway.getRunwayDesignator()), this.runwayView, this.parameterBox, this.obstacleBox);
+        Label designator = new Label(this.runway.getRunwayDesignator());
+        
+        HBox topBox = new HBox();
+        topBox.getChildren().addAll(designator, delete);
+        
+        this.getChildren().addAll(topBox, this.runwayView, this.parameterBox, this.obstacleBox);
         this.setStyle("-fx-border-color: black;");
         this.setPadding(new Insets(10, 10, 10, 10));
 
@@ -150,5 +166,13 @@ public class RunwayContainer extends VBox {
         this.runway.reset();
         this.updateVisual();
         this.recalculate();
+    }
+
+    /**
+     * Set the tarmac deletion listener for this runway.
+     * @param listener listener
+     */
+    public void setDeleteTarmacListener(DeleteTarmacListener listener) {
+        this.deleteTarmacListener = listener;
     }
 }

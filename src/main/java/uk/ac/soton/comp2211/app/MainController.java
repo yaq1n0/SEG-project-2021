@@ -43,15 +43,19 @@ public class MainController implements Initializable {
     private Button openAirportButton;
     private Label openAirportLabel;
     
+    private Runway toDelete;
+    
     //Listeners
     private QuitListener quitListener;
     private ChooseAirportListener chooseAirportListener;
     private ImportAirportListener importAirportListener;
     private CreateAirportListener createAirportListener;
     private CreateObstacleListener createObstacleListener;
+    private WarnDeletionListener warnDeletionListener;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
+        toDelete = null;
     }
     
     public void setStage(Stage stage) {
@@ -76,12 +80,11 @@ public class MainController implements Initializable {
         
         // Bind the boolean properties to show which profile the runway view should be.
         this.airportContainer.bindViewProperty(this.topView);
+        this.airportContainer.setDeleteTarmacListeners(this::attemptTarmacDeletion);
         
         // Add airport container to scene
         this.airportParent.getChildren().add(this.airportContainer);
         VBox.setVgrow(this.airportContainer, Priority.ALWAYS);
-
-
         
     }
 
@@ -285,5 +288,35 @@ public class MainController implements Initializable {
      */
     public void setCreateObstacleListener(CreateObstacleListener listener) {
         this.createObstacleListener = listener;
+    }
+
+    /**
+     * Set the listener to create the deletion warning dialogue.
+     * @param listener listener
+     */
+    public void setWarnDeletionListener(WarnDeletionListener listener) {
+        this.warnDeletionListener = listener;
+    }
+    
+    /**
+     * Ran when user attempts to delete tarmac for current airport, warn them otherwise execute.
+     * @param runway runway of the tarmac to delete
+     */
+    public void attemptTarmacDeletion(Runway runway) {
+        if (this.warnDeletionListener != null) {
+            this.warnDeletionListener.createWarning();
+        }
+    }
+
+    /**
+     * Delete runway if the user confirms the choice
+     * @param result
+     */
+    public void confirmDeletion(boolean result) {
+        if (result) {
+            SystemModel.deleteTarmac(toDelete);
+        } else {
+            toDelete = null;
+        }
     }
 }
