@@ -3,12 +3,16 @@ package uk.ac.soton.comp2211.component;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
@@ -29,7 +33,10 @@ public class CreateAirport extends VBox {
 
         HBox titleBox = new HBox();
         titleBox.setAlignment(Pos.CENTER);
-        titleBox.getChildren().add(new Text("Create Airport:"));
+        Text text = new Text ("Create An Airport");
+        text.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        titleBox.getChildren().add(text);
+        titleBox.setPadding(new Insets(10,0,0,0));
 
         vboxTarmacs = new VBox();
         vboxTarmacs.getChildren().add(new TarmacVBox(1, 1));
@@ -79,6 +86,7 @@ public class CreateAirport extends VBox {
                 e1.printStackTrace();
             }
         });
+        cancel.setStyle("-fx-background-color: #D3CECF; ");
         buttonBox.getChildren().add(cancel);
         buttonBox.setAlignment(Pos.CENTER);
         
@@ -110,12 +118,12 @@ public class CreateAirport extends VBox {
             super();
 
             tarmacID = _tarmacID;
-
             VBox runwaysVBox = new VBox();
-            runwaysVBox.getChildren().add(new RunwayVBox("09"));
+            runwaysVBox.getChildren().add(new RunwayVBox("09     "));
 
             HBox tarmacParameters = new HBox();
-            Text textTarmacName = new Text("Tarmac " + tarmacID);
+            Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
+            textTarmacName.setFont(Font.font("Verdana"));
             NumberField inputTarmacLength = new NumberField(Tarmac.MIN_LENGTH, Tarmac.MAX_LENGTH);
             inputTarmacLength.setPromptText("length");
             ObservableList<String> directionOptions = FXCollections.observableArrayList("unidirectional", "bidirectional");
@@ -127,8 +135,10 @@ public class CreateAirport extends VBox {
                 else runwaysVBox.getChildren().remove(1);
             });
             tarmacParameters.getChildren().setAll(textTarmacName, inputTarmacLength, direction);
+            tarmacParameters.setAlignment(Pos.CENTER);
 
             this.getChildren().addAll(tarmacParameters, runwaysVBox);
+
         }
     
         public Tarmac getTarmac() throws RunwayException {
@@ -170,6 +180,8 @@ public class CreateAirport extends VBox {
             inputClearway = new TextField();
             inputClearway.setPromptText("clearway");
             runwayParameters.getChildren().addAll(textDesignator, inputStopway, inputClearway);
+            runwayParameters.setAlignment(Pos.CENTER);
+            runwayParameters.setPadding(new Insets(10,0,10,0));
 
             HBox runwayValues = new HBox();
             inputTORA = new TextField();
@@ -181,6 +193,7 @@ public class CreateAirport extends VBox {
             inputASDA = new TextField();
             inputASDA.setPromptText("asda");
             runwayValues.getChildren().setAll(inputTORA, inputTODA, inputLDA, inputASDA);
+            runwayValues.setAlignment(Pos.CENTER);
 
             this.getChildren().setAll(runwayParameters, runwayValues);
         }

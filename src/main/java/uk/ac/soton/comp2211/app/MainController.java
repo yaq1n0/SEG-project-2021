@@ -5,6 +5,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -61,11 +63,15 @@ public class MainController implements Initializable {
         // Add button to start to make it obvious how to open an airport.
         this.openAirportLabel = new Label("Don't know where to start? Why not try: ");
         this.openAirportButton = new Button("Open Airport");
+
+
         this.openAirportButton.setOnAction(this::openAirport);
-        HBox startBox = new HBox();
+        HBox startBox = new HBox(10);
+        startBox.setPadding(new Insets(0,0,0,230));
         startBox.getChildren().addAll(this.openAirportLabel, this.openAirportButton);
         this.airportParent.getChildren().add(startBox);
-        
+
+
         this.airportContainer = new AirportContainer(stage);
         
         // Bind the boolean properties to show which profile the runway view should be.
@@ -74,6 +80,8 @@ public class MainController implements Initializable {
         // Add airport container to scene
         this.airportParent.getChildren().add(this.airportContainer);
         VBox.setVgrow(this.airportContainer, Priority.ALWAYS);
+
+
         
     }
 
@@ -169,12 +177,16 @@ public class MainController implements Initializable {
     }
     @FXML
     private void darkMode(ActionEvent actionEvent) {
+        StyleManager.getInstance().removeUserAgentStylesheet("Styles/Button.css");
         StyleManager.getInstance().addUserAgentStylesheet("Styles/DarkMode.css");
 
     }
 
     @FXML void lightMode(ActionEvent actionEvent){
         StyleManager.getInstance().removeUserAgentStylesheet("Styles/DarkMode.css");
+        StyleManager.getInstance().addUserAgentStylesheet("Styles/Button.css");
+
+
     }
     /**
      * Ran when user selects Quit in Menu>File
@@ -247,8 +259,7 @@ public class MainController implements Initializable {
      * @param event event
      */
     @FXML
-    public void createAirport(ActionEvent event) {
-        this.createAirportListener.openCreateDialogue();
+    public void createAirport(ActionEvent event) { this.createAirportListener.openCreateDialogue();
     }
 
     /**

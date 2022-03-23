@@ -1,11 +1,15 @@
 package uk.ac.soton.comp2211.component;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import uk.ac.soton.comp2211.model.Obstacle;
@@ -23,7 +27,10 @@ public class CreateObstacle extends VBox {
 
         HBox titleBox = new HBox();
         titleBox.setAlignment(Pos.CENTER);
-        titleBox.getChildren().add(new Text("Create Obstacle:"));
+        Text text = new Text("Create An Obstacle:");
+        text.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        titleBox.getChildren().add(text);
+        titleBox.setPadding(new Insets(10,0,0,0));
 
         HBox obstacleParameters = new HBox();
         inputObstacleName = new TextField();
@@ -34,9 +41,10 @@ public class CreateObstacle extends VBox {
         inputObstacleWidth.setPromptText("width");
         inputObstacleHeight = new NumberField(Obstacle.MIN_HEIGHT, Obstacle.MAX_HEIGHT);
         inputObstacleHeight.setPromptText("height");
+        obstacleParameters.setPadding(new Insets(20,0,0,0));
         obstacleParameters.getChildren().addAll(inputObstacleName, inputObstacleLength,
                 inputObstacleWidth, inputObstacleHeight);
-        titleBox.getChildren().add(new Text("Create Airport:"));
+        //titleBox.getChildren().add(new Text("Create Airport:"));
 
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);
@@ -53,6 +61,9 @@ public class CreateObstacle extends VBox {
                 e1.printStackTrace(); 
             }
         });
+
+        cancel.setStyle("-fx-background-color: #D3CECF; ");
+        create.setStyle("-fx-background-color: #766A6B; ");
         buttonBox.getChildren().addAll(cancel, create);
         buttonBox.setAlignment(Pos.CENTER);
 

@@ -1,7 +1,9 @@
 package uk.ac.soton.comp2211.app;
 
+import com.sun.javafx.css.StyleManager;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.*;
@@ -105,7 +107,7 @@ public class App extends Application {
 
             CreateAirport airportCreate = new CreateAirport(dialog);
 
-            Scene dialogScene = new Scene(airportCreate, 300, 200);
+            Scene dialogScene = new Scene(airportCreate, 400, 250);
             dialog.setScene(dialogScene);
             dialog.show();
         });
@@ -113,23 +115,26 @@ public class App extends Application {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
-
             CreateObstacle obstacleCreate = new CreateObstacle(dialog);
 
             Scene dialogScene = new Scene(obstacleCreate, 300, 200);
             dialog.setScene(dialogScene);
+
             dialog.show();
         });
         
         logger.info("Listeners set for controller.");
         
         Scene scene = new Scene(root, 900, 720);
-        
+
         // Set the initial scene.
         stage.setScene(scene);
         
         // Show the stage and the initial scene.
         stage.show();
+
+        StyleManager.getInstance().addUserAgentStylesheet("Styles/Button.css");
+
         
     }
     
