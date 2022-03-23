@@ -2,7 +2,6 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -25,18 +24,16 @@ public class RunwayView extends Group {
 
     protected static final Logger logger = LogManager.getLogger(RunwayView.class);
     
-    private Runway runway;
-    private final Canvas canvas;
-    private GraphicsContext gc;
+    private final Runway runway;
     private final double w;
     private final double h;
 
     //Handle size of runway and values lines
-    private double runwayStart;
-    private double runwayRepresentationSize;
-    private double clearwaySize;
-    private double stopwaySize;
-    private double dtSize;
+    private final double runwayStart;
+    private final double runwayRepresentationSize;
+    private final double clearwaySize;
+    private final double stopwaySize;
+    private final double dtSize;
     
     public RunwayView(double width, double height, Runway runway) {
         super();
@@ -44,16 +41,15 @@ public class RunwayView extends Group {
         this.runway = runway;
         this.w = width;
         this.h = height;
-        this.canvas = new Canvas(width, height);
-        this.gc = this.canvas.getGraphicsContext2D();
+        Canvas canvas = new Canvas(width, height);
         
-        this.getChildren().add(this.canvas);
+        this.getChildren().add(canvas);
 
         //Handle size of runway and values lines
         runwayStart = this.w * 0.15;
         runwayRepresentationSize = this.w * 0.7;
-        clearwaySize = Math.min(runway.getOriginalValues().getClearway()/3, this.w*0.10);
-        stopwaySize = Math.min(runway.getOriginalValues().getStopway()/3, this.w*0.10);
+        clearwaySize = Math.min(runway.getOriginalValues().getClearway()/3.0, this.w*0.10);
+        stopwaySize = Math.min(runway.getOriginalValues().getStopway()/3.0, this.w*0.10);
         dtSize = runway.getOriginalValues().getDT()*runwayRepresentationSize/runway.getLength();
     }
     
@@ -143,8 +139,8 @@ public class RunwayView extends Group {
             try {
                 Position pos = obs.getPosition();
                 Rectangle obsRect = new Rectangle();
-                obsRect.setX(runwayStart + (pos.getDistance() * this.runwayRepresentationSize / this.runway.getLength()));
-                obsRect.setY((this.h * 0.5) + (pos.getCentreLineDisplacement() * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setX(runwayStart + dtSize + ((pos.getDistance() - (obs.getWidth() / 2.0)) * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setY((this.h * 0.5) + ((pos.getCentreLineDisplacement() - (obs.getHeight() / 2.0)) * this.runwayRepresentationSize / this.runway.getLength()));
                 obsRect.setHeight(obs.getWidth() * this.runwayRepresentationSize / this.runway.getLength());
                 obsRect.setWidth(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength());
                 obsRect.setFill(Color.RED);
@@ -424,14 +420,22 @@ public class RunwayView extends Group {
         }
 
         // set colors of lines
-        toraLine.setStroke(Color.BLUE);
-        toraLine.setStrokeWidth(5d);
-        todaLine.setStroke(Color.YELLOW);
-        todaLine.setStrokeWidth(5d);
-        asdaLine.setStroke(Color.PURPLE);
-        asdaLine.setStrokeWidth(5d);
-        ldaLine.setStroke(Color.PINK);
-        ldaLine.setStrokeWidth(5d);
+        if (toraLine != null) {
+            toraLine.setStroke(Color.BLUE);
+            toraLine.setStrokeWidth(5d);
+        }
+        if (todaLine != null) {
+            todaLine.setStroke(Color.YELLOW);
+            todaLine.setStrokeWidth(5d);
+        }
+        if (asdaLine != null) {
+            asdaLine.setStroke(Color.PURPLE);
+            asdaLine.setStrokeWidth(5d);
+        }
+        if (ldaLine != null) {
+            ldaLine.setStroke(Color.PINK);
+            ldaLine.setStrokeWidth(5d);
+        }
 
         // add color meanings
         Text stripEndText = new Text("Strip End");
