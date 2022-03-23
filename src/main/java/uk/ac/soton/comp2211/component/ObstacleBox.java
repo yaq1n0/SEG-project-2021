@@ -3,7 +3,6 @@ package uk.ac.soton.comp2211.component;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -13,6 +12,7 @@ import uk.ac.soton.comp2211.event.InsertObstacleListener;
 import uk.ac.soton.comp2211.event.ObstacleClearListener;
 import uk.ac.soton.comp2211.event.VerifyObstacleListener;
 import uk.ac.soton.comp2211.exceptions.PositionException;
+import uk.ac.soton.comp2211.exceptions.SizeException;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Position;
 
@@ -24,9 +24,8 @@ public class ObstacleBox extends VBox {
     private final Label lenLabel;
     private final Label widLabel;
     private final Label heightLabel;
-    private final TextField centerField;
-    private final TextField eDistField;
-    private final TextField wDistField;
+    private final NumberField centerField;
+    private final NumberField tDistField;
     private final Button obsButton;
     private InsertObstacleListener insertObstacleListener;
     private ObstacleClearListener obstacleClearListener;
@@ -42,11 +41,9 @@ public class ObstacleBox extends VBox {
 
         this.obsButton = new Button();
         Label centerLabel = new Label("Centre line Displacement: ");
-        Label eDistLabel = new Label("Distance from East: ");
-        Label wDistLabel = new Label("Distance from West: ");
-        this.centerField = new TextField();
-        this.wDistField = new TextField();
-        this.eDistField = new TextField();
+        Label eDistLabel = new Label("Distance from Threshold: ");
+        this.centerField = new NumberField(-5000, 5000);
+        this.tDistField = new NumberField(-5000, 5000);
 
         if (obstacle != null) {
             enablePositionFields();
@@ -59,8 +56,7 @@ public class ObstacleBox extends VBox {
             try {
                 Position pos = obstacle.getPosition();
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
-                this.eDistField.setText("" + pos.getDistanceFromEast());
-                this.wDistField.setText("" + pos.getDistanceFromWest());
+                this.tDistField.setText("" + pos.getDistance());
             } catch (PositionException pe) {
                 logger.error(pe.getStackTrace());
             }
@@ -77,12 +73,10 @@ public class ObstacleBox extends VBox {
         VBox rightPart = new VBox();
         HBox centerPair = new HBox();
         centerPair.getChildren().addAll(centerLabel, centerField);
-        HBox eDistPair = new HBox();
-        eDistPair.getChildren().addAll(eDistLabel, eDistField);
-        HBox wDistPair = new HBox();
-        wDistPair.getChildren().addAll(wDistLabel, wDistField);
+        HBox tDistPair = new HBox();
+        tDistPair.getChildren().addAll(eDistLabel, tDistField);
         leftPart.getChildren().addAll(obsLabel, lenLabel, widLabel, heightLabel);
-        rightPart.getChildren().addAll(centerPair, eDistPair, wDistPair);
+        rightPart.getChildren().addAll(centerPair, tDistPair);
 
         obsButton.setOnAction((ActionEvent event) -> {
             if (this.insertObstacleListener != null) {
@@ -106,36 +100,27 @@ public class ObstacleBox extends VBox {
     }
 
     private void checkParams(ActionEvent actionEvent) {
-        int center, east, west = 0;
+        int center, thresh;
         try {
             center = Integer.parseInt(this.centerField.getText());
-            east = Integer.parseInt(this.eDistField.getText());
-
-            // Gives east precedence over west, following block avoids the number format exception.
-            if (wDistField.getText().length() != 0) {
-                west = Integer.parseInt(this.wDistField.getText());
-            }
-
-            if (east + west != this.runwayLength) {
-                this.wDistField.setText("" + (this.runwayLength - east));
-                west = this.runwayLength - east;
-            }
-            // Error check position values
-            if (east < 0 || west < 0 || east > runwayLength || west > runwayLength) {
-                throw new PositionException("Position out of bounds.");
-            }
-
+            thresh = Integer.parseInt(this.tDistField.getText());
+            
             if (this.obstacle == null) {
                 throw new PositionException("Can't change position of null obstacle.");
             }
-            this.obstacle.setPosition(new Position(west, east, center));
+            
+            try {
+                this.obstacle.setPosition(new Position(thresh, center));
+            } catch (PositionException | SizeException pe) {
+                logger.error("Invalid parameters to Position constructor.");
+            }
+            
             this.verifyObstacleListener.confirm();
             logger.info("User set obstacle position.");
 
         } catch (NumberFormatException | PositionException nfe) {
             this.centerField.clear();
-            this.eDistField.clear();
-            this.wDistField.clear();
+            this.tDistField.clear();
         }
     }
 
@@ -146,8 +131,7 @@ public class ObstacleBox extends VBox {
         this.widLabel.setText("Width: ");
         this.heightLabel.setText("Height: ");
         this.centerField.clear();
-        this.eDistField.clear();
-        this.wDistField.clear();
+        this.tDistField.clear();
         if (obstacleClearListener != null) {
             obstacleClearListener.reset();
         }
@@ -177,14 +161,12 @@ public class ObstacleBox extends VBox {
             try {
                 Position pos = obstacle.getPosition();
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
-                this.eDistField.setText("" + pos.getDistanceFromEast());
-                this.wDistField.setText("" + pos.getDistanceFromWest());
+                this.tDistField.setText("" + pos.getDistance());
                 this.verifyObstacleListener.confirm();
             } catch (PositionException pe) {
                 logger.error(pe.getStackTrace());
                 this.centerField.setText("");
-                this.eDistField.setText("");
-                this.wDistField.setText("");
+                this.tDistField.setText("");
             }
         }
     }
@@ -194,8 +176,7 @@ public class ObstacleBox extends VBox {
      */
     public void disablePositionFields() {
         this.centerField.setDisable(true);
-        this.eDistField.setDisable(true);
-        this.wDistField.setDisable(true);
+        this.tDistField.setDisable(true);
     }
 
     /**
@@ -203,7 +184,6 @@ public class ObstacleBox extends VBox {
      */
     public void enablePositionFields() {
         this.centerField.setDisable(false);
-        this.eDistField.setDisable(false);
-        this.wDistField.setDisable(false);
+        this.tDistField.setDisable(false);
     }
 }

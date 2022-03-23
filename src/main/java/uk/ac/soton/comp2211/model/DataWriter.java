@@ -78,13 +78,13 @@ public class DataWriter {
                 ldaNode.setTextContent(String.valueOf(runway.getOriginalValues().getLDA()));
 
                 Element thresholdNode = document.createElement("threshold");
-                thresholdNode.setTextContent(String.valueOf(runway.getDisplacedThreshold()));
+                thresholdNode.setTextContent(String.valueOf(runway.getOriginalValues().getDT()));
 
                 Element stopwayNode = document.createElement("stopway");
-                stopwayNode.setTextContent(String.valueOf(runway.getStopway()));
+                stopwayNode.setTextContent(String.valueOf(runway.getOriginalValues().getStopway()));
 
                 Element clearwayNode = document.createElement("clearway");
-                clearwayNode.setTextContent(String.valueOf(runway.getClearway()));
+                clearwayNode.setTextContent(String.valueOf(runway.getOriginalValues().getClearway()));
 
                 Element runwayNode = document.createElement("runway");
                 runwayNode.setAttribute("id", String.valueOf(runwayID));

@@ -3,15 +3,12 @@ package uk.ac.soton.comp2211.model;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import uk.ac.soton.comp2211.exceptions.ExtractionException;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.SchemaException;
-import uk.ac.soton.comp2211.exceptions.RunwayException;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -146,12 +143,8 @@ public class SystemModel {
 
             // Instantiate the airport with the airport name and runway data.
             airport = new Airport(airportName, tarmacs);
-        } catch (XPathExpressionException e) {
+        } catch (Exception e) {
             LOGGER.error("Failed to extract airport data: " + e.getMessage());
-
-            throw e;
-        } catch (RunwayException e) {
-            LOGGER.error("Failed to create airport: " + e.getMessage());
 
             throw e;
         }

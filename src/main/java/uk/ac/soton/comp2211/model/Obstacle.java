@@ -4,21 +4,13 @@ import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 
 public class Obstacle {
-
-    public static final int MIN_LENGTH = 1;
-    public static final int MAX_LENGTH = 1000;
-    public static final int MIN_WIDTH = 1;
-    public static final int MAX_WIDTH = 1000;
-    public static final int MIN_HEIGHT = 1;
-    public static final int MAX_HEIGHT = 1000;
-    
     private String name;
 
-    private int length; // Length parallel to the runway.
-    private int width; // Length perpendicular to the runway.
-    private int height;
+    private int length; // Length parallel to the runway, used for visualization
+    private int width; // Width perpendicular to the runway, used for visualization
+    private int height; // Height perpendicular to the runway, used in redeclaration calculations
 
-    private Position position; // Posistion of obstacle from centre of runway.
+    private Position position; // Position of obstacle as distance from thresholds
 
     public Obstacle(String _name, int _length, int _width, int _height) throws SizeException {
         name = _name;
@@ -31,27 +23,20 @@ public class Obstacle {
 
         if (_height >= 0) height = _height;
         else throw new SizeException("Height must be positive!");
+
+        position = null;
     }
 
     public String getName() { return name; }
-
     public int getLength() { return length; }
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
-    public void setPosition(Position _position) { position = _position; }
-
-    public boolean hasPosition() {
-        if (this.position==null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    
-    public Position getPosition() throws PositionException { 
+    public Position getPosition() throws PositionException {
         if (position == null) throw new PositionException("Position of obstacle not set!");
 
-        return position; 
+        return position;
     }
+
+    public void setPosition(Position _position) { position = _position; }
 }

@@ -22,7 +22,6 @@ import org.xml.sax.SAXException;
 
 import uk.ac.soton.comp2211.exceptions.ExtractionException;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
-import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.exceptions.SchemaException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 
@@ -92,7 +91,7 @@ public class DataReader {
         }
     }
 
-    public static Tarmac[] getTarmacs() throws XPathExpressionException, RunwayException {
+    public static Tarmac[] getTarmacs() throws XPathExpressionException {
         int tarmacCount = ((Number) xpath.evaluate("count(//runway)", document, XPathConstants.NUMBER)).intValue();
         Tarmac[] tarmacs = new Tarmac[tarmacCount];
 
@@ -105,7 +104,7 @@ public class DataReader {
         return tarmacs;
     }
 
-    private static Runway[] getTarmacRunways(Tarmac _tarmac) throws XPathExpressionException, RunwayException {
+    private static Runway[] getTarmacRunways(Tarmac _tarmac) throws XPathExpressionException {
         int runwayCount = ((Number) xpath.evaluate("count(//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway)", document, XPathConstants.NUMBER)).intValue();
         Runway[] runways = new Runway[runwayCount];
@@ -126,6 +125,9 @@ public class DataReader {
             int lda = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
                                                 + "']/runway[@id='" + runwayID 
                                                 + "']/lda", document, XPathConstants.NUMBER)).intValue();
+
+            // TODO: The following aren't needed, they are derived from the rest
+            /**
             int threshold = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway[@id='" + runwayID 
                                                     + "']/threshold", document, XPathConstants.NUMBER)).intValue();
@@ -135,10 +137,11 @@ public class DataReader {
             int clearway = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway[@id='" + runwayID
                                                     + "']/clearway", document, XPathConstants.NUMBER)).intValue();
+             **/
 
             RunwayValues values = new RunwayValues(tora, toda, asda, lda);
             
-            runways[runwayID - 1] = new Runway(designator, _tarmac, values, threshold, stopway, clearway);
+            runways[runwayID - 1] = new Runway(designator, _tarmac, values);
         }
 
         return runways;

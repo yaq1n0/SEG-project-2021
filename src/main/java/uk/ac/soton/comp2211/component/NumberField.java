@@ -31,7 +31,7 @@ public class NumberField extends TextField {
     }
 
     private void limitValue() {
-        int value = Integer.valueOf(this.getText());
+        int value = Integer.parseInt(this.getText());
 
         if (value < minValue) this.setText(String.valueOf(minValue));
         else if (value > maxValue) this.setText(String.valueOf(maxValue));
