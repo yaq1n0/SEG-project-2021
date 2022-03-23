@@ -32,6 +32,9 @@ public class Obstacle {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
 
+    public boolean hasValidPosition() {
+        return this.position != null;
+    }
     public Position getPosition() throws PositionException {
         if (position == null) throw new PositionException("Position of obstacle not set!");
 

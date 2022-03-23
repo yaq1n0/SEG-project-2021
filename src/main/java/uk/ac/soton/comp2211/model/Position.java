@@ -31,9 +31,10 @@ public class Position {
         distanceAlt = _distanceAlt;
     }
 
+    // distance can be negative, negative is one direction, positive the other direction
+    // we need to know for UI obstacle placement
     public void setCentreLineDisplacement(int _centreLineDisplacement) {
-        if (_centreLineDisplacement >= 0) centreLineDisplacement = _centreLineDisplacement;
-        else throw new SizeException("Distance from centre line must be positive");
+        centreLineDisplacement = _centreLineDisplacement;
     }
 
     public int getDistance() { return distance; }

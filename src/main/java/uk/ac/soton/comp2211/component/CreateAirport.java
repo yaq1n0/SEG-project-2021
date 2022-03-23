@@ -124,7 +124,7 @@ public class CreateAirport extends VBox {
             HBox tarmacParameters = new HBox();
             Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
             textTarmacName.setFont(Font.font("Verdana"));
-            NumberField inputTarmacLength = new NumberField(Tarmac.MIN_LENGTH, Tarmac.MAX_LENGTH);
+            NumberField inputTarmacLength = new NumberField(1, 1000);
             inputTarmacLength.setPromptText("length");
             ObservableList<String> directionOptions = FXCollections.observableArrayList("unidirectional", "bidirectional");
             ComboBox<String> direction = new ComboBox<String>(directionOptions);
@@ -211,7 +211,7 @@ public class CreateAirport extends VBox {
             int stopway = Integer.valueOf(inputStopway.getText());
             int clearway = Integer.valueOf(inputClearway.getText());
 
-            return new Runway(runwayDesignator, _tarmac, runwayValues, displacedThreshold, stopway, clearway);
+            return new Runway(runwayDesignator, _tarmac, runwayValues);
         }
     }
 }

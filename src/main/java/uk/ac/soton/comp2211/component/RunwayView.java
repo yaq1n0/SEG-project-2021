@@ -52,9 +52,9 @@ public class RunwayView extends Group {
         //Handle size of runway and values lines
         runwayStart = this.w * 0.15;
         runwayRepresentationSize = this.w * 0.7;
-        clearwaySize = Math.min(runway.getClearway()/3, this.w*0.10);
-        stopwaySize = Math.min(runway.getStopway()/3, this.w*0.10);
-        dtSize = runway.getDisplacedThreshold()*runwayRepresentationSize/runway.getLength();
+        clearwaySize = Math.min(runway.getOriginalValues().getClearway()/3, this.w*0.10);
+        stopwaySize = Math.min(runway.getOriginalValues().getStopway()/3, this.w*0.10);
+        dtSize = runway.getOriginalValues().getDT()*runwayRepresentationSize/runway.getLength();
     }
     
     public void updateTopDown() {
@@ -115,7 +115,7 @@ public class RunwayView extends Group {
         drawValueLines();
 
         // Draw displaced threshold
-        if (runway.getDisplacedThreshold()>0) {
+        if (runway.getOriginalValues().getDT()>0) {
             Line dtLine = new Line(runwayStart+(dtSize), this.h*0.5-10, runwayStart+(dtSize), this.h*0.5+10);
             dtLine.setStroke(Color.RED);
             dtLine.setStrokeWidth(5d);
@@ -123,14 +123,14 @@ public class RunwayView extends Group {
         }
 
         // Draw clearway
-        if (runway.getClearway()>0) {
+        if (runway.getOriginalValues().getClearway()>0) {
             Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.35, clearwaySize, this.h*0.3);
             clearwayRec.setFill(Color.CORAL);
             this.getChildren().add(clearwayRec);
         }
 
         // Draw stop-way
-        if (runway.getStopway()>0) {
+        if (runway.getOriginalValues().getStopway()>0) {
             Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.40, stopwaySize, this.h*0.2);
             stopwayRec.setFill(Color.CYAN);
             this.getChildren().add(stopwayRec);
@@ -143,7 +143,7 @@ public class RunwayView extends Group {
             try {
                 Position pos = obs.getPosition();
                 Rectangle obsRect = new Rectangle();
-                obsRect.setX(runwayStart + (pos.getDistanceFromWest() * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setX(runwayStart + (pos.getDistance() * this.runwayRepresentationSize / this.runway.getLength()));
                 obsRect.setY((this.h * 0.5) + (pos.getCentreLineDisplacement() * this.runwayRepresentationSize / this.runway.getLength()));
                 obsRect.setHeight(obs.getWidth() * this.runwayRepresentationSize / this.runway.getLength());
                 obsRect.setWidth(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength());
@@ -153,7 +153,7 @@ public class RunwayView extends Group {
                 logger.info("Obstacle drawn to top-down.");
 
                 //Draw obstacle dotted line
-                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistanceFromWest()*runwayRepresentationSize/runway.getLength();
+                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
                 Line dottedObsline = new Line(runwayStart+ dWestRepresentation, this.h*0.5, runwayStart+ dWestRepresentation, this.h*0.75);
                 dottedObsline.setStroke(Color.WHITE);
                 dottedObsline.setStrokeWidth(2d);
@@ -207,7 +207,7 @@ public class RunwayView extends Group {
         runwayRectangle.toFront();
 
         // Draw displaced threshold
-        if (runway.getDisplacedThreshold()>0) {
+        if (runway.getOriginalValues().getDT()>0) {
             Line dtLine = new Line(runwayStart+(dtSize), this.h*0.61, runwayStart+(dtSize), this.h*0.64);
             dtLine.setStroke(Color.RED);
             dtLine.setStrokeWidth(5d);
@@ -215,14 +215,14 @@ public class RunwayView extends Group {
         }
 
         // Draw clearway
-        if (runway.getClearway()>0) {
+        if (runway.getOriginalValues().getClearway()>0) {
             Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.6, clearwaySize, this.h*0.20);
             clearwayRec.setFill(Color.CORAL);
             this.getChildren().add(clearwayRec);
         }
 
         // Draw stop-way
-        if (runway.getStopway()>0) {
+        if (runway.getOriginalValues().getStopway()>0) {
             Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.6, stopwaySize, this.h*0.12);
             stopwayRec.setFill(Color.CYAN);
             this.getChildren().add(stopwayRec);
@@ -236,7 +236,7 @@ public class RunwayView extends Group {
             try {
                 Position pos = obs.getPosition();
                 Rectangle obsRect = new Rectangle();
-                obsRect.setX(runwayStart + (pos.getDistanceFromWest() * this.runwayRepresentationSize / this.runway.getLength()));
+                obsRect.setX(runwayStart + (pos.getDistance() * this.runwayRepresentationSize / this.runway.getLength()));
                 obsRect.setY((this.h * 0.6) - (obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength()));
                 obsRect.setHeight(obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength());
                 obsRect.setWidth(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength());
@@ -246,7 +246,7 @@ public class RunwayView extends Group {
                 logger.info("Obstacle drawn to side-on.");
 
                 // draw obstacle dotted line
-                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistanceFromWest()*runwayRepresentationSize/runway.getLength();
+                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
                 Line dottedObsline = new Line(runwayStart+ dWestRepresentation, this.h*0.6, runwayStart+ dWestRepresentation, this.h*0.75);
                 dottedObsline.setStroke(Color.WHITE);
                 dottedObsline.setStrokeWidth(2d);
@@ -297,13 +297,13 @@ public class RunwayView extends Group {
         Line ldaLine = null;
 
         // handle sizing
-        if (runway.getTarmac().getObstacle()!=null && runway.getTarmac().getObstacle().hasPosition()) {
+        if (runway.getTarmac().getObstacle()!=null && runway.getTarmac().getObstacle().hasValidPosition()) {
             try {
                 double slopeOrResa = Math.max(240, this.runway.getTarmac().getObstacle().getHeight()*50);
-                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistanceFromWest()*runwayRepresentationSize/runway.getLength();
+                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
                 double blastAllowanceR = 300*runwayRepresentationSize/this.runway.getLength();
 
-                if (runway.getTarmac().getObstacle().getPosition().getDistanceFromWest()>runway.getTarmac().getObstacle().getPosition().getDistanceFromEast()) {
+                if (runway.getTarmac().getObstacle().getPosition().getDistance()>runway.getTarmac().getObstacle().getPosition().getDistanceAlt()) {
                     toraLine = new Line(runwayStart, 30, runwayStart + (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 30);
                     toraText.setX(runwayStart);
 
@@ -374,7 +374,7 @@ public class RunwayView extends Group {
                     dottedBlastline.getStrokeDashArray().addAll(7d, 7d);
                     this.getChildren().add(dottedBlastline);
 
-                    if (runway.getDisplacedThreshold()<dWestRepresentation+(slopeOrResa+60)) {
+                    if (runway.getOriginalValues().getDT()<dWestRepresentation+(slopeOrResa+60)) {
                         ldaLine = new Line(runwayStart+((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()) + dWestRepresentation, 90, runwayStart+runwayRepresentationSize, 90);
                         ldaText.setX(runwayStart+((slopeOrResa+60)*runwayRepresentationSize/runway.getLength())+ dWestRepresentation);
 

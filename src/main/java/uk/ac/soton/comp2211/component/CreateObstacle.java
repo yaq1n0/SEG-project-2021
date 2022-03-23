@@ -35,11 +35,11 @@ public class CreateObstacle extends VBox {
         HBox obstacleParameters = new HBox();
         inputObstacleName = new TextField();
         inputObstacleName.setPromptText("name");
-        inputObstacleLength = new NumberField(Obstacle.MIN_LENGTH, Obstacle.MAX_LENGTH);
+        inputObstacleLength = new NumberField(1, 1000);
         inputObstacleLength.setPromptText("length");
-        inputObstacleWidth = new NumberField(Obstacle.MIN_WIDTH, Obstacle.MAX_WIDTH);
+        inputObstacleWidth = new NumberField(1, 1000);
         inputObstacleWidth.setPromptText("width");
-        inputObstacleHeight = new NumberField(Obstacle.MIN_HEIGHT, Obstacle.MAX_HEIGHT);
+        inputObstacleHeight = new NumberField(1, 1000);
         inputObstacleHeight.setPromptText("height");
         obstacleParameters.setPadding(new Insets(20,0,0,0));
         obstacleParameters.getChildren().addAll(inputObstacleName, inputObstacleLength,
