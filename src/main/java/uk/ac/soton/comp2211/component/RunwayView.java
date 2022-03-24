@@ -120,14 +120,14 @@ public class RunwayView extends Group {
 
         // Draw clearway
         if (runway.getOriginalValues().getClearway()>0) {
-            Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.35, clearwaySize, this.h*0.3);
+            Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.4, clearwaySize, this.h*0.2);
             clearwayRec.setFill(Color.CORAL);
             this.getChildren().add(clearwayRec);
         }
 
         // Draw stop-way
         if (runway.getOriginalValues().getStopway()>0) {
-            Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.40, stopwaySize, this.h*0.2);
+            Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.45, stopwaySize, this.h*0.1);
             stopwayRec.setFill(Color.CYAN);
             this.getChildren().add(stopwayRec);
             stopwayRec.toFront();
@@ -160,10 +160,22 @@ public class RunwayView extends Group {
                 logger.info("Obstacle has not position, so is not being drawn.");
             }
         }
-
-
-
         
+        // Draw Take-off/Landing direction
+        Polygon direction;
+        double[] ps = {
+                20, 0.11* this.h,
+                60, 0.11* this.h,
+                60, 0.075* this.h,
+                80, 0.125* this.h,
+                60, 0.175* this.h,
+                60, 0.14* this.h,
+                20, 0.14* this.h
+        };
+        direction = new Polygon(ps);
+        direction.setFill(Color.RED);
+        this.getChildren().add(direction);
+
 
         // Draw scale indicator
         // Draw compass
@@ -226,7 +238,6 @@ public class RunwayView extends Group {
         }
         
         // Draw Obstacle
-        // Draw obstacle
         Obstacle obs = runway.getTarmac().getObstacle();
         if (obs != null) {
             try {
@@ -330,13 +341,13 @@ public class RunwayView extends Group {
                     resaLine.toFront();
                     this.getChildren().add(resaLine);
 
-                    Line stripendLine = new Line(runwayStart+ (dWestRepresentation)-(300*runwayRepresentationSize/runway.getLength()), this.h*0.70, runwayStart+ dWestRepresentation-(240*runwayRepresentationSize/runway.getLength()), this.h*0.70);
+                    Line stripendLine = new Line(runwayStart+ (dWestRepresentation)-(300*runwayRepresentationSize/runway.getLength()), this.h*0.75, runwayStart+ dWestRepresentation-(240*runwayRepresentationSize/runway.getLength()), this.h*0.75);
                     stripendLine.setStrokeWidth(5d);
                     stripendLine.setStroke(Color.DARKGREEN);
                     stripendLine.toFront();
                     this.getChildren().add(stripendLine);
 
-                    Line dottedTake = new Line(runwayStart+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), this.h*0.75, runwayStart+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 30);
+                    Line dottedTake = new Line(runwayStart+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), this.h*0.8, runwayStart+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 30);
                     dottedTake.setStroke(Color.WHITE);
                     dottedTake.setStrokeWidth(2d);
                     dottedTake.getStrokeDashArray().addAll(7d, 7d);

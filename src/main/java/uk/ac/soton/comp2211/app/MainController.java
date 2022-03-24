@@ -325,9 +325,9 @@ public class MainController implements Initializable {
     /**
      * Used as a listener for when the user selects "Add Tarmac" in the airport container.
      */
-    public void openAddTarmacDialogue() {
+    public void openAddTarmacDialogue(int tarmacID) {
         if (this.createTarmacListener != null) {
-            this.createTarmacListener.openDialogue();
+            this.createTarmacListener.openDialogue(tarmacID);
         }
     }
 

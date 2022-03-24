@@ -12,6 +12,9 @@ import uk.ac.soton.comp2211.event.DeleteTarmacListener;
 import uk.ac.soton.comp2211.event.InsertObstacleListener;
 import uk.ac.soton.comp2211.model.Airport;
 import uk.ac.soton.comp2211.model.Runway;
+import uk.ac.soton.comp2211.model.Tarmac;
+
+import java.util.List;
 
 /**
  * Component containing all the Runway objects for an airport.
@@ -61,7 +64,9 @@ public class AirportContainer extends VBox {
         Button addTarmac = new Button("Add Tarmac");
         addTarmac.setOnAction((ActionEvent event) -> {
             if (this.addTarmacListener != null) {
-                this.addTarmacListener.openAddTarmac();
+                List<Tarmac> ts = this.airport.getTarmacs();
+                int tid = ts.get(ts.size() - 1).getID() + 1;
+                this.addTarmacListener.openAddTarmac(tid);
             }
         });
         this.getChildren().add(addTarmac);

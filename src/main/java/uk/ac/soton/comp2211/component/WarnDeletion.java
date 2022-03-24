@@ -24,8 +24,8 @@ public class WarnDeletion extends VBox {
         HBox titleBox = new HBox();
         titleBox.setAlignment(Pos.CENTER);
         titleBox.getChildren().add(new Text("Are you sure you want to delete this tarmac? This action is irreversible."));
-
-        this.getChildren().add(titleBox);
+        
+        this.getChildren().addAll(titleBox, new Text("Deleting this tarmac will remove all logical runways."));
 
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);

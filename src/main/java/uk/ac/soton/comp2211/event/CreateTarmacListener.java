@@ -5,6 +5,6 @@ package uk.ac.soton.comp2211.event;
  */
 public interface CreateTarmacListener {
     
-    void openDialogue();
+    void openDialogue(int tarmacID);
     
 }

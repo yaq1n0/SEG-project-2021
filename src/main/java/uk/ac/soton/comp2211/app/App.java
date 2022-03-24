@@ -132,11 +132,11 @@ public class App extends Application {
 
             dialog.show();
         });
-        controller.setCreateTarmacListener(() -> {
+        controller.setCreateTarmacListener((int tarmacID) -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
-            CreateTarmac createTarmac = new CreateTarmac(dialog);
+            CreateTarmac createTarmac = new CreateTarmac(dialog, tarmacID);
 
             Scene dialogScene = new Scene(createTarmac, 300, 200);
             dialog.setScene(dialogScene);

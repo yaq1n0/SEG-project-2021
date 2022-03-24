@@ -5,8 +5,8 @@
         <runway id="1">
             <designator>09L</designator>
             <tora>3902</tora>
-            <toda>3902</toda>
-            <asda>3902</asda>
+            <toda>4020</toda>
+            <asda>3962</asda>
             <lda>3595</lda>
             <threshold>306</threshold>
             <stopway>0</stopway>
@@ -30,7 +30,7 @@
             <designator>09R</designator>
             <tora>3660</tora>
             <toda>3660</toda>
-            <asda>3660</asda>
+            <asda>3800</asda>
             <lda>3353</lda>
             <threshold>307</threshold>
             <stopway>0</stopway>
