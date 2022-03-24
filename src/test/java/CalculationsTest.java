@@ -46,7 +46,6 @@ public class CalculationsTest {
     @Test
     void test09LScenario1() throws PositionException, RunwayException, SizeException {
         System.out.println("Testing Scenario 1 on runway 09L");
-        System.out.println(Arrays.toString(tarmac09L.getRunways()));
         obs1.setPosition(new Position(-50,0));
         tarmac09L.setObstacle(obs1);
         runway09L.recalculate(300);
@@ -153,6 +152,34 @@ public class CalculationsTest {
         Assertions.assertEquals(3612, runway27R.getCurrentValues().getTODA());
         Assertions.assertEquals(3534, runway27R.getCurrentValues().getASDA());
         Assertions.assertEquals(2774, runway27R.getCurrentValues().getLDA());
+        System.out.println("Test successful");
+    }
+
+    @Test
+    void testOutsideRunway() throws PositionException, RunwayException, SizeException {
+        System.out.println("Testing Obstacle Outside on runway 09L");
+        obs1.setPosition(new Position(-300,0));
+        tarmac09L.setObstacle(obs1);
+        runway09L.recalculate(300);
+
+        Assertions.assertEquals(3902, runway09L.getCurrentValues().getTORA());
+        Assertions.assertEquals(3902, runway09L.getCurrentValues().getTODA());
+        Assertions.assertEquals(3902, runway09L.getCurrentValues().getASDA());
+        Assertions.assertEquals(3595, runway09L.getCurrentValues().getLDA());
+        System.out.println("Test successful");
+    }
+
+    @Test
+    void testOutsideRunway2() throws PositionException, RunwayException, SizeException {
+        System.out.println("Testing Obstacle Outside on runway 09L");
+        obs1.setPosition(new Position(300,200));
+        tarmac09L.setObstacle(obs1);
+        runway09L.recalculate(300);
+
+        Assertions.assertEquals(3902, runway09L.getCurrentValues().getTORA());
+        Assertions.assertEquals(3902, runway09L.getCurrentValues().getTODA());
+        Assertions.assertEquals(3902, runway09L.getCurrentValues().getASDA());
+        Assertions.assertEquals(3595, runway09L.getCurrentValues().getLDA());
         System.out.println("Test successful");
     }
 
