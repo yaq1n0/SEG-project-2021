@@ -11,12 +11,12 @@ public class NumberField extends TextField {
         maxValue = _maxValue;
 
         this.textProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    if (isInteger()) limitValue();
-                        // if (inRange()) this.setStyle("-fx-text-inner-color: black;");
-                        // else this.setStyle("-fx-text-inner-color: red;");
-                    else this.setText(newValue.replaceAll("[^\\d]", ""));
-                }
+            (observable, oldValue, newValue) -> {
+                if (isInteger()) limitValue();
+                    // if (inRange()) this.setStyle("-fx-text-inner-color: black;");
+                    // else this.setStyle("-fx-text-inner-color: red;");
+                else this.setText(newValue.replaceAll("[^\\d]", ""));
+            }
         );
     }
 
@@ -31,7 +31,7 @@ public class NumberField extends TextField {
     }
 
     private void limitValue() {
-        int value = Integer.parseInt(this.getText());
+        int value = Integer.valueOf(this.getText());
 
         if (value < minValue) this.setText(String.valueOf(minValue));
         else if (value > maxValue) this.setText(String.valueOf(maxValue));

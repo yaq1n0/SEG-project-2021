@@ -105,7 +105,7 @@ public class CreateAirport extends VBox {
             tarmacs[i] = vboxTarmac.getTarmac();
         }
 
-        Airport airport = new Airport(airportName, tarmacs);
+        Airport airport = new Airport(airportName, tarmacs, airportName + ".xml");
         SystemModel.addAirport(airport, airportName + ".xml");
     }
 

@@ -127,19 +127,6 @@ public class DataReader {
                                                 + "']/runway[@id='" + runwayID 
                                                 + "']/lda", document, XPathConstants.NUMBER)).intValue();
 
-            // TODO: The following aren't needed, they are derived from the rest
-            /**
-            int threshold = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
-                                                    + "']/runway[@id='" + runwayID 
-                                                    + "']/threshold", document, XPathConstants.NUMBER)).intValue();
-            int stopway = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
-                                                    + "']/runway[@id='" + runwayID
-                                                    + "']/stopway", document, XPathConstants.NUMBER)).intValue();
-            int clearway = ((Number) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
-                                                    + "']/runway[@id='" + runwayID
-                                                    + "']/clearway", document, XPathConstants.NUMBER)).intValue();
-             **/
-
             RunwayValues values = new RunwayValues(tora, toda, asda, lda);
             
             runways[runwayID - 1] = new Runway(designator, _tarmac, values);

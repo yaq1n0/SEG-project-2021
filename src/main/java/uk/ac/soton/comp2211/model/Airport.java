@@ -6,16 +6,21 @@ import java.util.List;
 
 public class Airport {
     private String name;
-    private Tarmac[] tarmacs;
+    private List<Tarmac> tarmacs;
+    private String dataFile;
 
-    public Airport(String _name, Tarmac[] _tarmacs) {
+    public Airport(String _name, Tarmac[] _tarmacs, String _dataFile) {
         name = _name;
-        tarmacs = _tarmacs;
+
+        tarmacs = new ArrayList<Tarmac>();
+        for (Tarmac tarmac : _tarmacs) tarmacs.add(tarmac);
+
+        dataFile = _dataFile;
     }
 
     public String getName() { return name; }
-
-    public Tarmac[] getTarmacs() { return tarmacs; }
+    public List<Tarmac> getTarmacs() { return tarmacs; }
+    public String getDataFile() { return dataFile; }
 
     public Runway[] getRunways() {
         List<Runway> runways = new ArrayList<Runway>();

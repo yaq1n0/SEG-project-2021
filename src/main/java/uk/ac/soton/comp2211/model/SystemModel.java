@@ -2,9 +2,14 @@ package uk.ac.soton.comp2211.model;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 import uk.ac.soton.comp2211.exceptions.ExtractionException;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
@@ -142,7 +147,7 @@ public class SystemModel {
             Tarmac[] tarmacs = DataReader.getTarmacs();
 
             // Instantiate the airport with the airport name and runway data.
-            airport = new Airport(airportName, tarmacs);
+            airport = new Airport(airportName, tarmacs, _airportFilename);
         } catch (Exception e) {
             LOGGER.error("Failed to extract airport data: " + e.getMessage());
             e.printStackTrace();
@@ -178,7 +183,7 @@ public class SystemModel {
         Tarmac[] tarmacs = DataReader.getTarmacs();
 
         // Instantiate the airport with the airport name and runway data.
-        airport = new Airport(airportName, tarmacs);
+        airport = new Airport(airportName, tarmacs, _airportFilename);
     }
 
     public static Airport getAirport() throws Exception {
@@ -268,9 +273,7 @@ public class SystemModel {
     public static void addAirport(Airport _newAirport, String _airportFileName) throws Exception {
         LOGGER.info("Adding new airport...");
 
-        String airportFilePath;
-        airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _airportFileName;
-        // airportFilePath = "./src/main/resources" + "/" + _airportFileName;
+        String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _airportFileName;
 
         File airportFile = new File(airportFilePath);
 
@@ -294,6 +297,28 @@ public class SystemModel {
     public static Obstacle[] getObstacles() { return obstacles; }
     
     public static void deleteTarmac(Runway runway) {
+    }
         
+    /**
+     * Add a new tarmac to the currently loaded airport 
+     * and modify the airport data file.
+     * @throws ParserConfigurationException
+     * @throws TransformerException
+     * @throws IOException
+     * @throws SAXException
+     */
+    public static void addTarmac(Tarmac _tarmac) throws SAXException, IOException, TransformerException, ParserConfigurationException {
+        LOGGER.info("Adding tarmac to airport.");
+
+        airport.getTarmacs().add(_tarmac);
+
+        LOGGER.info("Modifying airport data file.");
+
+        String airportFileName = airport.getDataFile();
+        String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + airportFileName;
+
+        File airportFile = new File(airportFilePath);
+
+        DataWriter.writeAirport(airport, airportFile);
     }
 }
