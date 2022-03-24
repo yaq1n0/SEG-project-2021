@@ -24,7 +24,7 @@ public class CreateTarmac extends VBox {
     private NumberField inputObstacleWidth;
     private NumberField inputObstacleHeight;
 
-    public CreateTarmac(Stage dialog) {
+    public CreateTarmac(Stage dialog, int _newTarmacID) {
         super(20);
 
         HBox titleBox = new HBox();
@@ -33,6 +33,8 @@ public class CreateTarmac extends VBox {
         text.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, 20));
         titleBox.getChildren().add(text);
         titleBox.setPadding(new Insets(10,0,0,0));
+
+        TarmacVBox tarmacVBox = new TarmacVBox(_newTarmacID, _newTarmacID - 1);
 
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);
@@ -55,7 +57,7 @@ public class CreateTarmac extends VBox {
         buttonBox.getChildren().addAll(cancel, create);
         buttonBox.setAlignment(Pos.CENTER);
 
-        this.getChildren().addAll(titleBox, buttonBox);
+        this.getChildren().addAll(titleBox, tarmacVBox, buttonBox);
     }
 
     /**
