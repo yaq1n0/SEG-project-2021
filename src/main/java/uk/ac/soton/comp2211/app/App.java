@@ -9,10 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp2211.component.AirportSelect;
-import uk.ac.soton.comp2211.component.CreateAirport;
-import uk.ac.soton.comp2211.component.CreateObstacle;
-import uk.ac.soton.comp2211.component.WarnDeletion;
+import uk.ac.soton.comp2211.component.*;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
@@ -135,6 +132,17 @@ public class App extends Application {
 
             dialog.show();
         });
+        controller.setCreateTarmacListener(() -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+            CreateTarmac createTarmac = new CreateTarmac(dialog);
+
+            Scene dialogScene = new Scene(createTarmac, 300, 200);
+            dialog.setScene(dialogScene);
+
+            dialog.show();
+        });
         
         logger.info("Listeners set for controller.");
         
@@ -147,7 +155,6 @@ public class App extends Application {
         stage.show();
 
         StyleManager.getInstance().addUserAgentStylesheet("Styles/Button.css");
-
         
     }
     

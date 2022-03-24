@@ -52,6 +52,7 @@ public class MainController implements Initializable {
     private CreateAirportListener createAirportListener;
     private CreateObstacleListener createObstacleListener;
     private WarnDeletionListener warnDeletionListener;
+    private CreateTarmacListener createTarmacListener;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
@@ -81,6 +82,7 @@ public class MainController implements Initializable {
         // Bind the boolean properties to show which profile the runway view should be.
         this.airportContainer.bindViewProperty(this.topView);
         this.airportContainer.setDeleteTarmacListeners(this::attemptTarmacDeletion);
+        this.airportContainer.setAddTarmacListener(this::openAddTarmacDialogue);
         
         // Add airport container to scene
         this.airportParent.getChildren().add(this.airportContainer);
@@ -318,5 +320,22 @@ public class MainController implements Initializable {
         } else {
             toDelete = null;
         }
+    }
+
+    /**
+     * Used as a listener for when the user selects "Add Tarmac" in the airport container.
+     */
+    public void openAddTarmacDialogue() {
+        if (this.createTarmacListener != null) {
+            this.createTarmacListener.openDialogue();
+        }
+    }
+
+    /**
+     * Set the create tarmac listener to open dialogue.
+     * @param listener listener
+     */
+    public void setCreateTarmacListener(CreateTarmacListener listener) {
+        this.createTarmacListener = listener;
     }
 }
