@@ -296,7 +296,11 @@ public class SystemModel {
 
     public static Obstacle[] getObstacles() { return obstacles; }
     
-    public static void deleteTarmac(Runway runway) {
+    public static void deleteTarmac(Runway _runway) {
+        LOGGER.info("Remove tarmac from airport.");
+
+        for (Runway runway : airport.getRunways())
+            if (runway == _runway) airport.getTarmacs().remove(runway.getTarmac());
     }
         
     /**

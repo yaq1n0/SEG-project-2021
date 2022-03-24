@@ -207,10 +207,6 @@ public class CreateAirport extends VBox {
             int asda = Integer.valueOf(inputASDA.getText());
             RunwayValues runwayValues = new RunwayValues(tora, toda, asda, lda);
 
-            int displacedThreshold = Integer.valueOf(inputThreshold.getText());
-            int stopway = Integer.valueOf(inputStopway.getText());
-            int clearway = Integer.valueOf(inputClearway.getText());
-
             return new Runway(runwayDesignator, _tarmac, runwayValues);
         }
     }
