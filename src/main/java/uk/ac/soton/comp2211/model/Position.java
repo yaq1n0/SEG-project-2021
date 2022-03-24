@@ -4,19 +4,17 @@ import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 
 public class Position {
-    private boolean bi; // does the position object contain positions for a bidirectional tarmac
+    // private boolean bi; // does the position object contain positions for a bidirectional tarmac
     private int distance; // distance from the threshold
     private int distanceAlt; // distance from the threshold of the alternate/reverse runway
     private int centreLineDisplacement; // displacement of object from the centre line of the tarmac.
 
     public Position(int _distance, int _centreLineDisplacement) throws PositionException, SizeException {
-        bi = false;
         setDistance(_distance);
         setCentreLineDisplacement(_centreLineDisplacement);
     }
 
     public Position(int _distance, int _distanceAlt, int _centreLineDisplacement) throws PositionException, SizeException {
-        bi = true;
         setDistance(_distance);
         setDistanceAlt(_distanceAlt);
         setCentreLineDisplacement(_centreLineDisplacement);

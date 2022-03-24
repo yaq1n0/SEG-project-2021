@@ -24,6 +24,7 @@ public class RunwayVBox extends VBox {
 
     public RunwayVBox(String runwayDesignator) {
         HBox runwayParameters = new HBox();
+        Text header = new Text("Runway: ");
         textDesignator = new Text(runwayDesignator);
         // inputThreshold = new NumberField(Runway.);
         // inputThreshold.setPromptText("displacement threshold");
@@ -31,8 +32,8 @@ public class RunwayVBox extends VBox {
         // inputStopway.setPromptText("stopway");
         // inputClearway = new TextField();
         // inputClearway.setPromptText("clearway");
-        runwayParameters.getChildren().addAll(textDesignator);
-        runwayParameters.setAlignment(Pos.CENTER);
+        runwayParameters.getChildren().addAll(header, textDesignator);
+        runwayParameters.setAlignment(Pos.CENTER_LEFT);
         runwayParameters.setPadding(new Insets(10,0,10,0));
 
         HBox runwayValues = new HBox();

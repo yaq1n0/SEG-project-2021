@@ -83,7 +83,7 @@ public class CreateAirport extends VBox {
             }
         });
         cancel.setStyle("-fx-background-color: #D3CECF; ");
-        buttonBox.getChildren().add(cancel);
+        buttonBox.getChildren().addAll(cancel, create);
         buttonBox.setAlignment(Pos.CENTER);
         
         this.getChildren().addAll(titleBox, airportParameters, vboxTarmacs, buttonBox);
