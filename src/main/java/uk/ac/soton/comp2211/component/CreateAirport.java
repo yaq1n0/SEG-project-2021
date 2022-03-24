@@ -1,7 +1,6 @@
 package uk.ac.soton.comp2211.component;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,10 +14,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.model.Airport;
-import uk.ac.soton.comp2211.model.Runway;
-import uk.ac.soton.comp2211.model.RunwayValues;
 import uk.ac.soton.comp2211.model.SystemModel;
 import uk.ac.soton.comp2211.model.Tarmac;
 
