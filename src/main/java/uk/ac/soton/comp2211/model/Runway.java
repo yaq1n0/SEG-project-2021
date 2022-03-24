@@ -6,6 +6,15 @@ import uk.ac.soton.comp2211.exceptions.RunwayException;
 import java.util.ArrayList;
 
 public class Runway {
+    public static final int MIN_TORA = 1;
+    public static final int MAX_TORA = 1000;
+    public static final int MIN_TODA = 1;
+    public static final int MAX_TODA = 1000;
+    public static final int MIN_ASDA = 1;
+    public static final int MAX_ASDA = 1000;
+    public static final int MIN_LDA = 1;
+    public static final int MAX_LDA = 1000;
+
     private String runwayDesignator;
     private Tarmac tarmac; // Corresponding tarmac
     private boolean alt; // is an alternate runway

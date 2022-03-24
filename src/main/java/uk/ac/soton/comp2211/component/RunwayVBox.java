@@ -2,7 +2,6 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -14,36 +13,37 @@ import uk.ac.soton.comp2211.model.Tarmac;
 public class RunwayVBox extends VBox {
     private Text textDesignator;
 
-    private TextField inputThreshold;
-    private TextField inputStopway;
-    private TextField inputClearway;
+    // private NumberField inputThreshold;
+    // private NumberField inputStopway;
+    // private NumberField inputClearway;
 
-    private TextField inputTORA;
-    private TextField inputTODA;
-    private TextField inputLDA;
-    private TextField inputASDA;
+    private NumberField inputTORA;
+    private NumberField inputTODA;
+    private NumberField inputLDA;
+    private NumberField inputASDA;
 
     public RunwayVBox(String runwayDesignator) {
         HBox runwayParameters = new HBox();
         textDesignator = new Text(runwayDesignator);
-        inputThreshold = new TextField();
-        inputThreshold.setPromptText("displacement threshold");
-        inputStopway = new TextField();
-        inputStopway.setPromptText("stopway");
-        inputClearway = new TextField();
-        inputClearway.setPromptText("clearway");
-        runwayParameters.getChildren().addAll(textDesignator, inputStopway, inputClearway);
+        // inputThreshold = new NumberField(Runway.);
+        // inputThreshold.setPromptText("displacement threshold");
+        // inputStopway = new TextField();
+        // inputStopway.setPromptText("stopway");
+        // inputClearway = new TextField();
+        // inputClearway.setPromptText("clearway");
+        runwayParameters.getChildren().addAll(textDesignator);
         runwayParameters.setAlignment(Pos.CENTER);
         runwayParameters.setPadding(new Insets(10,0,10,0));
 
         HBox runwayValues = new HBox();
-        inputTORA = new TextField();
+        textDesignator = new Text(runwayDesignator);
+        inputTORA = new NumberField(Runway.MIN_TORA, Runway.MAX_TORA);
         inputTORA.setPromptText("tora");
-        inputTODA = new TextField();
+        inputTODA = new NumberField(Runway.MIN_TODA, Runway.MAX_TODA);
         inputTODA.setPromptText("toda");
-        inputLDA = new TextField();
+        inputLDA = new NumberField(Runway.MIN_LDA, Runway.MAX_LDA);
         inputLDA.setPromptText("lda");
-        inputASDA = new TextField();
+        inputASDA = new NumberField(Runway.MIN_ASDA, Runway.MAX_ASDA);
         inputASDA.setPromptText("asda");
         runwayValues.getChildren().setAll(inputTORA, inputTODA, inputLDA, inputASDA);
         runwayValues.setAlignment(Pos.CENTER);

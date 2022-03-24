@@ -296,20 +296,26 @@ public class SystemModel {
 
     public static Obstacle[] getObstacles() { return obstacles; }
     
-    public static void deleteTarmac(Runway _runway) throws SAXException, IOException, TransformerException, ParserConfigurationException {
+    public static void deleteTarmac(Runway _runway) {
         LOGGER.info("Remove tarmac from airport.");
 
         for (Runway runway : airport.getRunways())
             if (runway == _runway) airport.getTarmacs().remove(runway.getTarmac());
 
-        LOGGER.info("Modifying airport data file.");
+        LOGGER.info("Modifying airport data file ...");
 
         String airportFileName = airport.getDataFile();
         String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + airportFileName;
 
         File airportFile = new File(airportFilePath);
 
-        DataWriter.writeAirport(airport, airportFile);
+        try {
+            DataWriter.writeAirport(airport, airportFile);
+
+            LOGGER.info("Airport data file modified successfully.");
+        } catch (Exception e) {
+            LOGGER.error("Failed to modify airport data file!");
+        }
     }
         
     /**
