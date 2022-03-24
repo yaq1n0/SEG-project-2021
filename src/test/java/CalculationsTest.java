@@ -50,9 +50,10 @@ public class CalculationsTest {
         obs1.setPosition(new Position(-50,0));
         tarmac09L.setObstacle(obs1);
         runway09L.recalculate(300);
-        Assertions.assertEquals(3346, runway09L.getCurrentValues().getTORA());
-        Assertions.assertEquals(3346, runway09L.getCurrentValues().getTODA());
-        Assertions.assertEquals(3346, runway09L.getCurrentValues().getASDA());
+
+        Assertions.assertEquals(3345, runway09L.getCurrentValues().getTORA());
+        Assertions.assertEquals(3345, runway09L.getCurrentValues().getTODA());
+        Assertions.assertEquals(3345, runway09L.getCurrentValues().getASDA());
         Assertions.assertEquals(2985, runway09L.getCurrentValues().getLDA());
         System.out.println("Test successful");
     }
@@ -134,9 +135,9 @@ public class CalculationsTest {
         tarmac09L.setObstacle(obs4);
         runway09L.recalculate(300);
 
-        Assertions.assertEquals(2792, runway09L.getCurrentValues().getTORA());
-        Assertions.assertEquals(2792, runway09L.getCurrentValues().getTODA());
-        Assertions.assertEquals(2792, runway09L.getCurrentValues().getASDA());
+        Assertions.assertEquals(2793, runway09L.getCurrentValues().getTORA());
+        Assertions.assertEquals(2793, runway09L.getCurrentValues().getTODA());
+        Assertions.assertEquals(2793, runway09L.getCurrentValues().getASDA());
         Assertions.assertEquals(3246, runway09L.getCurrentValues().getLDA());
         System.out.println("Test successful");
     }

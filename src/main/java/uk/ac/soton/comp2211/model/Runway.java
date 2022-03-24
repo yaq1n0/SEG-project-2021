@@ -33,17 +33,24 @@ public class Runway {
     // visualization variables
     private int length;
     private int width;
+    private int obstaclePositionReal;
 
     public Runway(String _runwayDesignator, Tarmac _tarmac, RunwayValues _originalValues) {
         runwayDesignator = _runwayDesignator;
         tarmac = _tarmac;
-        alt = false; // assume is main runway
+
+        if (Integer.parseInt(_runwayDesignator.substring(0,2))<=18) {
+            alt = false;
+        } else {
+            alt = true;
+        }
 
         originalValues = _originalValues;
         currentValues = _originalValues.clone();
 
         length = originalValues.getTORA(); // setting length to the original TORA value
         width = 60; //TODO default width?
+
     }
 
     // handling if the runway is primary or secondary
@@ -81,10 +88,11 @@ public class Runway {
 
         // get obstacle position
         int obstaclePosition;
+        obstaclePositionReal = obstacle.getPosition().getDistance();
         if (!isAlt()) {
             obstaclePosition = obstacle.getPosition().getDistance(); // if main runway
         } else {
-            obstaclePosition = obstacle.getPosition().getDistanceAlt(); // if alt runway
+            obstaclePosition = this.getLength() - obstaclePositionReal; // if alt runway
         }
 
         // check if redeclaration is not needed if obstacle is far enough before or after the runway
@@ -109,12 +117,12 @@ public class Runway {
 
         // redeclare runway parameters
         ArrayList<String> steps;
-        if (obstaclePosition <= originalValues.getTORA() / 2) {
+        if (obstaclePositionReal <= originalValues.getTORA() / 2) {
             returnList.add(obsCloser);
-            steps = recalculateCloser(_blastAllowance, obstacleHeight, obstaclePosition);
+            steps = recalculateCloser(_blastAllowance, obstacleHeight, obstaclePositionReal);
         } else {
             returnList.add(obsFurther);
-            steps = recalculateFurther(_blastAllowance, obstacleHeight, obstaclePosition);
+            steps = recalculateFurther(_blastAllowance, obstacleHeight, obstaclePositionReal);
         }
 
         returnList.addAll(steps);
