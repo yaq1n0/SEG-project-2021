@@ -236,6 +236,21 @@ public class RunwayView extends Group {
             this.getChildren().add(stopwayRec);
             stopwayRec.toFront();
         }
+
+        // Draw Take-off/Landing direction
+        Polygon direction;
+        double[] ps = {
+                20, 0.11* this.h,
+                60, 0.11* this.h,
+                60, 0.075* this.h,
+                80, 0.125* this.h,
+                60, 0.175* this.h,
+                60, 0.14* this.h,
+                20, 0.14* this.h
+        };
+        direction = new Polygon(ps);
+        direction.setFill(Color.RED);
+        this.getChildren().add(direction);
         
         // Draw Obstacle
         Obstacle obs = runway.getTarmac().getObstacle();
