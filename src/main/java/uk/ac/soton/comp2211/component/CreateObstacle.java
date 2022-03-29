@@ -22,6 +22,8 @@ public class CreateObstacle extends VBox {
     private NumberField inputObstacleWidth;
     private NumberField inputObstacleHeight;
 
+    private Button create;
+
     public CreateObstacle(Stage dialog) {
         super(20);
 
@@ -35,16 +37,19 @@ public class CreateObstacle extends VBox {
         HBox obstacleParameters = new HBox();
         inputObstacleName = new TextField();
         inputObstacleName.setPromptText("name");
+        inputObstacleName.textProperty().addListener((e) -> { validateFields(); });
         inputObstacleLength = new NumberField(1, 1000);
         inputObstacleLength.setPromptText("length");
+        inputObstacleLength.textProperty().addListener((e) -> { validateFields(); });
         inputObstacleWidth = new NumberField(1, 1000);
         inputObstacleWidth.setPromptText("width");
+        inputObstacleWidth.textProperty().addListener((e) -> { validateFields(); });
         inputObstacleHeight = new NumberField(1, 1000);
         inputObstacleHeight.setPromptText("height");
+        inputObstacleHeight.textProperty().addListener((e) -> { validateFields(); });
         obstacleParameters.setPadding(new Insets(20,0,0,0));
         obstacleParameters.getChildren().addAll(inputObstacleName, inputObstacleLength,
-                inputObstacleWidth, inputObstacleHeight);
-        //titleBox.getChildren().add(new Text("Create Airport:"));
+                                                inputObstacleWidth, inputObstacleHeight);
 
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);
@@ -53,12 +58,14 @@ public class CreateObstacle extends VBox {
         cancel.setOnAction((ActionEvent event) -> {
             dialog.close();
         });
-        Button create = new Button("Create");
+        create = new Button("Create");
+        create.setDisable(true);
         create.setOnAction((ActionEvent event) -> {
             try {
                 generateObstacle();
-            } catch (Exception e1) {
-                e1.printStackTrace(); 
+                dialog.close();
+            } catch (Exception e) {
+                e.printStackTrace(); 
             }
         });
 
@@ -68,17 +75,30 @@ public class CreateObstacle extends VBox {
         buttonBox.setAlignment(Pos.CENTER);
 
         this.getChildren().addAll(titleBox, obstacleParameters, buttonBox);
-        }
-
-        public void generateObstacle() throws Exception {
-            String obstacleName = inputObstacleName.getText();
-            int obstacleLength = Integer.valueOf(inputObstacleLength.getText());
-            int obstacleWidth = Integer.valueOf(inputObstacleWidth.getText());
-            int obstacleHeight = Integer.valueOf(inputObstacleHeight.getText());
-
-            Obstacle obstacle = new Obstacle(obstacleName, obstacleLength, obstacleWidth, obstacleHeight);
-
-            SystemModel.addObstacle(obstacle);
-        }
-
     }
+
+    /**
+     * If all fields are valid then enables the create button.
+     */
+    private void validateFields() {
+        boolean valid = true;
+
+        if (inputObstacleName.getText().equals("")) valid = false;
+        else if (inputObstacleLength.getText().equals("")) valid = false;
+        else if (inputObstacleWidth.getText().equals("")) valid = false;
+        else if (inputObstacleHeight.getText().equals("")) valid = false;
+
+        create.setDisable(!valid);
+    }
+
+    public void generateObstacle() throws Exception {
+        String obstacleName = inputObstacleName.getText();
+        int obstacleLength = Integer.valueOf(inputObstacleLength.getText());
+        int obstacleWidth = Integer.valueOf(inputObstacleWidth.getText());
+        int obstacleHeight = Integer.valueOf(inputObstacleHeight.getText());
+
+        Obstacle obstacle = new Obstacle(obstacleName, obstacleLength, obstacleWidth, obstacleHeight);
+
+        SystemModel.addObstacle(obstacle);
+    }
+}

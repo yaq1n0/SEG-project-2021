@@ -24,6 +24,8 @@ public class CreateAirport extends VBox {
     private TextField inputAirportName;
     private VBox vboxTarmacs;
 
+    private Button create;
+
     public CreateAirport(Stage dialog) {
         super(20);
 
@@ -40,6 +42,7 @@ public class CreateAirport extends VBox {
         airportParameters.setAlignment(Pos.CENTER);
         inputAirportName = new TextField();
         inputAirportName.setPromptText("airport name");
+        inputAirportName.textProperty().addListener((e) -> { validateFields(); });
         var tarmacCountOptions = FXCollections.observableArrayList("1 tarmac", "2 tarmacs", "3 tarmacs");
         ComboBox<String> dropdownTarmacCount = new ComboBox<String>(tarmacCountOptions);
         dropdownTarmacCount.setValue(tarmacCountOptions.get(0));
@@ -74,7 +77,8 @@ public class CreateAirport extends VBox {
         cancel.setOnAction((ActionEvent event) -> {
             dialog.close();
         });
-        Button create = new Button("Create");
+        create = new Button("Create");
+        create.setDisable(true);
         create.setOnAction((ActionEvent event) -> {
             try {
                 generateAirport();
@@ -87,7 +91,18 @@ public class CreateAirport extends VBox {
         buttonBox.setAlignment(Pos.CENTER);
         
         this.getChildren().addAll(titleBox, airportParameters, vboxTarmacs, buttonBox);
+    }
 
+    private void validateFields() {
+        boolean valid = true;
+
+        if (inputAirportName.getText().equals("")) valid = false;
+
+        for (int i = 0; i < vboxTarmacs.getChildren().size(); i++)
+            if (!((TarmacVBox) vboxTarmacs.getChildren().get(i)).hasValidateFields()) valid = false;
+
+
+        create.setDisable(!valid);
     }
 
     private void generateAirport() throws Exception {

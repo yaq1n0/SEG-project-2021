@@ -15,6 +15,8 @@ import uk.ac.soton.comp2211.model.Tarmac;
 public class TarmacVBox extends VBox {
     public VBox vboxRunways;
 
+    private NumberField inputTarmacLength;
+
     private int tarmacID;
 
     public TarmacVBox(int _tarmacID, int _tarmacCount) {
@@ -27,8 +29,10 @@ public class TarmacVBox extends VBox {
         HBox tarmacParameters = new HBox();
         Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
         textTarmacName.setFont(Font.font("Verdana"));
-        NumberField inputTarmacLength = new NumberField(1, 1000);
+
+        inputTarmacLength = new NumberField(1, 1000);
         inputTarmacLength.setPromptText("length");
+
         ObservableList<String> directionOptions = FXCollections.observableArrayList("unidirectional", "bidirectional");
         ComboBox<String> direction = new ComboBox<String>(directionOptions);
         direction.setValue(directionOptions.get(0));
@@ -41,7 +45,14 @@ public class TarmacVBox extends VBox {
         tarmacParameters.setAlignment(Pos.CENTER);
 
         this.getChildren().addAll(tarmacParameters, runwaysVBox);
+    }
 
+    public boolean hasValidateFields() {
+        boolean valid = true;
+
+        if (inputTarmacLength.getText().equals("")) valid = false;
+
+        return valid;
     }
 
     public Tarmac getTarmac() throws RunwayException {
