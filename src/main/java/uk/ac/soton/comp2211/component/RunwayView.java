@@ -36,7 +36,12 @@ public class RunwayView extends Group {
     private final double stopwaySize;
     private final double dtSize;
     
+    // Scale will be used to zoom in/out.
     private double scale;
+    // Offset will be used to pan around the view.
+    private int offset_x;
+    private int offset_y;
+    // (x * scale) * offset_x, (y * scale) + offset_y
     
     public RunwayView(double width, double height, Runway runway) {
         super();
@@ -44,9 +49,6 @@ public class RunwayView extends Group {
         this.runway = runway;
         this.w = width;
         this.h = height;
-        Canvas canvas = new Canvas(width, height);
-        
-        this.getChildren().add(canvas);
 
         //Handle size of runway and values lines
         runwayStart = this.w * 0.15;
@@ -54,10 +56,14 @@ public class RunwayView extends Group {
         clearwaySize = Math.min(runway.getOriginalValues().getClearway()/3.0, this.w*0.10);
         stopwaySize = Math.min(runway.getOriginalValues().getStopway()/3.0, this.w*0.10);
         dtSize = this.runway.getOriginalValues().getDT()*runwayRepresentationSize/runway.getLength();
+        
+        this.scale = 1.0;
+        this.offset_x = 0;
+        this.offset_y = 0;
     }
     
     public void updateTopDown() {
-        // Reset canvas
+        // Reset view
         this.getChildren().clear();
         Rectangle bg = new Rectangle(0, 0, this.w, this.h);
         bg.setFill(Color.LIGHTGREEN);
@@ -66,18 +72,18 @@ public class RunwayView extends Group {
         // Draw cleared and Graded Area
         Polygon clearedAndGradedArea;
         double[] points = {
-                0, 0.3* this.h,
-                0.2* this.w, 0.3* this.h,
-                0.3* this.w, 0.2* this.h,
-                0.7* this.w, 0.2* this.h,
-                0.8* this.w, 0.3* this.h,
-                this.w, 0.3* this.h,
-                this.w, 0.7* this.h,
-                0.8* this.w, 0.7* this.h,
-                0.7* this.w, 0.8* this.h,
-                0.3* this.w, 0.8* this.h,
-                0.2* this.w, 0.7* this.h,
-                0, 0.7* this.h};
+                Math.max(Math.min(offset_x, w), 0), Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.2 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.3 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.2 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.7 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.2 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.8 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.8 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.7 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.8 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.3 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.8 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min((0.2 * this.w * scale) + offset_x, w), 0), Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0),
+                Math.max(Math.min(offset_x, w), 0), Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0)};
         clearedAndGradedArea = new Polygon(points);
         clearedAndGradedArea.setFill(Color.LIGHTBLUE);
         this.getChildren().add(clearedAndGradedArea);
@@ -85,16 +91,16 @@ public class RunwayView extends Group {
         // Draw tarmac
         Rectangle runwayRectangle = new Rectangle();
         runwayRectangle.setFill(Color.GRAY);
-        runwayRectangle.setX(runwayStart);
-        runwayRectangle.setY(this.h * 0.45);
-        runwayRectangle.setWidth(runwayRepresentationSize);
-        runwayRectangle.setHeight(this.h *0.1);
+        runwayRectangle.setX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
+        runwayRectangle.setY(Math.max(Math.min((h * 0.45 * scale) + offset_x, h), 0));
+        runwayRectangle.setWidth(Math.max(Math.min(runwayRepresentationSize * scale, w - runwayRectangle.getX()), 0));
+        runwayRectangle.setHeight(Math.max(Math.min(this.h * 0.1 * scale, h - runwayRectangle.getY()), 0));
         this.getChildren().add(runwayRectangle);
         runwayRectangle.toFront();
         Text runwayDesignatorText = new Text(runway.getRunwayDesignator());
-        runwayDesignatorText.setFont(Font.font("Jersey", FontWeight.BOLD, 15));
-        runwayDesignatorText.setX(runwayStart+10);
-        runwayDesignatorText.setY(this.h*0.52);
+        runwayDesignatorText.setFont(Font.font("Jersey", FontWeight.BOLD, 15 * scale));
+        runwayDesignatorText.setX(Math.max(Math.min(((runwayStart + 10) * scale) + offset_x, w), 0));
+        runwayDesignatorText.setY(Math.max(Math.min((this.h * 0.52 * scale) + offset_y, h), 0));
         runwayDesignatorText.setRotate(90);
         runwayDesignatorText.setFill(Color.WHITE);
         this.getChildren().add(runwayDesignatorText);
@@ -102,12 +108,12 @@ public class RunwayView extends Group {
         //Draw line middle tarmac
         Line runwayCentreLine = new Line();
         runwayCentreLine.setStroke(Color.WHITE);
-        runwayCentreLine.setStrokeWidth(5d);
-        runwayCentreLine.getStrokeDashArray().addAll(20d, 20d);
-        runwayCentreLine.setStartX(runwayStart+0.1*runwayRepresentationSize);
-        runwayCentreLine.setStartY(this.h * 0.5-1);
-        runwayCentreLine.setEndX(this.w *0.85-0.1*runwayRepresentationSize);
-        runwayCentreLine.setEndY(this.h *0.5-1);
+        runwayCentreLine.setStrokeWidth(5d * scale);
+        runwayCentreLine.getStrokeDashArray().addAll(20d * scale, 20d * scale);
+        runwayCentreLine.setStartX(Math.max(Math.min(((runwayStart + 0.1 * runwayRepresentationSize) * scale) + offset_x, w), 0));
+        runwayCentreLine.setStartY(Math.max(Math.min(((h * 0.5 - 1) * scale) + offset_y, h), 0));
+        runwayCentreLine.setEndX(Math.max(Math.min(((w * 0.85 - 0.1 * runwayRepresentationSize) * scale) + offset_x, w), 0));
+        runwayCentreLine.setEndY(Math.max(Math.min(((h * 0.5 - 1) * scale) + offset_y, h), 0));
         this.getChildren().add(runwayCentreLine);
 
         //Draw value lines
@@ -115,22 +121,34 @@ public class RunwayView extends Group {
 
         // Draw displaced threshold
         if (runway.getOriginalValues().getDT()>0) {
-            Line dtLine = new Line(runwayStart+(dtSize), this.h*0.5-10, runwayStart+(dtSize), this.h*0.5+10);
+            Line dtLine = new Line();
+            dtLine.setStartX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
+            dtLine.setStartY(Math.max(Math.min(((h * 0.5 - 10) * scale) + offset_y, h), 0));
+            dtLine.setEndX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
+            dtLine.setEndY(Math.max(Math.min(((h * 0.5 + 10) * scale) + offset_y, h), 0));
             dtLine.setStroke(Color.RED);
-            dtLine.setStrokeWidth(5d);
+            dtLine.setStrokeWidth(5d * scale);
             this.getChildren().add(dtLine);
         }
 
         // Draw clearway
         if (runway.getOriginalValues().getClearway()>0) {
-            Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.4, clearwaySize, this.h*0.2);
+            Rectangle clearwayRec = new Rectangle();
+            clearwayRec.setX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
+            clearwayRec.setY(Math.max(Math.min((h * 0.4 * scale) + offset_y, h), 0));
+            clearwayRec.setWidth(Math.max(Math.min(clearwaySize * scale, w - clearwayRec.getX()), 0));
+            clearwayRec.setHeight(Math.max(Math.min(h * 0.2 * scale, h - clearwayRec.getY()), 0));
             clearwayRec.setFill(Color.CORAL);
             this.getChildren().add(clearwayRec);
         }
 
         // Draw stop-way
         if (runway.getOriginalValues().getStopway()>0) {
-            Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.45, stopwaySize, this.h*0.1);
+            Rectangle stopwayRec = new Rectangle();
+            stopwayRec.setX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
+            stopwayRec.setY(Math.max(Math.min((h * 0.45 * scale) + offset_y, h), 0));
+            stopwayRec.setWidth(Math.max(Math.min(stopwaySize * scale, w - stopwayRec.getX()), 0));
+            stopwayRec.setHeight(Math.max(Math.min(h * 0.1 * scale, h - stopwayRec.getY()), 0));
             stopwayRec.setFill(Color.CYAN);
             this.getChildren().add(stopwayRec);
             stopwayRec.toFront();
@@ -142,10 +160,10 @@ public class RunwayView extends Group {
             try {
                 Position pos = obs.getPosition();
                 Rectangle obsRect = new Rectangle();
-                obsRect.setX(runwayStart + dtSize + ((pos.getDistance() - (obs.getWidth() / 2.0)) * this.runwayRepresentationSize / this.runway.getLength()));
-                obsRect.setY((this.h * 0.5) + ((pos.getCentreLineDisplacement() - (obs.getHeight() / 2.0)) * this.runwayRepresentationSize / this.runway.getLength()));
-                obsRect.setHeight(obs.getWidth() * this.runwayRepresentationSize / this.runway.getLength());
-                obsRect.setWidth(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength());
+                obsRect.setX(Math.max(Math.min(((runwayStart + dtSize + ((pos.getDistance() - (obs.getWidth() / 2.0)) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                obsRect.setY(Math.max(Math.min((((h * 0.5) + ((pos.getCentreLineDisplacement() - (obs.getLength() / 2.0)) * runwayRepresentationSize / runway.getLength())) * scale) + offset_y, h), 0));
+                obsRect.setHeight(Math.max(Math.min(obs.getWidth() * runwayRepresentationSize / runway.getLength() * scale, w - obsRect.getX()), 0));
+                obsRect.setWidth(Math.max(Math.min(obs.getLength() * runwayRepresentationSize / runway.getLength() * scale, h - obsRect.getY()), 0));
                 obsRect.setFill(Color.RED);
                 obsRect.setStroke(Color.BLACK);
                 this.getChildren().add(obsRect);
@@ -154,9 +172,13 @@ public class RunwayView extends Group {
                 //Draw obstacle dotted line
                 double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
                 Line dottedObsline = new Line(runwayStart+dtSize+ dWestRepresentation, this.h*0.5, runwayStart+dtSize+ dWestRepresentation, this.h*0.75);
+                dottedObsline.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                dottedObsline.setStartY(Math.max(Math.min((h * 0.5 * scale) + offset_y, h), 0));
+                dottedObsline.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                dottedObsline.setEndY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
                 dottedObsline.setStroke(Color.WHITE);
-                dottedObsline.setStrokeWidth(2d);
-                dottedObsline.getStrokeDashArray().addAll(7d, 7d);
+                dottedObsline.setStrokeWidth(2d * scale);
+                dottedObsline.getStrokeDashArray().addAll(7d * scale, 7d * scale);
                 this.getChildren().add(dottedObsline);
 
             } catch (PositionException ignored) {
@@ -167,13 +189,13 @@ public class RunwayView extends Group {
         // Draw Take-off/Landing direction
         Polygon direction;
         double[] ps = {
-                20, 0.11* this.h,
-                60, 0.11* this.h,
-                60, 0.075* this.h,
-                80, 0.125* this.h,
-                60, 0.175* this.h,
-                60, 0.14* this.h,
-                20, 0.14* this.h
+                20, 0.11 * this.h,
+                60, 0.11 * this.h,
+                60, 0.075 * this.h,
+                80, 0.125 * this.h,
+                60, 0.175 * this.h,
+                60, 0.14 * this.h,
+                20, 0.14 * this.h
         };
         direction = new Polygon(ps);
         direction.setFill(Color.RED);
@@ -193,14 +215,23 @@ public class RunwayView extends Group {
     }
     
     public void updateSideOn() {
-        // Reset canvas and draw ground
+        // Reset view
         this.getChildren().clear();
-        Rectangle bg = new Rectangle(0, this.h*0.60, this.w, this.h*0.40);
+        // Draw ground
+        Rectangle bg = new Rectangle();
+        bg.setX(0);
+        bg.setY(Math.max(Math.min((h * 0.60 * scale) + offset_y, h), 0));
+        bg.setWidth(w);
+        bg.setHeight(Math.max(Math.min(h - (h * 0.60 * scale) + offset_y, h - bg.getY()), 0));
         bg.setFill(Color.LIGHTGREEN);
         this.getChildren().add(bg);
 
         //Draw sky
-        Rectangle sky = new Rectangle(0, 0, this.w, this.h*0.60);
+        Rectangle sky = new Rectangle();
+        sky.setX(0);
+        sky.setY(0);
+        sky.setWidth(w);
+        sky.setHeight(Math.max(Math.min((this.h * 0.60 * scale) + offset_y, h), 0));
         sky.setFill(Color.LIGHTBLUE);
         this.getChildren().add(sky);
 
@@ -210,31 +241,43 @@ public class RunwayView extends Group {
         // Draw tarmac
         Rectangle runwayRectangle = new Rectangle();
         runwayRectangle.setFill(Color.GRAY);
-        runwayRectangle.setX(runwayStart);
-        runwayRectangle.setY(this.h * 0.60);
-        runwayRectangle.setWidth(runwayRepresentationSize);
-        runwayRectangle.setHeight(this.h *0.05);
+        runwayRectangle.setX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
+        runwayRectangle.setY(Math.max(Math.min((h * 0.60 * scale) + offset_x, h), 0));
+        runwayRectangle.setWidth(Math.max(Math.min(runwayRepresentationSize * scale, w - runwayRectangle.getX()), 0));
+        runwayRectangle.setHeight(Math.max(Math.min(this.h * 0.05 * scale, h - runwayRectangle.getY()), 0));
         this.getChildren().add(runwayRectangle);
         runwayRectangle.toFront();
 
         // Draw displaced threshold
-        if (runway.getOriginalValues().getDT()>0) {
-            Line dtLine = new Line(runwayStart+(dtSize), this.h*0.61, runwayStart+(dtSize), this.h*0.64);
+        if (runway.getOriginalValues().getDT() > 0) {
+            Line dtLine = new Line();
+            dtLine.setStartX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
+            dtLine.setStartY(Math.max(Math.min((h * 0.61 * scale) + offset_y, h), 0));
+            dtLine.setEndX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
+            dtLine.setEndY(Math.max(Math.min((h * 0.64 * scale) + offset_y, h), 0));
             dtLine.setStroke(Color.RED);
-            dtLine.setStrokeWidth(5d);
+            dtLine.setStrokeWidth(5d * scale);
             this.getChildren().add(dtLine);
         }
 
         // Draw clearway
         if (runway.getOriginalValues().getClearway()>0) {
-            Rectangle clearwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.6, clearwaySize, this.h*0.20);
+            Rectangle clearwayRec = new Rectangle();
+            clearwayRec.setX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
+            clearwayRec.setY(Math.max(Math.min((h * 0.6 * scale) + offset_y, h), 0));
+            clearwayRec.setWidth(Math.max(Math.min(clearwaySize, w - clearwayRec.getX()), 0));
+            clearwayRec.setHeight(Math.max(Math.min(h * 0.2 * scale, h - clearwayRec.getY()), 0));
             clearwayRec.setFill(Color.CORAL);
             this.getChildren().add(clearwayRec);
         }
 
         // Draw stop-way
         if (runway.getOriginalValues().getStopway()>0) {
-            Rectangle stopwayRec = new Rectangle(runwayStart+runwayRepresentationSize, this.h*0.6, stopwaySize, this.h*0.12);
+            Rectangle stopwayRec = new Rectangle();
+            stopwayRec.setX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
+            stopwayRec.setY(Math.max(Math.min((h * 0.6 * scale) + offset_y, h), 0));
+            stopwayRec.setWidth(Math.max(Math.min(stopwaySize, w - stopwayRec.getX()), 0));
+            stopwayRec.setHeight(Math.max(Math.min(h * 0.12 * scale, h - stopwayRec.getY()), 0));
             stopwayRec.setFill(Color.CYAN);
             this.getChildren().add(stopwayRec);
             stopwayRec.toFront();
@@ -261,10 +304,11 @@ public class RunwayView extends Group {
             try {
                 Position pos = obs.getPosition();
                 Rectangle obsRect = new Rectangle();
-                obsRect.setX(runwayStart + (pos.getDistance() * this.runwayRepresentationSize / this.runway.getLength()));
-                obsRect.setY((this.h * 0.6) - (obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength()));
-                obsRect.setHeight(obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength());
-                obsRect.setWidth(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength());
+                obsRect.setX(Math.max(Math.min(((runwayStart + dtSize + ((pos.getDistance() - (obs.getWidth() / 2.0)) * this.runwayRepresentationSize / this.runway.getLength())) * scale) + offset_x, w), 0));
+                obsRect.setY(Math.max(Math.min((((h * 0.6) - (obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength())) * scale) + offset_y, h), 0));
+                obsRect.setHeight(Math.max(Math.min(obs.getHeight() * this.runwayRepresentationSize / this.runway.getLength() * scale, w - obsRect.getX()), 0));
+                obsRect.setWidth(Math.max(Math.min(obs.getLength() * this.runwayRepresentationSize / this.runway.getLength() * scale, h - obsRect.getY()), 0));
+
                 obsRect.setFill(Color.RED);
                 obsRect.setStroke(Color.BLACK);
                 this.getChildren().add(obsRect);
@@ -272,10 +316,14 @@ public class RunwayView extends Group {
 
                 // draw obstacle dotted line
                 double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
-                Line dottedObsline = new Line(runwayStart+dtSize+ dWestRepresentation, this.h*0.6, runwayStart+dtSize+ dWestRepresentation, this.h*0.75);
+                Line dottedObsline = new Line();
+                dottedObsline.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                dottedObsline.setStartY(Math.max(Math.min((h * 0.6 * scale) + offset_y, h), 0));
+                dottedObsline.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                dottedObsline.setEndY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
                 dottedObsline.setStroke(Color.WHITE);
-                dottedObsline.setStrokeWidth(2d);
-                dottedObsline.getStrokeDashArray().addAll(7d, 7d);
+                dottedObsline.setStrokeWidth(2d * scale);
+                dottedObsline.getStrokeDashArray().addAll(7d * scale, 7d * scale);
                 this.getChildren().add(dottedObsline);
 
             } catch (PositionException ignored) {
@@ -296,28 +344,28 @@ public class RunwayView extends Group {
         //tora
         Text toraText = new Text("TORA: " + runway.getCurrentValues().getTORA() + "m");
         toraText.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-        toraText.setY(25);
+        toraText.setY((25 * scale) + offset_y);
         toraText.setFill(Color.BLACK);
         Line toraLine = null;
 
         //toda
         Text todaText = new Text("TODA: " + runway.getCurrentValues().getTODA() + "m");
         todaText.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-        todaText.setY(45);
+        todaText.setY((45 * scale) + offset_y);
         todaText.setFill(Color.BLACK);
         Line todaLine = null;
 
         //asda
         Text asdaText = new Text("ASDA: " + runway.getCurrentValues().getASDA() + "m");
         asdaText.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-        asdaText.setY(65);
+        asdaText.setY((65 * scale) + offset_y);
         asdaText.setFill(Color.BLACK);
         Line asdaLine = null;
 
         //lda
         Text ldaText = new Text("LDA: " + runway.getCurrentValues().getLDA() + "m");
         ldaText.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-        ldaText.setY(85);
+        ldaText.setY((85 * scale) + offset_y);
         ldaText.setFill(Color.BLACK);
         Line ldaLine = null;
 
@@ -329,82 +377,150 @@ public class RunwayView extends Group {
                 double blastAllowanceR = 300*runwayRepresentationSize/this.runway.getLength();
 
                 if (runway.getTarmac().getObstacle().getPosition().getDistance()>(runway.getLength()-runway.getTarmac().getObstacle().getPosition().getDistance())) {
-                    toraLine = new Line(runwayStart, 30, runwayStart +dtSize + (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 30);
+                    toraLine = new Line();
+                    toraLine.setStartX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
+                    toraLine.setStartY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
+                    toraLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x, w), 0));
+                    toraLine.setEndY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
                     toraText.setX(runwayStart);
 
-                    todaLine = new Line(runwayStart, 50, runwayStart+dtSize+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 50);
+                    todaLine = new Line();
+                    todaLine.setStartX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
+                    todaLine.setStartY(Math.max(Math.min((50 * scale) + offset_y, h), 0));
+                    todaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x, w), 0));
+                    todaLine.setEndY(Math.max(Math.min((50 * scale) + offset_y, h), 0));
                     todaText.setX(runwayStart);
 
-                    asdaLine = new Line(runwayStart, 70, runwayStart+dtSize+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 70);
+                    asdaLine = new Line();
+                    asdaLine.setStartX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
+                    asdaLine.setStartY(Math.max(Math.min((70 * scale) + offset_y, h), 0));
+                    asdaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x, w), 0));
+                    asdaLine.setEndY(Math.max(Math.min((70 * scale) + offset_y, h), 0));
                     asdaText.setX(runwayStart);
 
-                    ldaLine = new Line(runwayStart+(dtSize), 90, runwayStart+dtSize+ (dWestRepresentation)-(300*runwayRepresentationSize/runway.getLength()), 90);
+                    ldaLine = new Line();
+                    ldaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
+                    ldaLine.setStartY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
+                    ldaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    ldaLine.setEndY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
                     ldaText.setX(runwayStart+(dtSize));
 
-                    Line slopeLine = new Line(runwayStart+dtSize+ (dWestRepresentation)-((slopeOrResa)*runwayRepresentationSize/runway.getLength()), this.h*0.75, runwayStart+dtSize+ dWestRepresentation, this.h*0.75);
-                    slopeLine.setStrokeWidth(5d);
+                    Line slopeLine = new Line();
+                    slopeLine.setStartX(Math.max(Math.min(((runwayStart + dtSize+ dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    slopeLine.setStartY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    slopeLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                    slopeLine.setEndY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    slopeLine.setStrokeWidth(5d * scale);
                     slopeLine.setStroke(Color.AZURE);
                     slopeLine.toFront();
                     this.getChildren().add(slopeLine);
 
-                    Line stripendLine2 = new Line(runwayStart+ dtSize+(dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), this.h*0.75, runwayStart+dtSize+ (dWestRepresentation)-((slopeOrResa)*runwayRepresentationSize/runway.getLength()), this.h*0.75);
-                    stripendLine2.setStrokeWidth(5d);
+                    Line stripendLine2 = new Line();
+                    stripendLine2.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    stripendLine2.setStartY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    stripendLine2.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    stripendLine2.setEndY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    stripendLine2.setStrokeWidth(5d * scale);
                     stripendLine2.setStroke(Color.DARKGREEN);
                     stripendLine2.toFront();
                     this.getChildren().add(stripendLine2);
 
-                    Line resaLine = new Line(runwayStart+dtSize+ (dWestRepresentation)-(240*runwayRepresentationSize/runway.getLength()), this.h*0.7, runwayStart+dtSize+ dWestRepresentation, this.h*0.7);
-                    resaLine.setStrokeWidth(5d);
+                    Line resaLine = new Line();
+                    resaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    resaLine.setStartY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                    resaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                    resaLine.setEndY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                    resaLine.setStrokeWidth(5d * scale);
                     resaLine.setStroke(Color.ORANGE);
                     resaLine.toFront();
                     this.getChildren().add(resaLine);
 
-                    Line stripendLine = new Line(runwayStart+dtSize+ (dWestRepresentation)-(300*runwayRepresentationSize/runway.getLength()), this.h*0.70, runwayStart+dtSize+ dWestRepresentation-(240*runwayRepresentationSize/runway.getLength()), this.h*0.70);
-                    stripendLine.setStrokeWidth(5d);
+                    Line stripendLine = new Line();
+                    stripendLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    stripendLine.setStartY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                    stripendLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    stripendLine.setEndY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                    stripendLine.setStrokeWidth(5d * scale);
                     stripendLine.setStroke(Color.DARKGREEN);
                     stripendLine.toFront();
                     this.getChildren().add(stripendLine);
 
-                    Line dottedTake = new Line(runwayStart+dtSize+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), this.h*0.75, runwayStart+dtSize+ (dWestRepresentation)-((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()), 30);
+                    Line dottedTake = new Line();
+                    dottedTake.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    dottedTake.setStartY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    dottedTake.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    dottedTake.setEndY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
                     dottedTake.setStroke(Color.WHITE);
-                    dottedTake.setStrokeWidth(2d);
-                    dottedTake.getStrokeDashArray().addAll(7d, 7d);
+                    dottedTake.setStrokeWidth(2d * scale);
+                    dottedTake.getStrokeDashArray().addAll(7d * scale, 7d * scale);
                     this.getChildren().add(dottedTake);
 
-                    Line dottedLand = new Line(runwayStart+dtSize+ (dWestRepresentation)-(300*runwayRepresentationSize/runway.getLength()), this.h*0.70, runwayStart+dtSize+ (dWestRepresentation)-(300*runwayRepresentationSize/runway.getLength()), 90);
+                    Line dottedLand = new Line();
+                    dottedLand.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    dottedLand.setStartY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                    dottedLand.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                    dottedLand.setEndY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
                     dottedLand.setStroke(Color.WHITE);
-                    dottedLand.setStrokeWidth(2d);
-                    dottedLand.getStrokeDashArray().addAll(7d, 7d);
+                    dottedLand.setStrokeWidth(2d * scale);
+                    dottedLand.getStrokeDashArray().addAll(7d * scale, 7d * scale);
                     this.getChildren().add(dottedLand);
 
                 } else {
-                    toraLine = new Line(runwayStart +dtSize+ blastAllowanceR + dWestRepresentation, 30, runwayStart +dtSize+ runwayRepresentationSize, 30);
-                    toraText.setX(runwayStart +dtSize+ blastAllowanceR + dWestRepresentation);
+                    toraLine = new Line();
+                    toraLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, w), 0));
+                    toraLine.setStartY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
+                    toraLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + runwayRepresentationSize) * scale) + offset_x, w), 0));
+                    toraLine.setEndY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
+                    toraText.setX(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x);
 
-                    todaLine = new Line(runwayStart +dtSize+ blastAllowanceR + dWestRepresentation, 50, runwayStart+dtSize+runwayRepresentationSize+(clearwaySize), 50);
-                    todaText.setX(runwayStart+dtSize+ blastAllowanceR+ dWestRepresentation);
+                    todaLine = new Line();
+                    todaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, w), 0));
+                    todaLine.setStartY(Math.max(Math.min((50 * scale) + offset_y, h), 0));
+                    todaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + runwayRepresentationSize + clearwaySize) * scale) + offset_x, w), 0));
+                    todaLine.setEndY(Math.max(Math.min((50 * scale) + offset_y, h), 0));
+                    todaText.setX(((runwayStart+dtSize+ blastAllowanceR+ dWestRepresentation) * scale) + offset_x);
 
-                    asdaLine = new Line(runwayStart +dtSize+ blastAllowanceR+ dWestRepresentation, 70, runwayStart+dtSize+runwayRepresentationSize+(stopwaySize), 70);
-                    asdaText.setX(runwayStart+dtSize + blastAllowanceR+ dWestRepresentation);
+                    asdaLine = new Line();
+                    asdaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, w), 0));
+                    asdaLine.setStartY(Math.max(Math.min((70 * scale) + offset_y, h), 0));
+                    asdaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + runwayRepresentationSize + stopwaySize) * scale) + offset_y, h), 0));
+                    asdaLine.setEndY(Math.max(Math.min((70 * scale) + offset_y, h), 0));
+                    asdaText.setX(((runwayStart+dtSize + blastAllowanceR+ dWestRepresentation) * scale) + offset_x);
 
-                    Line blastLine = new Line(runwayStart+dtSize+ (dWestRepresentation), this.h*0.75, runwayStart+dtSize+ dWestRepresentation + blastAllowanceR, this.h*0.75);
-                    blastLine.setStrokeWidth(5d);
+                    Line blastLine = new Line();
+                    blastLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                    blastLine.setStartY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    blastLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) * scale) + offset_x, w), 0));
+                    blastLine.setEndY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    blastLine.setStrokeWidth(5d * scale);
                     blastLine.setStroke(Color.BROWN);
                     blastLine.toFront();
                     this.getChildren().add(blastLine);
 
-                    Line dottedBlastline = new Line(runwayStart+dtSize+ dWestRepresentation + blastAllowanceR, this.h*0.75, runwayStart+dtSize+ dWestRepresentation + blastAllowanceR, 30);
+                    Line dottedBlastline = new Line();
+                    dottedBlastline.setStartY(Math.max(Math.min((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x, w), 0));
+                    dottedBlastline.setStartY(Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                    dottedBlastline.setStartY(Math.max(Math.min((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x, w), 0));
+                    dottedBlastline.setStartY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
                     dottedBlastline.setStroke(Color.WHITE);
-                    dottedBlastline.setStrokeWidth(2d);
-                    dottedBlastline.getStrokeDashArray().addAll(7d, 7d);
+                    dottedBlastline.setStrokeWidth(2d * scale);
+                    dottedBlastline.getStrokeDashArray().addAll(7d * scale, 7d * scale);
                     this.getChildren().add(dottedBlastline);
 
                     if (runway.getOriginalValues().getDT()<dWestRepresentation+(slopeOrResa+60)) {
-                        ldaLine = new Line(runwayStart+dtSize+((slopeOrResa+60)*runwayRepresentationSize/runway.getLength()) + dWestRepresentation, 90, runwayStart+runwayRepresentationSize, 90);
-                        ldaText.setX(runwayStart+dtSize+((slopeOrResa+60)*runwayRepresentationSize/runway.getLength())+ dWestRepresentation);
+                        ldaLine = new Line();
+                        ldaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, w), 0));
+                        ldaLine.setStartY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
+                        ldaLine.setEndX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
+                        ldaLine.setEndY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
+                        ldaText.setX(Math.max(Math.min(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, w), 0));
 
-                        Line resaLine = new Line(runwayStart+dtSize+ dWestRepresentation, this.h*0.7,runwayStart+dtSize+(slopeOrResa*runwayRepresentationSize/runway.getLength())+ dWestRepresentation, this.h*0.7);
-                        resaLine.setStrokeWidth(5d);
+                        Line resaLine = new Line();
+                        resaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0));
+                        resaLine.setStartY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                        resaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x, w), 0));
+                        resaLine.setEndY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                        resaLine.setStrokeWidth(5d * scale);
                         if (slopeOrResa==240) {
                             resaLine.setStroke(Color.ORANGE);
                         } else {
@@ -413,21 +529,33 @@ public class RunwayView extends Group {
                         resaLine.toFront();
                         this.getChildren().add(resaLine);
 
-                        Line stripendLine = new Line(runwayStart+dtSize+(slopeOrResa*runwayRepresentationSize/runway.getLength())+ dWestRepresentation, this.h*0.7, runwayStart+dtSize+((slopeOrResa+60)*runwayRepresentationSize/runway.getLength())+ dWestRepresentation, this.h*0.7);
-                        stripendLine.setStrokeWidth(5d);
+                        Line stripendLine = new Line();
+                        stripendLine.setStartX(Math.max(Math.min(((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, w), 0));
+                        stripendLine.setStartY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                        stripendLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, w), 0));
+                        stripendLine.setEndY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                        stripendLine.setStrokeWidth(5d * scale);
                         stripendLine.setStroke(Color.DARKGREEN);
                         stripendLine.toFront();
                         this.getChildren().add(stripendLine);
 
-                        Line dottedStripend = new Line(runwayStart+dtSize+((slopeOrResa+60)*runwayRepresentationSize/runway.getLength())+ dWestRepresentation, this.h*0.70, runwayStart+dtSize+((slopeOrResa+60)*runwayRepresentationSize/runway.getLength())+ dWestRepresentation, 90);
+                        Line dottedStripend = new Line();
+                        dottedStripend.setStartX(Math.max(Math.min(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, w), 0));
+                        dottedStripend.setStartY(Math.max(Math.min((h * 0.7 * scale) + offset_y, h), 0));
+                        dottedStripend.setEndX(Math.max(Math.min(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, w), 0));
+                        dottedStripend.setEndY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
                         dottedStripend.setStroke(Color.WHITE);
-                        dottedStripend.setStrokeWidth(2d);
-                        dottedStripend.getStrokeDashArray().addAll(7d, 7d);
+                        dottedStripend.setStrokeWidth(2d * scale);
+                        dottedStripend.getStrokeDashArray().addAll(7d * scale, 7d * scale);
                         this.getChildren().add(dottedStripend);
 
                     } else {
-                        ldaLine = new Line(runwayStart+ dtSize, 90, runwayStart+dtSize+runwayRepresentationSize, 90);
-                        ldaText.setX(runwayStart+ dtSize);
+                        ldaLine = new Line();
+                        ldaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
+                        ldaLine.setStartY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
+                        ldaLine.setEndX(Math.max(Math.min(((runwayStart + dtSize + runwayRepresentationSize) * scale) + offset_x, w), 0));
+                        ldaLine.setEndY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
+                        ldaText.setX(Math.max(Math.min(((runwayStart+ dtSize) * scale) + offset_x, w), 0));
                     }
 
                 }
@@ -435,35 +563,51 @@ public class RunwayView extends Group {
                 logger.info("Obstacle has no position");
             }
         } else {
-            toraLine = new Line(runwayStart, 30, runwayStart + runwayRepresentationSize, 30);
-            toraText.setX(runwayStart);
+            toraLine = new Line();
+            toraLine.setStartX(Math.max(Math.min(((runwayStart) * scale) + offset_x, w), 0));
+            toraLine.setStartY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
+            toraLine.setEndX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
+            toraLine.setEndY(Math.max(Math.min((30 * scale) + offset_y, h), 0));
+            toraText.setX(Math.max(Math.min(((runwayStart) * scale) + offset_x, w), 0));
 
-            todaLine = new Line(runwayStart, 50, runwayStart+runwayRepresentationSize+(clearwaySize), 50);
-            todaText.setX(runwayStart);
+            todaLine = new Line();
+            todaLine.setStartX(Math.max(Math.min(((runwayStart) * scale) + offset_x, w), 0));
+            todaLine.setStartY(Math.max(Math.min((50 * scale) + offset_y, h), 0));
+            todaLine.setEndX(Math.max(Math.min(((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, w), 0));
+            todaLine.setEndY(Math.max(Math.min((50 * scale) + offset_y, h), 0));
+            todaText.setX(Math.max(Math.min(((runwayStart) * scale) + offset_x, w), 0));
 
-            asdaLine = new Line(runwayStart, 70, runwayStart+runwayRepresentationSize+(stopwaySize), 70);
-            asdaText.setX(runwayStart);
+            asdaLine = new Line();
+            asdaLine.setStartX(Math.max(Math.min(((runwayStart) * scale) + offset_x, w), 0));
+            asdaLine.setStartY(Math.max(Math.min((70 * scale) + offset_y, h), 0));
+            asdaLine.setEndX(Math.max(Math.min(((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x, w), 0));
+            asdaLine.setEndY(Math.max(Math.min((70 * scale) + offset_y, h), 0));
+            asdaText.setX(Math.max(Math.min(((runwayStart) * scale) + offset_x, w), 0));
 
-            ldaLine = new Line(runwayStart+(dtSize), 90, runwayStart+runwayRepresentationSize, 90);
-            ldaText.setX(runwayStart+(dtSize));
+            ldaLine = new Line();
+            ldaLine.setStartX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
+            ldaLine.setStartY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
+            ldaLine.setEndX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
+            ldaLine.setEndY(Math.max(Math.min((90 * scale) + offset_y, h), 0));
+            ldaText.setX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
         }
 
         // set colors of lines
         if (toraLine != null) {
             toraLine.setStroke(Color.BLUE);
-            toraLine.setStrokeWidth(5d);
+            toraLine.setStrokeWidth(5d * scale);
         }
         if (todaLine != null) {
             todaLine.setStroke(Color.YELLOW);
-            todaLine.setStrokeWidth(5d);
+            todaLine.setStrokeWidth(5d * scale);
         }
         if (asdaLine != null) {
             asdaLine.setStroke(Color.PURPLE);
-            asdaLine.setStrokeWidth(5d);
+            asdaLine.setStrokeWidth(5d * scale);
         }
         if (ldaLine != null) {
             ldaLine.setStroke(Color.PINK);
-            ldaLine.setStrokeWidth(5d);
+            ldaLine.setStrokeWidth(5d * scale);
         }
 
         // add color meanings
@@ -518,8 +662,8 @@ public class RunwayView extends Group {
      */
     public void zoomOut(BooleanProperty top) {
         this.scale -= 0.1;
-        if (this.scale < 0.1) {
-            this.scale = 0.1;
+        if (this.scale < 1.0) {
+            this.scale = 1.0;
         }
         if (top.get()) {
             updateTopDown();
