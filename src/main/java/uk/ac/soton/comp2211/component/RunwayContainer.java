@@ -43,6 +43,16 @@ public class RunwayContainer extends VBox {
         
         this.runwayView = new RunwayView(750, 300, this.runway);
         this.runwayView.updateTopDown();
+        VBox viewBox = new VBox();
+        HBox viewTools = new HBox();
+        Button zoomInButton = new Button("+");
+        Button zoomOutButton = new Button("-");
+        // Pass the boolean property to the runway view
+        zoomInButton.setOnAction((ActionEvent event) -> this.runwayView.zoomIn(topView));
+        zoomOutButton.setOnAction((ActionEvent event) -> this.runwayView.zoomOut(topView));
+        viewTools.getChildren().addAll(zoomInButton, zoomOutButton);
+        viewTools.setAlignment(Pos.CENTER_RIGHT);
+        viewBox.getChildren().addAll(this.runwayView, viewTools);
         
         this.parameterBox = new ParameterBox(runway.getOriginalValues());
         this.parameterBox.setPadding(new Insets(0, 10, 10, 10));
@@ -86,7 +96,7 @@ public class RunwayContainer extends VBox {
         HBox topBox = new HBox();
         topBox.getChildren().addAll(designator, delete);
         
-        this.getChildren().addAll(topBox, this.runwayView, this.parameterBox, this.obstacleBox);
+        this.getChildren().addAll(topBox, viewBox, this.parameterBox, this.obstacleBox);
         this.setStyle("-fx-border-color: black;");
         this.setPadding(new Insets(10, 10, 10, 10));
 

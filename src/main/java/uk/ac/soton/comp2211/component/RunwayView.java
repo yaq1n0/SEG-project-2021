@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.component;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
@@ -34,6 +35,8 @@ public class RunwayView extends Group {
     private final double clearwaySize;
     private final double stopwaySize;
     private final double dtSize;
+    
+    private double scale;
     
     public RunwayView(double width, double height, Runway runway) {
         super();
@@ -494,5 +497,34 @@ public class RunwayView extends Group {
 
         // add everything
         this.getChildren().addAll(toraLine,toraText,todaLine,todaText,asdaLine,asdaText,ldaLine,ldaText,stripEndText,blastText,resaText,slopeText);
+    }
+
+    /**
+     * Increase the zoom scale and update the view.
+     * @param top boolean property indicating the selected view.
+     */
+    public void zoomIn(BooleanProperty top) {
+        this.scale += 0.1;
+        if (top.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+    }
+
+    /**
+     * Decrease the zoom scale and update the view.
+     * @param top boolean property indicating the selected view.
+     */
+    public void zoomOut(BooleanProperty top) {
+        this.scale -= 0.1;
+        if (this.scale < 0.1) {
+            this.scale = 0.1;
+        }
+        if (top.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
     }
 }
