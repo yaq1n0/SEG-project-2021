@@ -221,7 +221,7 @@ public class RunwayView extends Group {
         bg.setX(0);
         bg.setY(Math.max(Math.min((h * 0.60 * scale) + offset_y, h), 0));
         bg.setWidth(w);
-        bg.setHeight(Math.max(Math.min(h - (h * 0.60 * scale) + offset_y, h - bg.getY()), 0));
+        bg.setHeight(Math.max(Math.min((h * 0.60 * scale) + offset_y, h - bg.getY()), 0));
         bg.setFill(Color.LIGHTGREEN);
         this.getChildren().add(bg);
 
@@ -241,7 +241,7 @@ public class RunwayView extends Group {
         Rectangle runwayRectangle = new Rectangle();
         runwayRectangle.setFill(Color.GRAY);
         runwayRectangle.setX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
-        runwayRectangle.setY(Math.max(Math.min((h * 0.60 * scale) + offset_x, h), 0));
+        runwayRectangle.setY(Math.max(Math.min((h * 0.60 * scale) + offset_y, h), 0));
         runwayRectangle.setWidth(Math.max(Math.min(runwayRepresentationSize * scale, w - runwayRectangle.getX()), 0));
         runwayRectangle.setHeight(Math.max(Math.min(this.h * 0.05 * scale, h - runwayRectangle.getY()), 0));
         this.getChildren().add(runwayRectangle);
