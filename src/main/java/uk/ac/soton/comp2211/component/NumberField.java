@@ -15,7 +15,7 @@ public class NumberField extends TextField {
                 if (isInteger()) limitValue();
                     // if (inRange()) this.setStyle("-fx-text-inner-color: black;");
                     // else this.setStyle("-fx-text-inner-color: red;");
-                else this.setText(newValue.replaceAll("[^\\d]", ""));
+                else this.setText(newValue.replaceAll("[^-?\\d]", ""));
             }
         );
     }

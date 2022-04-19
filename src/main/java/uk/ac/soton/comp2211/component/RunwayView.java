@@ -2,7 +2,6 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.Group;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -92,7 +91,7 @@ public class RunwayView extends Group {
         Rectangle runwayRectangle = new Rectangle();
         runwayRectangle.setFill(Color.GRAY);
         runwayRectangle.setX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
-        runwayRectangle.setY(Math.max(Math.min((h * 0.45 * scale) + offset_x, h), 0));
+        runwayRectangle.setY(Math.max(Math.min((h * 0.45 * scale) + offset_y, h), 0));
         runwayRectangle.setWidth(Math.max(Math.min(runwayRepresentationSize * scale, w - runwayRectangle.getX()), 0));
         runwayRectangle.setHeight(Math.max(Math.min(this.h * 0.1 * scale, h - runwayRectangle.getY()), 0));
         this.getChildren().add(runwayRectangle);
@@ -182,7 +181,7 @@ public class RunwayView extends Group {
                 this.getChildren().add(dottedObsline);
 
             } catch (PositionException ignored) {
-                logger.info("Obstacle has not position, so is not being drawn.");
+                logger.info("Obstacle has no position, so is not being drawn.");
             }
         }
         
@@ -670,5 +669,22 @@ public class RunwayView extends Group {
         } else {
             updateSideOn();
         }
+    }
+
+    /**
+     * Change the offset, so the user can pan around the view.
+     * @param dx change in x_offset
+     * @param dy change in y_offset
+     */
+    public void move(int dx, int dy, BooleanProperty top) {
+        this.offset_x += dx;
+        this.offset_y += dy;
+        if (top.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+        logger.info("OffsetX {}", offset_x);
+        logger.info("OffsetY {}", offset_y);
     }
 }
