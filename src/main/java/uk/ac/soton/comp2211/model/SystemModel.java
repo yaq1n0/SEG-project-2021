@@ -290,6 +290,7 @@ public class SystemModel {
         try {
             DataWriter.writeAirport(_newAirport, airportFile);
         } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
+            e.printStackTrace();
             String errorMessage = "Failed to write airport data to XML file.";
 
             LOGGER.error(errorMessage);

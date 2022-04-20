@@ -49,11 +49,12 @@ public class DataWriter {
 
     public static void writeAirport(Airport _airport, File _newAirportFile) throws SAXException, IOException, TransformerException, ParserConfigurationException {
         setupDataWriter();
-        
-        document = documentBuilder.parse(_newAirportFile);
+
+        document = documentBuilder.newDocument();
 
         Element airportNode = document.createElement("airport");
         airportNode.setAttribute("name", _airport.getName());
+        document.appendChild(airportNode);
 
         int tarmacID = 1;
         for (Tarmac tarmac : _airport.getTarmacs()) {
@@ -77,14 +78,14 @@ public class DataWriter {
                 Element ldaNode = document.createElement("lda");
                 ldaNode.setTextContent(String.valueOf(runway.getOriginalValues().getLDA()));
 
-                Element thresholdNode = document.createElement("threshold");
-                thresholdNode.setTextContent(String.valueOf(runway.getOriginalValues().getDT()));
+                // Element thresholdNode = document.createElement("threshold");
+                // thresholdNode.setTextContent(String.valueOf(runway.getOriginalValues().getDT()));
 
-                Element stopwayNode = document.createElement("stopway");
-                stopwayNode.setTextContent(String.valueOf(runway.getOriginalValues().getStopway()));
+                // Element stopwayNode = document.createElement("stopway");
+                // stopwayNode.setTextContent(String.valueOf(runway.getOriginalValues().getStopway()));
 
-                Element clearwayNode = document.createElement("clearway");
-                clearwayNode.setTextContent(String.valueOf(runway.getOriginalValues().getClearway()));
+                // Element clearwayNode = document.createElement("clearway");
+                // clearwayNode.setTextContent(String.valueOf(runway.getOriginalValues().getClearway()));
 
                 Element runwayNode = document.createElement("runway");
                 runwayNode.setAttribute("id", String.valueOf(runwayID));
@@ -93,9 +94,11 @@ public class DataWriter {
                 runwayNode.appendChild(todaNode);
                 runwayNode.appendChild(asdaNode);
                 runwayNode.appendChild(ldaNode);
-                runwayNode.appendChild(thresholdNode);
-                runwayNode.appendChild(stopwayNode);
-                runwayNode.appendChild(clearwayNode);
+                // runwayNode.appendChild(thresholdNode);
+                // runwayNode.appendChild(stopwayNode);
+                // runwayNode.appendChild(clearwayNode);
+
+                tarmacNode.appendChild(runwayNode);
 
                 runwayID++;
             }
@@ -141,7 +144,7 @@ public class DataWriter {
 
     private static void writeFile(File _file) throws TransformerException {
         DOMSource source = new DOMSource(document);
-;
+
         StreamResult result = new StreamResult(_file);
 
         transf.transform(source, result);

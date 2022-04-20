@@ -27,8 +27,8 @@ public class TarmacVBox extends VBox {
 
         tarmacID = _tarmacID;
 
-        VBox runwaysVBox = new VBox();
-        runwaysVBox.getChildren().add(new RunwayVBox(runwayDesignator(_tarmacID, _tarmacCount, 1)));
+        vboxRunways = new VBox();
+        vboxRunways.getChildren().add(new RunwayVBox(runwayDesignator(_tarmacID, _tarmacCount, 1)));
 
         HBox tarmacParameters = new HBox();
         Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
@@ -41,18 +41,18 @@ public class TarmacVBox extends VBox {
         ComboBox<String> direction = new ComboBox<String>(directionOptions);
         direction.setValue(directionOptions.get(0));
         direction.setOnAction(e -> {
-            runwaysVBox.getChildren().clear();
-            runwaysVBox.getChildren().add(new RunwayVBox(
+            vboxRunways.getChildren().clear();
+            vboxRunways.getChildren().add(new RunwayVBox(
                 runwayDesignator(_tarmacID, _tarmacCount, 1)));
             if (direction.getValue() == directionOptions.get(1)) {
-                runwaysVBox.getChildren().add(new RunwayVBox(
+                vboxRunways.getChildren().add(new RunwayVBox(
                     runwayDesignator(_tarmacID, _tarmacCount, 2)));
             }
         });
         tarmacParameters.getChildren().setAll(textTarmacName, inputTarmacLength, direction);
         tarmacParameters.setAlignment(Pos.CENTER);
 
-        this.getChildren().addAll(tarmacParameters, runwaysVBox);
+        this.getChildren().addAll(tarmacParameters, vboxRunways);
     }
 
     private String runwayDesignator(int _tarmacID, int _tarmacCount, int _runwayID) {
