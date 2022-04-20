@@ -69,9 +69,12 @@ public class CreateAirport extends VBox {
         create.setDisable(true);
         create.setOnAction((e) -> {
             try {
+                // SHOW CONFIMATION DIALOG
+                // IF YES, THEN RUN generateAirport()
                 generateAirport();
+                // IF AIRPORT GENERATING SUCCESSFULLY DISPLAY MESSAGE DIALOG
             } catch (RunwayException | WritingException | LoadingException e1) {
-                
+                // IF ERROR OCCURS DISPLAY ERROR DIALOG
             }
         });
 
