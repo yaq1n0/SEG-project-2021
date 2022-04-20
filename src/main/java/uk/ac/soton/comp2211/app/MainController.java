@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportContainer;
 import javafx.event.ActionEvent;
 
-import uk.ac.soton.comp2211.component.CreateAirport;
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.model.*;
 
@@ -35,14 +34,12 @@ public class MainController implements Initializable {
     @FXML
     private AnchorPane airportParent;
 
-
     private AirportContainer airportContainer;
     private final BooleanProperty topView;
     private Stage stage;
     private Button openAirportButton;
     private Label openAirportLabel;
-    
-    private Runway toDelete;
+    private String airportPath;
     
     //Listeners
     private QuitListener quitListener;
@@ -50,15 +47,15 @@ public class MainController implements Initializable {
     private ImportAirportListener importAirportListener;
     private CreateAirportListener createAirportListener;
     private CreateObstacleListener createObstacleListener;
-    private WarnDeletionListener warnDeletionListener;
     private CreateTarmacListener createTarmacListener;
     private ErrorListener errorListener;
     private WarningListener warningListener;
     private MessageListener messageListener;
+    private WarningListener tarmacDeleteWarning;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
-        toDelete = null;
+        this.airportPath = null;
     }
     
     public void setStage(Stage stage) {
@@ -70,8 +67,7 @@ public class MainController implements Initializable {
         // Add button to start to make it obvious how to open an airport.
         this.openAirportLabel = new Label("Don't know where to start? Why not try: ");
         this.openAirportButton = new Button("Open Airport");
-
-
+        
         this.openAirportButton.setOnAction(this::openAirport);
         HBox startBox = new HBox(10);
         startBox.setPadding(new Insets(0,0,0,230));
@@ -83,7 +79,8 @@ public class MainController implements Initializable {
         
         // Bind the boolean properties to show which profile the runway view should be.
         this.airportContainer.bindViewProperty(this.topView);
-        this.airportContainer.setDeleteTarmacListeners(this::attemptTarmacDeletion);
+        this.airportContainer.setDeleteTarmacListeners(this::deleteTarmac);
+        logger.info("HEEE");
         this.airportContainer.setAddTarmacListener(this::openAddTarmacDialogue);
         
         // Add airport container to scene
@@ -234,6 +231,7 @@ public class MainController implements Initializable {
             this.airportContainer.updateAirport(airport);
             this.openAirportButton.setVisible(false);
             this.openAirportLabel.setVisible(false);
+            this.airportPath = airportPath;
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();
@@ -252,7 +250,7 @@ public class MainController implements Initializable {
             Airport airport = SystemModel.getAirport();
             this.airportName.setText(airport.getName());
             this.airportContainer.updateAirport(airport);
-
+            this.airportPath = airportPath;
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();
@@ -293,34 +291,20 @@ public class MainController implements Initializable {
     public void setCreateObstacleListener(CreateObstacleListener listener) {
         this.createObstacleListener = listener;
     }
-
-    /**
-     * Set the listener to create the deletion warning dialogue.
-     * @param listener listener
-     */
-    public void setWarnDeletionListener(WarnDeletionListener listener) {
-        this.warnDeletionListener = listener;
-    }
     
     /**
      * Ran when user attempts to delete tarmac for current airport, warn them otherwise execute.
      * @param runway runway of the tarmac to delete
      */
-    public void attemptTarmacDeletion(Runway runway) {
-        if (this.warnDeletionListener != null) {
-            this.warnDeletionListener.createWarning();
-        }
-    }
-
-    /**
-     * Delete runway if the user confirms the choice
-     * @param result
-     */
-    public void confirmDeletion(boolean result) {
-        if (result) {
-            SystemModel.deleteTarmac(toDelete);
-        } else {
-            toDelete = null;
+    private void deleteTarmac(Runway runway) {
+        SystemModel.deleteTarmac(runway);
+        logger.info("Deleted runway {}", runway.getRunwayDesignator());
+        try {
+            SystemModel.importAirport(airportPath);
+            Airport airport = SystemModel.getAirport();
+            this.airportContainer.updateAirport(airport);
+        } catch (Exception e) {
+            logger.error("Could not update airport container: {}", e.getMessage());
         }
     }
 
@@ -376,5 +360,14 @@ public class MainController implements Initializable {
      * @return message listener
      */
     public MessageListener getMessageListener() { return this.messageListener; }
+
+    /**
+     * Set tarmac deletion warning listener
+     * @param listener listener
+     */
+    public void setTarmacDeleteWarning(WarningListener listener) {
+        this.tarmacDeleteWarning = listener;
+        this.airportContainer.setDeletionWarningListeners(this.tarmacDeleteWarning);
+    }
 
 }

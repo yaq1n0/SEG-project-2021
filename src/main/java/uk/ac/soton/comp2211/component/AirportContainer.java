@@ -7,9 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import uk.ac.soton.comp2211.event.AddTarmacListener;
-import uk.ac.soton.comp2211.event.DeleteTarmacListener;
-import uk.ac.soton.comp2211.event.InsertObstacleListener;
+import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.model.Airport;
 import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.Tarmac;
@@ -24,6 +22,7 @@ public class AirportContainer extends VBox {
     private final BooleanProperty topView = new SimpleBooleanProperty();
     private RunwayContainer[] runwayContainers;
     private DeleteTarmacListener deleteTarmacListener;
+    private WarningListener warnDeletionListener;
     private AddTarmacListener addTarmacListener;
     private Stage stage;
     private Airport airport;
@@ -56,6 +55,7 @@ public class AirportContainer extends VBox {
             RunwayContainer runwayContainer = new RunwayContainer(rws[i], this.stage);
             runwayContainer.bindViewProperty(this.topView);
             runwayContainer.setDeleteTarmacListener(this.deleteTarmacListener);
+            runwayContainer.setDeletionWarningListener(this.warnDeletionListener);
             VBox.setVgrow(runwayContainer, Priority.ALWAYS);
             this.getChildren().add(runwayContainer);
             this.runwayContainers[i] = runwayContainer;
@@ -85,6 +85,14 @@ public class AirportContainer extends VBox {
      */
     public void setDeleteTarmacListeners(DeleteTarmacListener listener) {
         this.deleteTarmacListener = listener;
+    }
+
+    /**
+     * Set the deletion warning listener, which will pass on to each runway container as it gets created.
+     * @param listener listener
+     */
+    public void setDeletionWarningListeners(WarningListener listener) {
+        this.warnDeletionListener = listener;
     }
 
     /**

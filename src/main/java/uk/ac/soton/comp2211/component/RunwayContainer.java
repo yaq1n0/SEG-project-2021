@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import uk.ac.soton.comp2211.event.DeleteTarmacListener;
+import uk.ac.soton.comp2211.event.WarningListener;
 import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.model.*;
@@ -33,6 +34,7 @@ public class RunwayContainer extends VBox {
     private final ObstacleBox obstacleBox;
     private final BooleanProperty topView = new SimpleBooleanProperty();
     private DeleteTarmacListener deleteTarmacListener;
+    private WarningListener deletionWarningListener;
     private final Runway runway;
     
     public RunwayContainer(Runway runway, Stage stage) {
@@ -97,11 +99,7 @@ public class RunwayContainer extends VBox {
 
         // Delete button for runway
         Button delete = new Button("Delete Tarmac");
-        delete.setOnAction((ActionEvent event) -> {
-            if (this.deleteTarmacListener != null) {
-                this.deleteTarmacListener.attemptDeletion(this.runway);
-            }
-        });
+        delete.setOnAction(this::showDeletionWarning);
         
         Label designator = new Label(this.runway.getRunwayDesignator());
         
@@ -113,6 +111,34 @@ public class RunwayContainer extends VBox {
         this.setPadding(new Insets(10, 10, 10, 10));
 
         this.disableRecalculation();
+    }
+
+    /**
+     * Open a dialog through the deletion warning listener.
+     * @param event event
+     */
+    private void showDeletionWarning(ActionEvent event) {
+        System.out.println("hey");
+        if (this.deletionWarningListener != null) {
+            this.deletionWarningListener.openDialog(new String[]{
+                    "Are you sure you want to delete this tarmac?",
+                    "This will delete both logical runways.",
+                    "",
+                    "This action is irreversible."
+            }, (boolean result) -> {
+                if (result) {
+                    logger.info("Deleting runway {}.", this.runway.getRunwayDesignator());
+                    if (this.deleteTarmacListener != null) {
+                        System.out.println("Attempting tarmac deletion.");
+                        this.deleteTarmacListener.attemptDeletion(this.runway);
+                    } else {
+                        System.out.println("No deleteTarmacListener!");
+                    }
+                } else {
+                    System.out.println("Cancelled runway deletion.");
+                }
+            });
+        }
     }
 
     /**
@@ -191,10 +217,18 @@ public class RunwayContainer extends VBox {
     }
 
     /**
-     * Set the tarmac deletion listener for this runway.
+     * Set the deletion listener for this runway.
      * @param listener listener
      */
     public void setDeleteTarmacListener(DeleteTarmacListener listener) {
         this.deleteTarmacListener = listener;
+    }
+
+    /**
+     * Set the deletion warning listener for this runway.
+     * @param listener listener
+     */
+    public void setDeletionWarningListener(WarningListener listener) {
+        this.deletionWarningListener = listener;
     }
 }

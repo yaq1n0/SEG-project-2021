@@ -3,7 +3,6 @@ package uk.ac.soton.comp2211.app;
 import com.sun.javafx.css.StyleManager;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.*;
@@ -161,14 +160,14 @@ public class App extends Application {
 
             dialog.show();
         });
-        controller.setWarnDeletionListener(() -> {
+        controller.setTarmacDeleteWarning((String[] messages, ConfirmationListener listener) -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
-            WarnDeletion warnDeletion = new WarnDeletion(dialog);
-            warnDeletion.setConfirmationListener(controller::confirmDeletion);
+            WarningBox warnDeletion = new WarningBox(dialog, messages);
+            warnDeletion.setConfirmationListener(listener);
 
-            Scene dialogScene = new Scene(warnDeletion, 500, 200);
+            Scene dialogScene = new Scene(warnDeletion, 500, 300);
             dialog.setScene(dialogScene);
 
             dialog.show();
