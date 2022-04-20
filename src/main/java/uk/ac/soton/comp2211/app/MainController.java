@@ -52,6 +52,9 @@ public class MainController implements Initializable {
     private CreateObstacleListener createObstacleListener;
     private WarnDeletionListener warnDeletionListener;
     private CreateTarmacListener createTarmacListener;
+    private ErrorListener errorListener;
+    private WarningListener warningListener;
+    private MessageListener messageListener;
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
@@ -337,4 +340,41 @@ public class MainController implements Initializable {
     public void setCreateTarmacListener(CreateTarmacListener listener) {
         this.createTarmacListener = listener;
     }
+
+    /**
+     * Set the error listener to show error messages.
+     * @param listener listener
+     */
+    public void setErrorListener(ErrorListener listener) { this.errorListener = listener; }
+
+    /**
+     * Get the error listener.
+     * @return error listener
+     */
+    public ErrorListener getErrorListener() { return this.errorListener; }
+    
+    /**
+     * Set the warning listener to show warnings and receive confirmation.
+     * @param listener listener
+     */
+    public void setWarningListener(WarningListener listener) { this.warningListener = listener; }
+
+    /**
+     * Get the warning listener.
+     * @return warning listener
+     */
+    public WarningListener getWarningListener() { return this.warningListener; }
+    
+    /**
+     * Set the message listener to display an arbitrary message to the user.
+     * @param listener listener
+     */
+    public void setMessageListener(MessageListener listener) { this.messageListener = listener; }
+
+    /**
+     * Get the message listener.
+     * @return message listener
+     */
+    public MessageListener getMessageListener() { return this.messageListener; }
+
 }

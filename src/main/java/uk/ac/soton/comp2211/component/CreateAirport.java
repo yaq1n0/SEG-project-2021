@@ -1,7 +1,6 @@
 package uk.ac.soton.comp2211.component;
 
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,6 +13,11 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp2211.event.ErrorListener;
+import uk.ac.soton.comp2211.event.MessageListener;
+import uk.ac.soton.comp2211.event.WarningListener;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.exceptions.WritingException;
@@ -24,10 +28,16 @@ import uk.ac.soton.comp2211.model.Tarmac;
 
 public class CreateAirport extends VBox {
 
-    private TextField inputAirportName;
-    private VBox vboxTarmacs;
+    private static final Logger logger = LogManager.getLogger(CreateAirport.class);
 
-    private Button create;
+    private final TextField inputAirportName;
+    private final VBox vboxTarmacs;
+    private final Button create;
+    
+    // Listeners
+    private ErrorListener errorListener;
+    private WarningListener warningListener;
+    private MessageListener messageListener;
 
     public CreateAirport(Stage dialog) {
         super(20);
@@ -51,8 +61,8 @@ public class CreateAirport extends VBox {
         dropdownTarmacCount.setValue(tarmacCountOptions.get(0));
         dropdownTarmacCount.setOnAction(e -> {
             int tarmacCount = 1;
-            if (dropdownTarmacCount.getValue() == tarmacCountOptions.get(1)) tarmacCount = 2;
-            else if (dropdownTarmacCount.getValue() == tarmacCountOptions.get(2)) tarmacCount = 3;
+            if (dropdownTarmacCount.getValue().equals(tarmacCountOptions.get(1))) tarmacCount = 2;
+            else if (dropdownTarmacCount.getValue().equals(tarmacCountOptions.get(2))) tarmacCount = 3;
 
             vboxTarmacs.getChildren().clear();
             for (int tarmacID = 1; tarmacID <= tarmacCount; tarmacID++) 
@@ -68,13 +78,28 @@ public class CreateAirport extends VBox {
         create = new Button("Create");
         create.setDisable(true);
         create.setOnAction((e) -> {
-            try {
-                // SHOW CONFIMATION DIALOG
-                // IF YES, THEN RUN generateAirport()
-                generateAirport();
-                // IF AIRPORT GENERATING SUCCESSFULLY DISPLAY MESSAGE DIALOG
-            } catch (RunwayException | WritingException | LoadingException e1) {
-                // IF ERROR OCCURS DISPLAY ERROR DIALOG
+            // SHOW CONFIRMATION DIALOG
+            if (warningListener != null) {
+                logger.info("Opening warning dialog.");
+                String warningMessage = "Are you sure you want to continue?";
+                warningListener.openDialog(new String[]{warningMessage}, (boolean result) -> {
+                    if (result) {
+                        // IF YES, THEN RUN generateAirport()
+                        try {
+                            generateAirport();
+                        } catch (RunwayException | WritingException | LoadingException e1) {
+
+                            // IF ERROR OCCURS DISPLAY ERROR DIALOG
+                            showError(new String[]{
+                                    "An error occurred during airport generation:",
+                                    e1.getMessage()
+                            });
+                            return;
+                        }
+                        // IF AIRPORT GENERATING SUCCESSFULLY DISPLAY MESSAGE DIALOG
+                        showMessage(new String[]{"Airport creation was a success!"});
+                    }
+                });
             }
         });
 
@@ -111,4 +136,44 @@ public class CreateAirport extends VBox {
         Airport airport = new Airport(airportName, tarmacs, airportName + ".xml");
         SystemModel.addAirport(airport, airportName + ".xml");
     }
+
+    /**
+     * Show error dialog
+     * @param messages list what went wrong
+     */
+    private void showError(String[] messages) {
+        if (this.errorListener != null) {
+            logger.info("Opening error dialog.");
+            this.errorListener.openDialog(messages);
+        }
+    }
+
+    /**
+     * Show message dialog
+     * @param messages message list
+     */
+    private void showMessage(String[] messages) {
+        if (this.messageListener != null) {
+            logger.info("Opening message dialog.");
+            this.messageListener.openDialog(messages);
+        }
+    }
+
+    /**
+     * Set the error listener to show error message.
+     * @param listener listener
+     */
+    public void setErrorListener(ErrorListener listener) { this.errorListener = listener; }
+
+    /**
+     * Set the warning listener to confirm creation.
+     * @param listener listener
+     */
+    public void setWarningListener(WarningListener listener) { this.warningListener = listener; }
+
+    /**
+     * Set the message listener to display an completion message to user.
+     * @param listener listener
+     */
+    public void setMessageListener(MessageListener listener) { this.messageListener = listener; }
 }

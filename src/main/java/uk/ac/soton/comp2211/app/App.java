@@ -10,6 +10,7 @@ import javafx.stage.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.*;
+import uk.ac.soton.comp2211.event.ConfirmationListener;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
@@ -73,6 +74,42 @@ public class App extends Application {
         
         // Set the listeners
         controller.setQuitListener(this::stop);
+        // Set the general listeners that may be reused later
+        controller.setErrorListener((String[] messages) -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+            ErrorBox box = new ErrorBox(dialog, messages);
+
+            Scene dialogScene = new Scene(box, 300, 200);
+            dialog.setScene(dialogScene);
+
+            dialog.show();
+        });
+        controller.setWarningListener((String[] messages, ConfirmationListener listener) -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+            WarningBox box = new WarningBox(dialog, messages);
+            box.setConfirmationListener(listener);
+
+            Scene dialogScene = new Scene(box, 300, 200);
+            dialog.setScene(dialogScene);
+
+            dialog.show();
+        });
+        controller.setMessageListener((String[] messages) -> {
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(stage);
+            MessageBox box = new MessageBox(dialog, messages);
+
+            Scene dialogScene = new Scene(box, 300, 200);
+            dialog.setScene(dialogScene);
+
+            dialog.show();
+        });
+        // Other dialogs
         controller.setOpenAirportListener(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
@@ -104,6 +141,10 @@ public class App extends Application {
             dialog.initOwner(stage);
 
             CreateAirport airportCreate = new CreateAirport(dialog);
+            // Make sure the controller listeners have been set beforehand.
+            airportCreate.setErrorListener(controller.getErrorListener());
+            airportCreate.setMessageListener(controller.getMessageListener());
+            airportCreate.setWarningListener(controller.getWarningListener());
 
             Scene dialogScene = new Scene(airportCreate, 400, 250);
             dialog.setScene(dialogScene);
@@ -143,6 +184,7 @@ public class App extends Application {
 
             dialog.show();
         });
+        
         
         logger.info("Listeners set for controller.");
         
