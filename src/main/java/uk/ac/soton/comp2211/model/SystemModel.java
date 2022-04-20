@@ -11,9 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
-import uk.ac.soton.comp2211.exceptions.ExtractionException;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
-import uk.ac.soton.comp2211.exceptions.SchemaException;
+import uk.ac.soton.comp2211.exceptions.WritingException;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -115,9 +114,10 @@ public class SystemModel {
      * Extract airport data from XML file.
      * 
      * @param _airportFilename
+     * @throws LoadingException
      * @throws Exception
      */
-    public static void loadAirport(String _airportFilename) throws Exception {
+    public static void loadAirport(String _airportFilename) throws LoadingException {
 
         LOGGER.info("Loading airport data from: " + _airportFilename);
 
@@ -129,7 +129,7 @@ public class SystemModel {
         } catch (Exception e) {
             String errorMessage = "Airport data file not found!";
             LOGGER.error(errorMessage);
-            throw new Exception(errorMessage);
+            throw new LoadingException(errorMessage);
         }
 
         // Get airport data file.
@@ -150,9 +150,8 @@ public class SystemModel {
             airport = new Airport(airportName, tarmacs, _airportFilename);
         } catch (Exception e) {
             LOGGER.error("Failed to extract airport data: " + e.getMessage());
-            e.printStackTrace();
 
-            throw e;
+            throw new LoadingException(e.getMessage());
         }
     }
 
@@ -268,9 +267,10 @@ public class SystemModel {
      * 
      * @param _newAirport
      * @param _airportFileName
+     * @throws LoadingException
      * @throws Exception
      */
-    public static void addAirport(Airport _newAirport, String _airportFileName) throws Exception {
+    public static void addAirport(Airport _newAirport, String _airportFileName) throws WritingException, LoadingException {
         LOGGER.info("Adding new airport...");
 
         String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _airportFileName;
@@ -282,12 +282,20 @@ public class SystemModel {
 
             LOGGER.error(errorMessage);
 
-            throw new Exception(errorMessage);
+            throw new WritingException(errorMessage);
         }
 
         LOGGER.info("Writing airport data to XML file...");
 
-        DataWriter.writeAirport(_newAirport, airportFile);
+        try {
+            DataWriter.writeAirport(_newAirport, airportFile);
+        } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
+            String errorMessage = "Failed to write airport data to XML file.";
+
+            LOGGER.error(errorMessage);
+
+            throw new WritingException(errorMessage);
+        }
 
         LOGGER.info("New airport added successfully.");
 

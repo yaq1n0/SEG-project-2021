@@ -14,6 +14,9 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2211.exceptions.LoadingException;
+import uk.ac.soton.comp2211.exceptions.RunwayException;
+import uk.ac.soton.comp2211.exceptions.WritingException;
 import uk.ac.soton.comp2211.model.Airport;
 import uk.ac.soton.comp2211.model.SystemModel;
 import uk.ac.soton.comp2211.model.Tarmac;
@@ -51,42 +54,29 @@ public class CreateAirport extends VBox {
             if (dropdownTarmacCount.getValue() == tarmacCountOptions.get(1)) tarmacCount = 2;
             else if (dropdownTarmacCount.getValue() == tarmacCountOptions.get(2)) tarmacCount = 3;
 
-            if (tarmacCount == 1) {
-                if (vboxTarmacs.getChildren().size() == 2)
-                    vboxTarmacs.getChildren().remove(1);
-                else {
-                    vboxTarmacs.getChildren().remove(2);
-                    vboxTarmacs.getChildren().remove(1);
-                }
-            } else if (tarmacCount == 2) {
-                if (vboxTarmacs.getChildren().size() == 1)
-                    vboxTarmacs.getChildren().add(new TarmacVBox(2, tarmacCount));
-                else vboxTarmacs.getChildren().remove(2);
-            } else {
-                if (vboxTarmacs.getChildren().size() == 1) {
-                    vboxTarmacs.getChildren().add(new TarmacVBox(2, tarmacCount));
-                    vboxTarmacs.getChildren().add(new TarmacVBox(3, tarmacCount));
-                } else vboxTarmacs.getChildren().add(new TarmacVBox(3, tarmacCount));
-            }
+            vboxTarmacs.getChildren().clear();
+            for (int tarmacID = 1; tarmacID <= tarmacCount; tarmacID++) 
+                vboxTarmacs.getChildren().add(new TarmacVBox(tarmacID, tarmacCount));
+
         });
         airportParameters.getChildren().addAll(inputAirportName, dropdownTarmacCount);
 
-        HBox buttonBox = new HBox();
-        buttonBox.setAlignment(Pos.CENTER);
         Button cancel = new Button("Cancel");
-        cancel.setOnAction((ActionEvent event) -> {
-            dialog.close();
-        });
+        cancel.setOnAction((e) -> { dialog.close(); });
+        cancel.setStyle("-fx-background-color: #D3CECF; ");
+
         create = new Button("Create");
         create.setDisable(true);
-        create.setOnAction((ActionEvent event) -> {
+        create.setOnAction((e) -> {
             try {
                 generateAirport();
-            } catch (Exception e1) {
-                e1.printStackTrace();
+            } catch (RunwayException | WritingException | LoadingException e1) {
+                
             }
         });
-        cancel.setStyle("-fx-background-color: #D3CECF; ");
+
+        HBox buttonBox = new HBox();
+        buttonBox.setAlignment(Pos.CENTER);
         buttonBox.getChildren().addAll(cancel, create);
         buttonBox.setAlignment(Pos.CENTER);
         
@@ -101,11 +91,10 @@ public class CreateAirport extends VBox {
         for (int i = 0; i < vboxTarmacs.getChildren().size(); i++)
             if (!((TarmacVBox) vboxTarmacs.getChildren().get(i)).hasValidateFields()) valid = false;
 
-
         create.setDisable(!valid);
     }
 
-    private void generateAirport() throws Exception {
+    private void generateAirport() throws RunwayException, WritingException, LoadingException {
         String airportName = inputAirportName.getText();
 
         int tarmacCount = vboxTarmacs.getChildren().size();

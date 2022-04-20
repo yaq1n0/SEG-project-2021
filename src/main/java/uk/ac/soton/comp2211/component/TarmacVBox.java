@@ -2,6 +2,7 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
@@ -22,9 +23,12 @@ public class TarmacVBox extends VBox {
     public TarmacVBox(int _tarmacID, int _tarmacCount) {
         super();
 
+        this.setPadding(new Insets(10, 10, 10, 10));
+
         tarmacID = _tarmacID;
+
         VBox runwaysVBox = new VBox();
-        runwaysVBox.getChildren().add(new RunwayVBox("09     "));
+        runwaysVBox.getChildren().add(new RunwayVBox(runwayDesignator(_tarmacID, _tarmacCount, 1)));
 
         HBox tarmacParameters = new HBox();
         Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
@@ -37,14 +41,47 @@ public class TarmacVBox extends VBox {
         ComboBox<String> direction = new ComboBox<String>(directionOptions);
         direction.setValue(directionOptions.get(0));
         direction.setOnAction(e -> {
-            if (direction.getValue() == directionOptions.get(1))
-                runwaysVBox.getChildren().add(new RunwayVBox("27"));
-            else runwaysVBox.getChildren().remove(1);
+            runwaysVBox.getChildren().clear();
+            runwaysVBox.getChildren().add(new RunwayVBox(
+                runwayDesignator(_tarmacID, _tarmacCount, 1)));
+            if (direction.getValue() == directionOptions.get(1)) {
+                runwaysVBox.getChildren().add(new RunwayVBox(
+                    runwayDesignator(_tarmacID, _tarmacCount, 2)));
+            }
         });
         tarmacParameters.getChildren().setAll(textTarmacName, inputTarmacLength, direction);
         tarmacParameters.setAlignment(Pos.CENTER);
 
         this.getChildren().addAll(tarmacParameters, runwaysVBox);
+    }
+
+    private String runwayDesignator(int _tarmacID, int _tarmacCount, int _runwayID) {
+        
+        if (_tarmacCount == 1) {
+            if (_runwayID == 1) return "09";
+            else if (_runwayID == 2) return "27";
+        } else if (_tarmacCount == 2) {
+            if (_tarmacID == 1) {
+                if (_runwayID == 1) return "09L";
+                else if (_runwayID == 2) return "27R";
+            } else if (_tarmacID == 2) {
+                if (_runwayID == 1) return "09R";
+                else if (_runwayID == 2) return "27L";
+            }
+        } else if (_tarmacCount == 3) {
+            if (_tarmacID == 1) {
+                if (_runwayID == 1) return "09L";
+                else if (_runwayID == 2) return "27R";
+            } else if (_tarmacID == 2) {
+                if (_runwayID == 1) return "09C";
+                else if (_runwayID == 2) return "27C";
+            } else if (_tarmacID == 3) {
+                if (_runwayID == 1) return "09R";
+                else if (_runwayID == 2) return "27L";
+            }
+        }
+
+        return "error";
     }
 
     public boolean hasValidateFields() {
