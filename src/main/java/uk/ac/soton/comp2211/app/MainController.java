@@ -39,7 +39,6 @@ public class MainController implements Initializable {
     private Stage stage;
     private Button openAirportButton;
     private Label openAirportLabel;
-    private String airportPath;
     
     //Listeners
     private QuitListener quitListener;
@@ -55,7 +54,6 @@ public class MainController implements Initializable {
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
-        this.airportPath = null;
     }
     
     public void setStage(Stage stage) {
@@ -231,7 +229,6 @@ public class MainController implements Initializable {
             this.airportContainer.updateAirport(airport);
             this.openAirportButton.setVisible(false);
             this.openAirportLabel.setVisible(false);
-            this.airportPath = airportPath;
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();
@@ -250,7 +247,6 @@ public class MainController implements Initializable {
             Airport airport = SystemModel.getAirport();
             this.airportName.setText(airport.getName());
             this.airportContainer.updateAirport(airport);
-            this.airportPath = airportPath;
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();
@@ -300,9 +296,7 @@ public class MainController implements Initializable {
         SystemModel.deleteTarmac(runway);
         logger.info("Deleted runway {}", runway.getRunwayDesignator());
         try {
-            SystemModel.importAirport(airportPath);
-            Airport airport = SystemModel.getAirport();
-            this.airportContainer.updateAirport(airport);
+            this.airportContainer.updateAirport(airportContainer.getAirport());
         } catch (Exception e) {
             logger.error("Could not update airport container: {}", e.getMessage());
         }
