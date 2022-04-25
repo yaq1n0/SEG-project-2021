@@ -52,7 +52,10 @@ public class TarmacVBox extends VBox {
                 vboxRunways.getChildren().add(new RunwayVBox(
                     runwayDesignator(_tarmacID, _tarmacCount, 2), this.validateListener));
             }
+
+            this.validateListener.validate();
         });
+
         tarmacParameters.getChildren().setAll(textTarmacName, inputTarmacLength, direction);
         tarmacParameters.setAlignment(Pos.CENTER);
 
@@ -89,11 +92,13 @@ public class TarmacVBox extends VBox {
     }
 
     public boolean hasValidateFields() {
-        boolean valid = true;
+        if (inputTarmacLength.getValue() == 0) return false;
 
-        if (inputTarmacLength.getText().equals("")) valid = false;
+        for (int i = 0; i < vboxRunways.getChildren().size(); i++)
+            if (!((RunwayVBox) vboxRunways.getChildren().get(i))
+                .hasValidateFields(inputTarmacLength.getValue())) return false;
 
-        return valid;
+        return true;
     }
 
     public Tarmac getTarmac() throws RunwayException {

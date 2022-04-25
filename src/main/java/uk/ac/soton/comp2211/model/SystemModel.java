@@ -309,7 +309,11 @@ public class SystemModel {
         LOGGER.info("Remove tarmac from airport.");
 
         for (Runway runway : airport.getRunways())
-            if (runway == _runway) airport.getTarmacs().remove(runway.getTarmac());
+            if (runway == _runway) {
+                System.out.println("testing");
+
+                airport.getTarmacs().remove(runway.getTarmac());
+            }
 
         LOGGER.info("Modifying airport data file ...");
 

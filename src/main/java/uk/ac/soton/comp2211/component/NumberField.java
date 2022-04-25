@@ -13,11 +13,17 @@ public class NumberField extends TextField {
         this.textProperty().addListener(
             (observable, oldValue, newValue) -> {
                 if (isInteger()) limitValue();
-                    // if (inRange()) this.setStyle("-fx-text-inner-color: black;");
-                    // else this.setStyle("-fx-text-inner-color: red;");
                 else this.setText(newValue.replaceAll("[^-?\\d]", ""));
             }
         );
+    }
+
+    public int getValue() { 
+        try {
+            return Integer.valueOf(this.getText()); 
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     private boolean isInteger() {

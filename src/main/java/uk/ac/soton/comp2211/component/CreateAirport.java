@@ -68,6 +68,7 @@ public class CreateAirport extends VBox {
             for (int tarmacID = 1; tarmacID <= tarmacCount; tarmacID++) 
                 vboxTarmacs.getChildren().add(new TarmacVBox(tarmacID, tarmacCount, this::validateFields));
 
+            validateFields();
         });
         airportParameters.getChildren().addAll(inputAirportName, dropdownTarmacCount);
 

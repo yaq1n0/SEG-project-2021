@@ -65,4 +65,21 @@ public class RunwayVBox extends VBox {
 
         return new Runway(runwayDesignator, _tarmac, runwayValues);
     }
+
+    public boolean hasValidateFields(int _tarmacLength) {
+        if (inputTORA.getValue() == 0) return false;
+        if (inputTORA.getValue() > _tarmacLength) return false;
+
+        if (inputTODA.getValue() == 0) return false;
+        if (inputTODA.getValue() < inputTORA.getValue()) return false;
+
+        if (inputLDA.getValue() == 0) return false;
+        if (inputLDA.getValue() > _tarmacLength) return false;
+        if (inputLDA.getValue() < inputTORA.getValue()) return false;
+
+        if (inputASDA.getValue() == 0) return false;
+        if (inputASDA.getValue() < inputTORA.getValue()) return false;
+
+        return true;
+    }
 }
