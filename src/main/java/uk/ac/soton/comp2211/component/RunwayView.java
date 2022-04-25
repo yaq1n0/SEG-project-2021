@@ -62,6 +62,12 @@ public class RunwayView extends Group {
     }
     
     public void updateTopDown() {
+        // variables for reuse
+        double x1;
+        double y1;
+        double x2;
+        double y2;
+
         // Reset view
         this.getChildren().clear();
         Rectangle bg = new Rectangle(0, 0, this.w, this.h);
@@ -90,10 +96,20 @@ public class RunwayView extends Group {
         // Draw tarmac
         Rectangle runwayRectangle = new Rectangle();
         runwayRectangle.setFill(Color.GRAY);
-        runwayRectangle.setX(Math.max(Math.min((runwayStart * scale) + offset_x, w), 0));
-        runwayRectangle.setY(Math.max(Math.min((h * 0.45 * scale) + offset_y, h), 0));
-        runwayRectangle.setWidth(Math.max(Math.min(runwayRepresentationSize * scale, w - runwayRectangle.getX()), 0));
-        runwayRectangle.setHeight(Math.max(Math.min(this.h * 0.1 * scale, h - runwayRectangle.getY()), 0));
+        x1 = (runwayStart * scale) + offset_x;
+        y1 = (h * 0.45 * scale) + offset_y;
+        runwayRectangle.setX(Math.max(Math.min(x1, w), 0));
+        runwayRectangle.setY(Math.max(Math.min(y1, h), 0));
+        if (x1 < 0) {
+            runwayRectangle.setWidth(Math.max(Math.min(((runwayRepresentationSize * scale) + x1), w - x1), 0));
+        } else {
+            runwayRectangle.setWidth(Math.max(Math.min(runwayRepresentationSize * scale, w - x1), 0));
+        }
+        if (y1 < 0) {
+            runwayRectangle.setHeight(Math.max(Math.min(((h * 0.1 * scale) + y1), h - y1), 0));
+        } else {
+            runwayRectangle.setHeight(Math.max(Math.min(h * 0.1 * scale, h - y1), 0));
+        }
         this.getChildren().add(runwayRectangle);
         runwayRectangle.toFront();
         Text runwayDesignatorText = new Text(runway.getRunwayDesignator());
@@ -102,52 +118,93 @@ public class RunwayView extends Group {
         runwayDesignatorText.setY(Math.max(Math.min((this.h * 0.52 * scale) + offset_y, h), 0));
         runwayDesignatorText.setRotate(90);
         runwayDesignatorText.setFill(Color.WHITE);
-        this.getChildren().add(runwayDesignatorText);
+        if (10 <= runwayDesignatorText.getX() && runwayDesignatorText.getX() < w - 20 && 10 <= runwayDesignatorText.getY() && runwayDesignatorText.getY() < h - 20) {
+            this.getChildren().add(runwayDesignatorText);
+        }
 
         //Draw line middle tarmac
-        Line runwayCentreLine = new Line();
-        runwayCentreLine.setStroke(Color.WHITE);
-        runwayCentreLine.setStrokeWidth(5d * scale);
-        runwayCentreLine.getStrokeDashArray().addAll(20d * scale, 20d * scale);
-        runwayCentreLine.setStartX(Math.max(Math.min(((runwayStart + 0.1 * runwayRepresentationSize) * scale) + offset_x, w), 0));
-        runwayCentreLine.setStartY(Math.max(Math.min(((h * 0.5 - 1) * scale) + offset_y, h), 0));
-        runwayCentreLine.setEndX(Math.max(Math.min(((w * 0.85 - 0.1 * runwayRepresentationSize) * scale) + offset_x, w), 0));
-        runwayCentreLine.setEndY(Math.max(Math.min(((h * 0.5 - 1) * scale) + offset_y, h), 0));
-        this.getChildren().add(runwayCentreLine);
+        x1 = ((runwayStart + 0.1 * runwayRepresentationSize) * scale) + offset_x;
+        y1 = ((h * 0.5 - 1) * scale) + offset_y;
+        x2 = ((w * 0.85 - 0.1 * runwayRepresentationSize) * scale) + offset_x;
+        y2 = ((h * 0.5 - 1) * scale) + offset_y;
+        // If y1 is out of box don't draw since line is always horizontal.
+        // If adding rotation, sorry to whoever does that. 
+        if (!(y1 > h)) {
+            Line runwayCentreLine = new Line();
+            runwayCentreLine.setStroke(Color.WHITE);
+            runwayCentreLine.setStrokeWidth(5d * scale);
+            runwayCentreLine.getStrokeDashArray().addAll(20d * scale, 20d * scale);
+            
+            runwayCentreLine.setStartX(Math.max(Math.min(x1, w), 0));
+            runwayCentreLine.setStartY(Math.max(Math.min(y1, h), 0));
+            runwayCentreLine.setEndX(Math.max(Math.min(x2, w), 0));
+            runwayCentreLine.setEndY(Math.max(Math.min(y2, h), 0));
+            this.getChildren().add(runwayCentreLine);
+        }
 
         //Draw value lines
         drawValueLines();
 
         // Draw displaced threshold
         if (runway.getOriginalValues().getDT()>0) {
-            Line dtLine = new Line();
-            dtLine.setStartX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
-            dtLine.setStartY(Math.max(Math.min(((h * 0.5 - 10) * scale) + offset_y, h), 0));
-            dtLine.setEndX(Math.max(Math.min(((runwayStart + dtSize) * scale) + offset_x, w), 0));
-            dtLine.setEndY(Math.max(Math.min(((h * 0.5 + 10) * scale) + offset_y, h), 0));
-            dtLine.setStroke(Color.RED);
-            dtLine.setStrokeWidth(5d * scale);
-            this.getChildren().add(dtLine);
+            x1 = ((runwayStart + dtSize) * scale) + offset_x;
+            y1 = ((h * 0.5 - 10) * scale) + offset_y;
+            x2 = ((runwayStart + dtSize) * scale) + offset_x;
+            y2 = ((h * 0.5 - 1) * scale) + offset_y;
+            // If x1 is out of box don't draw since line is always vertical.
+            // If adding rotation, sorry to whoever does that. 
+            if (!(x1 > h)) {
+                Line dtLine = new Line();
+                dtLine.setStartX(Math.max(Math.min(x1, w), 0));
+                dtLine.setStartY(Math.max(Math.min(y1, h), 0));
+                dtLine.setEndX(Math.max(Math.min(x2, w), 0));
+                dtLine.setEndY(Math.max(Math.min(y2, h), 0));
+                dtLine.setStroke(Color.RED);
+                dtLine.setStrokeWidth(5d * scale);
+                this.getChildren().add(dtLine);
+            }
         }
 
         // Draw clearway
-        if (runway.getOriginalValues().getClearway()>0) {
+        if (runway.getOriginalValues().getClearway() > 0) {
+            x1 = ((runwayStart + runwayRepresentationSize) * scale) + offset_x;
+            y1 = (h * 0.4 * scale) + offset_y;
+            
             Rectangle clearwayRec = new Rectangle();
-            clearwayRec.setX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
-            clearwayRec.setY(Math.max(Math.min((h * 0.4 * scale) + offset_y, h), 0));
-            clearwayRec.setWidth(Math.max(Math.min(clearwaySize * scale, w - clearwayRec.getX()), 0));
-            clearwayRec.setHeight(Math.max(Math.min(h * 0.2 * scale, h - clearwayRec.getY()), 0));
+            clearwayRec.setX(Math.max(Math.min(x1, w), 0));
+            clearwayRec.setY(Math.max(Math.min(y1, h), 0));
+            if (x1 < 0) {
+                clearwayRec.setWidth(Math.max(Math.min((clearwaySize * scale) + x1, w - x1), 0));
+            } else {
+                clearwayRec.setWidth(Math.max(Math.min(clearwaySize * scale, w - x1), 0));
+            }
+            if (y1 < 0) {
+                clearwayRec.setHeight(Math.max(Math.min(((h * 0.2 * scale) + y1), h - y1), 0));
+            } else {
+                clearwayRec.setHeight(Math.max(Math.min(h * 0.2 * scale, h - y1), 0));
+            }
             clearwayRec.setFill(Color.CORAL);
             this.getChildren().add(clearwayRec);
         }
 
         // Draw stop-way
         if (runway.getOriginalValues().getStopway()>0) {
+            x1 = ((runwayStart + runwayRepresentationSize) * scale) + offset_x;
+            y1 = (h * 0.45 * scale) + offset_y;
+
             Rectangle stopwayRec = new Rectangle();
-            stopwayRec.setX(Math.max(Math.min(((runwayStart + runwayRepresentationSize) * scale) + offset_x, w), 0));
-            stopwayRec.setY(Math.max(Math.min((h * 0.45 * scale) + offset_y, h), 0));
-            stopwayRec.setWidth(Math.max(Math.min(stopwaySize * scale, w - stopwayRec.getX()), 0));
-            stopwayRec.setHeight(Math.max(Math.min(h * 0.1 * scale, h - stopwayRec.getY()), 0));
+            stopwayRec.setX(Math.max(Math.min(x1, w), 0));
+            stopwayRec.setY(Math.max(Math.min(y1, h), 0));
+            if (x1 < 0) {
+                stopwayRec.setWidth(Math.max(Math.min(((stopwaySize * scale) + x1), w - x1), 0));
+            } else {
+                stopwayRec.setWidth(Math.max(Math.min(stopwaySize * scale, w - x1), 0));
+            }
+            if (y1 < 0) {
+                stopwayRec.setHeight(Math.max(Math.min(((h * 0.1 * scale) + y1), h - y1), 0));
+            } else {
+                stopwayRec.setHeight(Math.max(Math.min(h * 0.1 * scale, h - y1), 0));
+            }
             stopwayRec.setFill(Color.CYAN);
             this.getChildren().add(stopwayRec);
             stopwayRec.toFront();
@@ -637,9 +694,22 @@ public class RunwayView extends Group {
 
         // Draw take-off direction and landing direction
 
+        // Add text (if within view bounds)
+        if (0 <= toraText.getX() && toraText.getX() < w - 100 && 10 <= toraText.getY() && toraText.getY() < h - 20) {
+            this.getChildren().addAll(toraText, toraLine);
+        }
+        if (0 <= todaText.getX() && todaText.getX() < w - 100 && 10 <= todaText.getY() && todaText.getY() < h - 20) {
+            this.getChildren().addAll(todaText, todaLine);
+        }
+        if (0 <= asdaText.getX() && asdaText.getX() < w - 100 && 10 <= asdaText.getY() && asdaText.getY() < h - 20) {
+            this.getChildren().addAll(asdaText, asdaLine);
+        }
+        if (0 <= ldaText.getX() && ldaText.getX() < w - 100 && 10 <= ldaText.getY() && ldaText.getY() < h - 20) {
+            this.getChildren().addAll(ldaText, ldaLine);
+        }
 
         // add everything
-        this.getChildren().addAll(toraLine,toraText,todaLine,todaText,asdaLine,asdaText,ldaLine,ldaText,stripEndText,blastText,resaText,slopeText);
+        this.getChildren().addAll(stripEndText,blastText,resaText,slopeText);
     }
 
     /**
