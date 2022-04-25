@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import uk.ac.soton.comp2211.event.ValidateListener;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.RunwayValues;
@@ -21,8 +22,11 @@ public class RunwayVBox extends VBox {
     private NumberField inputTODA;
     private NumberField inputLDA;
     private NumberField inputASDA;
+    private ValidateListener validateListener;
 
-    public RunwayVBox(String runwayDesignator) {
+    public RunwayVBox(String runwayDesignator, ValidateListener listener) {
+        this.validateListener = listener;
+        
         HBox runwayParameters = new HBox();
         Text header = new Text("Runway: ");
         textDesignator = new Text(runwayDesignator);
@@ -34,12 +38,16 @@ public class RunwayVBox extends VBox {
         textDesignator = new Text(runwayDesignator);
         inputTORA = new NumberField(Runway.MIN_TORA, Runway.MAX_TORA);
         inputTORA.setPromptText("tora");
+        inputTORA.textProperty().addListener((e) -> { this.validateListener.validate(); });
         inputTODA = new NumberField(Runway.MIN_TODA, Runway.MAX_TODA);
         inputTODA.setPromptText("toda");
+        inputTODA.textProperty().addListener((e) -> { this.validateListener.validate(); });
         inputLDA = new NumberField(Runway.MIN_LDA, Runway.MAX_LDA);
         inputLDA.setPromptText("lda");
+        inputLDA.textProperty().addListener((e) -> { this.validateListener.validate(); });
         inputASDA = new NumberField(Runway.MIN_ASDA, Runway.MAX_ASDA);
         inputASDA.setPromptText("asda");
+        inputASDA.textProperty().addListener((e) -> { this.validateListener.validate(); });
         runwayValues.getChildren().setAll(inputTORA, inputTODA, inputLDA, inputASDA);
         runwayValues.setAlignment(Pos.CENTER);
 

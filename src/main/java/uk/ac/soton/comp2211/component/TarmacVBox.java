@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import uk.ac.soton.comp2211.event.ValidateListener;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.Tarmac;
@@ -19,16 +20,18 @@ public class TarmacVBox extends VBox {
     private NumberField inputTarmacLength;
 
     private int tarmacID;
+    private ValidateListener validateListener;
 
-    public TarmacVBox(int _tarmacID, int _tarmacCount) {
+    public TarmacVBox(int _tarmacID, int _tarmacCount, ValidateListener listener) {
         super();
 
+        validateListener = listener;
         this.setPadding(new Insets(10, 10, 10, 10));
 
         tarmacID = _tarmacID;
 
         vboxRunways = new VBox();
-        vboxRunways.getChildren().add(new RunwayVBox(runwayDesignator(_tarmacID, _tarmacCount, 1)));
+        vboxRunways.getChildren().add(new RunwayVBox(runwayDesignator(_tarmacID, _tarmacCount, 1), this.validateListener));
 
         HBox tarmacParameters = new HBox();
         Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
@@ -36,6 +39,7 @@ public class TarmacVBox extends VBox {
 
         inputTarmacLength = new NumberField(1, 1000);
         inputTarmacLength.setPromptText("length");
+        inputTarmacLength.textProperty().addListener((e) -> { this.validateListener.validate(); });
 
         ObservableList<String> directionOptions = FXCollections.observableArrayList("unidirectional", "bidirectional");
         ComboBox<String> direction = new ComboBox<String>(directionOptions);
@@ -43,10 +47,10 @@ public class TarmacVBox extends VBox {
         direction.setOnAction(e -> {
             vboxRunways.getChildren().clear();
             vboxRunways.getChildren().add(new RunwayVBox(
-                runwayDesignator(_tarmacID, _tarmacCount, 1)));
+                runwayDesignator(_tarmacID, _tarmacCount, 1), this.validateListener));
             if (direction.getValue() == directionOptions.get(1)) {
                 vboxRunways.getChildren().add(new RunwayVBox(
-                    runwayDesignator(_tarmacID, _tarmacCount, 2)));
+                    runwayDesignator(_tarmacID, _tarmacCount, 2), this.validateListener));
             }
         });
         tarmacParameters.getChildren().setAll(textTarmacName, inputTarmacLength, direction);

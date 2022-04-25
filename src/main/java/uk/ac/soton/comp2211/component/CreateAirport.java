@@ -50,7 +50,7 @@ public class CreateAirport extends VBox {
         titleBox.setPadding(new Insets(10,0,0,0));
 
         vboxTarmacs = new VBox();
-        vboxTarmacs.getChildren().add(new TarmacVBox(1, 1));
+        vboxTarmacs.getChildren().add(new TarmacVBox(1, 1, this::validateFields));
         HBox airportParameters = new HBox();
         airportParameters.setAlignment(Pos.CENTER);
         inputAirportName = new TextField();
@@ -66,7 +66,7 @@ public class CreateAirport extends VBox {
 
             vboxTarmacs.getChildren().clear();
             for (int tarmacID = 1; tarmacID <= tarmacCount; tarmacID++) 
-                vboxTarmacs.getChildren().add(new TarmacVBox(tarmacID, tarmacCount));
+                vboxTarmacs.getChildren().add(new TarmacVBox(tarmacID, tarmacCount, this::validateFields));
 
         });
         airportParameters.getChildren().addAll(inputAirportName, dropdownTarmacCount);

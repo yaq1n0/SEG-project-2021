@@ -34,7 +34,7 @@ public class CreateTarmac extends VBox {
         titleBox.getChildren().add(text);
         titleBox.setPadding(new Insets(10,0,0,0));
 
-        TarmacVBox tarmacVBox = new TarmacVBox(_newTarmacID, _newTarmacID - 1);
+        TarmacVBox tarmacVBox = new TarmacVBox(_newTarmacID, _newTarmacID - 1, null);
 
         HBox buttonBox = new HBox();
         buttonBox.setAlignment(Pos.CENTER);
