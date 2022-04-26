@@ -63,8 +63,13 @@ public class RunwayContainer extends VBox {
         rightPan.setOnAction((ActionEvent event) -> this.runwayView.move(-10, 0, topView));
         upPan.setOnAction((ActionEvent event) -> this.runwayView.move(0, 10, topView));
         downPan.setOnAction((ActionEvent event) -> this.runwayView.move(0, -10, topView));
+
+        Button rotateClockWise = new Button("Rotate Clockwise");
+        rotateClockWise.setOnAction((ActionEvent event) -> this.runwayView.drawRotated(5, topView));
+        Button rotateAnti = new Button("Rotate Anti-Clockwise");
+        rotateAnti.setOnAction((ActionEvent event) -> this.runwayView.drawRotated(-5, topView));
         
-        viewTools.getChildren().addAll(leftPan, upPan, downPan, rightPan, zoomInButton, zoomOutButton);
+        viewTools.getChildren().addAll(leftPan, upPan, downPan, rightPan, zoomInButton, zoomOutButton, rotateClockWise, rotateAnti);
         viewTools.setAlignment(Pos.CENTER_RIGHT);
         viewBox.getChildren().addAll(this.runwayView, viewTools);
         
@@ -195,8 +200,10 @@ public class RunwayContainer extends VBox {
         logger.info("Updating view.");
         if (this.topView.get()) {
             this.runwayView.updateTopDown();
+            this.runwayView.resetAngle();
         } else {
             this.runwayView.updateSideOn();
+            this.runwayView.resetAngle();
         }
     }
 
