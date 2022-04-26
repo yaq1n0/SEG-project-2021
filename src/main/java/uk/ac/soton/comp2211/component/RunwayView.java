@@ -75,9 +75,9 @@ public class RunwayView extends Canvas {
         double y2;
 
         // Reset view
-        this.gc.clearRect(0, 0, w, h);
+        this.gc.clearRect(-w, -h, w * 3, h * 3);
         this.gc.setFill(Color.LIGHTGREEN);
-        this.gc.fillRect(0, 0, w, h);
+        this.gc.fillRect(-w, -h, w * 3, h * 3);
 
         // Draw cleared and Graded Area
         double[] pointsX = {
@@ -267,12 +267,10 @@ public class RunwayView extends Canvas {
 
         // Draw scale indicator
         // Draw compass
-
-
-        // Draw border
-        this.gc.setStroke(Color.BLACK);
-        this.gc.setLineDashes(0);
-        this.gc.strokeRect(0, 0, this.w, this.h);
+        
+        if (this.angle == 0) {
+            drawBorder();
+        }
     }
 
     public void updateSideOn() {
@@ -280,11 +278,11 @@ public class RunwayView extends Canvas {
         this.gc.clearRect(0,0,this.w, this.h);
         // Draw ground
         this.gc.setFill(Color.LIGHTGREEN);
-        this.gc.fillRect(0, Math.max(Math.min((h * 0.60 * scale) + offset_y, h), 0), w, Math.max(Math.min((h * 0.60 * scale) + offset_y, h - (Math.max(Math.min((h * 0.60 * scale) + offset_y, h), 0))), 0));
+        this.gc.fillRect(-w, -h, w * 3, h * 3);
 
         //Draw sky
         this.gc.setFill(Color.LIGHTBLUE);
-        this.gc.fillRect(0, 0, w, Math.max(Math.min((this.h * 0.60 * scale) + offset_y, h), 0));
+        this.gc.fillRect(-w, -h, w * 3, Math.max(Math.min((this.h * 0.60 * scale) + offset_y, h), 0));
 
         //Draw value lines
         drawValueLines();
@@ -366,10 +364,9 @@ public class RunwayView extends Canvas {
             }
         }
 
-        // Draw border
-        this.gc.setLineDashes(0);
-        this.gc.setStroke(Color.BLACK);
-        this.gc.strokeRect(0, 0, this.w, this.h);
+        if (this.angle == 0) {
+            drawBorder();
+        }
 
     }
 
@@ -676,6 +673,14 @@ public class RunwayView extends Canvas {
             updateSideOn();
         }
         gc.restore();
+        drawBorder();
+    }
+    
+    public void drawBorder() {
+        // Draw border
+        this.gc.setLineDashes(0);
+        this.gc.setStroke(Color.BLACK);
+        this.gc.strokeRect(0, 0, this.w, this.h);
     }
 
     public void resetAngle(){
