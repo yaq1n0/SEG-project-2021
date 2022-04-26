@@ -282,7 +282,7 @@ public class RunwayView extends Canvas {
 
         //Draw sky
         this.gc.setFill(Color.LIGHTBLUE);
-        this.gc.fillRect(-w, -h, w * 3, Math.max(Math.min((this.h * 0.60 * scale) + offset_y, h), 0));
+        this.gc.fillRect(-w, -h, w * 3, Math.max(Math.min((this.h * 0.60 * scale) + offset_y + h, h * 2), 0));
 
         //Draw value lines
         drawValueLines();
