@@ -81,31 +81,31 @@ public class RunwayView extends Canvas {
 
         // Draw cleared and Graded Area
         double[] pointsX = {
-                Math.max(Math.min(offset_x, w), 0),
-                Math.max(Math.min((0.2 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((0.3 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((0.7 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((0.8 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((0.8 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((0.7 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((0.3 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min((0.2 * this.w * scale) + offset_x, w), 0),
-                Math.max(Math.min(offset_x, w), 0)};
+                offset_x,
+                (0.2 * this.w * scale) + offset_x,
+                (0.3 * this.w * scale) + offset_x,
+                (0.7 * this.w * scale) + offset_x,
+                (0.8 * this.w * scale) + offset_x,
+                (this.w * scale) + offset_x,
+                (this.w * scale) + offset_x,
+                (0.8 * this.w * scale) + offset_x,
+                (0.7 * this.w * scale) + offset_x,
+                (0.3 * this.w * scale) + offset_x,
+                (0.2 * this.w * scale) + offset_x,
+                offset_x};
         double[] pointsY = {
-                Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.2 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.2 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.3 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.8 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.8 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0),
-                Math.max(Math.min((0.7 * this.h * scale) + offset_y, h), 0)};
+                (0.3 * this.h * scale) + offset_y,
+                (0.3 * this.h * scale) + offset_y,
+                (0.2 * this.h * scale) + offset_y,
+                (0.2 * this.h * scale) + offset_y,
+                (0.3 * this.h * scale) + offset_y,
+                (0.3 * this.h * scale) + offset_y,
+                (0.7 * this.h * scale) + offset_y,
+                (0.7 * this.h * scale) + offset_y,
+                (0.8 * this.h * scale) + offset_y,
+                (0.8 * this.h * scale) + offset_y,
+                (0.7 * this.h * scale) + offset_y,
+                (0.7 * this.h * scale) + offset_y};
         this.gc.setFill(Color.LIGHTBLUE);
         this.gc.fillPolygon(pointsX , pointsY , 12);
 
@@ -116,21 +116,7 @@ public class RunwayView extends Canvas {
         y1 = (h * 0.45 * scale) + offset_y;
 
         this.gc.setFill(Color.GRAY);
-
-        if (x1 < 0) {
-            if (y1 < 0) {
-                this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min(((runwayRepresentationSize * scale) + x1), w - x1), 0), Math.max(Math.min(((h * 0.1 * scale) + y1), h - y1), 0));
-            } else {
-                this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min(((runwayRepresentationSize * scale) + x1), w - x1), 0), Math.max(Math.min(h * 0.1 * scale, h - y1), 0));
-            }
-        } else {
-            if (y1 < 0) {
-                this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min(runwayRepresentationSize * scale, w - x1), 0), Math.max(Math.min(((h * 0.1 * scale) + y1), h - y1), 0));
-            } else {
-                this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min(runwayRepresentationSize * scale, w - x1), 0), Math.max(Math.min(h * 0.1 * scale, h - y1), 0));
-            }
-        }
-
+        this.gc.fillRect(x1, y1, ((runwayRepresentationSize * scale)), h * 0.1 * scale);
 
         double runwayDesignatorX = ((runwayStart + 10) * scale) + offset_x;
         double runwayDesignatorY = (this.h * 0.52 * scale) + offset_y;
@@ -172,20 +158,7 @@ public class RunwayView extends Canvas {
             y1 = (h * 0.4 * scale) + offset_y;
 
             this.gc.setFill(Color.CORAL);
-
-            if (x1 < 0) {
-                if (y1 < 0) {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min((clearwaySize * scale) + x1, w - x1), 0), Math.max(Math.min(((h * 0.2 * scale) + y1), h - y1), 0));
-                } else {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min((clearwaySize * scale) + x1, w - x1), 0), Math.max(Math.min(h * 0.2 * scale, h - y1), 0));
-                }
-            } else {
-                if (y1 < 0) {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min(clearwaySize * scale, w - x1), 0), Math.max(Math.min(((h * 0.2 * scale) + y1), h - y1), 0));
-                } else {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0), Math.max(Math.min(clearwaySize * scale, w - x1), 0), Math.max(Math.min(h * 0.2 * scale, h - y1), 0));
-                }
-            }
+            this.gc.fillRect(x1, y1, (clearwaySize * scale), h * 0.2 * scale);
 
         }
 
@@ -195,20 +168,8 @@ public class RunwayView extends Canvas {
             y1 = (h * 0.45 * scale) + offset_y;
 
             this.gc.setFill(Color.CYAN);
+            this.gc.fillRect(x1, y1, stopwaySize * scale , h * 0.1 * scale);
 
-            if (x1 < 0) {
-                if (y1 < 0) {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0),Math.max(Math.min(((stopwaySize * scale) + x1), w - x1), 0) , Math.max(Math.min(((h * 0.1 * scale) + y1), h - y1), 0));
-                } else {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0),Math.max(Math.min(((stopwaySize * scale) + x1), w - x1), 0) , Math.max(Math.min(h * 0.1 * scale, h - y1), 0));
-                }
-            } else {
-                if (y1 < 0) {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0),Math.max(Math.min(stopwaySize * scale, w - x1), 0) , Math.max(Math.min(((h * 0.1 * scale) + y1), h - y1), 0));
-                } else {
-                    this.gc.fillRect(Math.max(Math.min(x1, w), 0), Math.max(Math.min(y1, h), 0),Math.max(Math.min(stopwaySize * scale, w - x1), 0) , Math.max(Math.min(h * 0.1 * scale, h - y1), 0));
-                }
-            }
 
         }
         
@@ -224,8 +185,8 @@ public class RunwayView extends Canvas {
                 this.gc.setFill(Color.RED);
                 this.gc.setStroke(Color.BLACK);
                 this.gc.fillRect(obsRectX, obsRectY,
-                                 Math.max(Math.min(obs.getLength() * runwayRepresentationSize / runway.getLength() * scale, h - obsRectY), 0),
-                                 Math.max(Math.min(obs.getWidth() * runwayRepresentationSize / runway.getLength() * scale, w - obsRectX), 0));
+                                 obs.getLength() * runwayRepresentationSize / runway.getLength() * scale,
+                                 obs.getWidth() * runwayRepresentationSize / runway.getLength() * scale);
 
                 logger.info("Obstacle drawn to top-down.");
 
@@ -234,7 +195,7 @@ public class RunwayView extends Canvas {
                 this.gc.setStroke(Color.WHITE);
                 this.gc.setLineWidth(2d * scale);
                 this.gc.setLineDashes(7d * scale, 7d * scale);
-                this.gc.strokeLine(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0), Math.max(Math.min((h * 0.5 * scale) + offset_y, h), 0), Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0), Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, (h * 0.5 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, (h * 0.75 * scale) + offset_y);
 
 
             } catch (PositionException ignored) {
@@ -282,7 +243,7 @@ public class RunwayView extends Canvas {
 
         //Draw sky
         this.gc.setFill(Color.LIGHTBLUE);
-        this.gc.fillRect(-w, -h, w * 3, Math.max(Math.min((this.h * 0.60 * scale) + offset_y + h, h * 2), 0));
+        this.gc.fillRect(-w, -h, w * 3, (this.h * 0.60 * scale) + offset_y + h);
 
         //Draw value lines
         drawValueLines();
@@ -291,7 +252,7 @@ public class RunwayView extends Canvas {
         this.gc.setFill(Color.GRAY);
         double runwayRectangleX = (runwayStart * scale) + offset_x;
         double runwayRectangleY = (h * 0.60 * scale) + offset_y;
-        this.gc.fillRect(runwayRectangleX, runwayRectangleY, Math.max(Math.min(runwayRepresentationSize * scale, w - runwayRectangleX), 0), Math.max(Math.min(this.h * 0.05 * scale, h - runwayRectangleY), 0));
+        this.gc.fillRect(runwayRectangleX, runwayRectangleY, runwayRepresentationSize * scale, this.h * 0.05 * scale);
 
         // Draw displaced threshold
         if (runway.getOriginalValues().getDT() > 0) {
@@ -305,7 +266,7 @@ public class RunwayView extends Canvas {
             this.gc.setFill(Color.CORAL);
             double clearwayRecX = ((runwayStart + runwayRepresentationSize) * scale) + offset_x;
             double clearwayRecY = (h * 0.6 * scale) + offset_y;
-            this.gc.fillRect(clearwayRecX, clearwayRecY, Math.max(Math.min(clearwaySize, w - clearwayRecX), 0), Math.max(Math.min(h * 0.2 * scale, h - clearwayRecY), 0));
+            this.gc.fillRect(clearwayRecX, clearwayRecY, clearwaySize, h * 0.2 * scale);
         }
 
         // Draw stop-way
@@ -313,7 +274,7 @@ public class RunwayView extends Canvas {
             this.gc.setFill(Color.CYAN);
             double stopwayRecX = ((runwayStart + runwayRepresentationSize) * scale) + offset_x;
             double stopwayRecY = (h * 0.6 * scale) + offset_y;
-            this.gc.fillRect(stopwayRecX, stopwayRecY, Math.max(Math.min(stopwaySize, w - stopwayRecX), 0), Math.max(Math.min(h * 0.12 * scale, h - stopwayRecY), 0));
+            this.gc.fillRect(stopwayRecX, stopwayRecY, stopwaySize, h * 0.12 * scale);
         }
 
         // Draw Take-off/Landing direction
@@ -354,10 +315,10 @@ public class RunwayView extends Canvas {
                 this.gc.setStroke(Color.WHITE);
                 this.gc.setLineWidth(2d * scale);
                 this.gc.setLineDashes(7d * scale, 7d * scale);
-                this.gc.strokeLine(Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0),
-                                   Math.max(Math.min((h * 0.6 * scale) + offset_y, h), 0),
-                                   Math.max(Math.min(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, w), 0),
-                                   Math.max(Math.min((h * 0.75 * scale) + offset_y, h), 0));
+                this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                   (h * 0.6 * scale) + offset_y,
+                                   ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                   (h * 0.75 * scale) + offset_y);
 
             } catch (PositionException ignored) {
                 logger.info("Obstacle has not position, so is not being drawn.");
