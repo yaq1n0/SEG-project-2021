@@ -223,7 +223,7 @@ public class MainController implements Initializable {
      */
     public void setAirport(String airportPath) {
         try {
-            SystemModel.loadAirport(airportPath);
+            SystemModel.openAirport(airportPath);
             Airport airport = SystemModel.getAirport();
             this.airportName.setText(airport.getName());
             this.airportContainer.updateAirport(airport);

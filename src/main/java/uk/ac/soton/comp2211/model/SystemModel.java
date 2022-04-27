@@ -117,11 +117,8 @@ public class SystemModel {
      * @throws LoadingException
      * @throws Exception
      */
-    public static void loadAirport(String _airportFilename) throws LoadingException {
-
+    public static void openAirport(String _airportFilename) throws LoadingException {
         LOGGER.info("Loading airport data from: " + _airportFilename);
-
-        if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
 
         String airportFolderPath;
         try {
@@ -134,25 +131,9 @@ public class SystemModel {
 
         // Get airport data file.
         File airportFile = new File(airportFolderPath, _airportFilename);
-        LOGGER.info("Airport data file loaded.");
 
-        try {
-            // Load the airport data file into the data reader, with the XSD schema.
-            DataReader.loadFile(airportFile, airportSchemaFile);
+        loadAirportData(airportFile);
 
-            // Extract airport name from airport data file.
-            String airportName = DataReader.getAirportName();
-
-            // Extract tarmac data from airport data file.
-            Tarmac[] tarmacs = DataReader.getTarmacs();
-
-            // Instantiate the airport with the airport name and runway data.
-            airport = new Airport(airportName, tarmacs, _airportFilename);
-        } catch (Exception e) {
-            LOGGER.error("Failed to extract airport data: " + e.getMessage());
-
-            throw new LoadingException(e.getMessage());
-        }
     }
 
     /**
@@ -164,25 +145,35 @@ public class SystemModel {
      * @param _airportFilename
      * @throws Exception
      */
-    public static void importAirport(String _airportFilename) throws Exception {
-        LOGGER.info("Loading airport data from: " + _airportFilename);
-
-        if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
+    public static void importAirport(String _airportPath) throws LoadingException {
+        LOGGER.info("Importing airport data from: " + _airportPath);
 
         // Get airport data file.
-        File airportFile = new File(_airportFilename);
+        File airportFile = new File(_airportPath);
 
-        // Load the airport data file into the data reader, with the XSD schema.
-        DataReader.loadFile(airportFile, airportSchemaFile);
+        loadAirportData(airportFile);
+    }
 
-        // Extract airport name from airport data file.
-        String airportName = DataReader.getAirportName();
+    private static void loadAirportData(File _airportFile) throws LoadingException {
+        if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas();
 
-        // Extract tarmac data from airport data file.
-        Tarmac[] tarmacs = DataReader.getTarmacs();
+        try {
+            // Load the airport data file into the data reader, with the XSD schema.
+            DataReader.loadFile(_airportFile, airportSchemaFile);
 
-        // Instantiate the airport with the airport name and runway data.
-        airport = new Airport(airportName, tarmacs, _airportFilename);
+            // Extract airport name from airport data file.
+            String airportName = DataReader.getAirportName();
+
+            // Extract tarmac data from airport data file.
+            Tarmac[] tarmacs = DataReader.getTarmacs();
+
+            // Instantiate the airport with the airport name and runway data.
+            airport = new Airport(airportName, tarmacs, _airportFile);
+        } catch (Exception e) {
+            LOGGER.error("Failed to extract airport data: " + e.getMessage());
+
+            throw new LoadingException(e.getMessage());
+        }
     }
 
     public static Airport getAirport() throws Exception {
@@ -270,10 +261,10 @@ public class SystemModel {
      * @throws LoadingException
      * @throws Exception
      */
-    public static void addAirport(Airport _newAirport, String _airportFileName) throws WritingException, LoadingException {
+    public static void addAirport(String _airportName, Tarmac[] _tarmacs) throws WritingException, LoadingException {
         LOGGER.info("Adding new airport...");
 
-        String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _airportFileName;
+        String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + _airportName + ".xml";
 
         File airportFile = new File(airportFilePath);
 
@@ -287,8 +278,10 @@ public class SystemModel {
 
         LOGGER.info("Writing airport data to XML file...");
 
+        Airport newAirport = new Airport(_airportName, _tarmacs, airportFile);
+
         try {
-            DataWriter.writeAirport(_newAirport, airportFile);
+            DataWriter.writeAirport(newAirport, airportFile);
         } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
             e.printStackTrace();
             String errorMessage = "Failed to write airport data to XML file.";
@@ -300,7 +293,7 @@ public class SystemModel {
 
         LOGGER.info("New airport added successfully.");
 
-        loadAirport(_airportFileName);
+        loadAirportData(airportFile);
     }
 
     public static Obstacle[] getObstacles() { return obstacles; }
@@ -317,10 +310,7 @@ public class SystemModel {
 
         LOGGER.info("Modifying airport data file ...");
 
-        String airportFileName = airport.getDataFile();
-        String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + airportFileName;
-
-        File airportFile = new File(airportFilePath);
+        File airportFile = airport.getDataFile();
 
         try {
             DataWriter.writeAirport(airport, airportFile);
@@ -346,10 +336,7 @@ public class SystemModel {
 
         LOGGER.info("Modifying airport data file.");
 
-        String airportFileName = airport.getDataFile();
-        String airportFilePath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath() + "/" + airportFileName;
-
-        File airportFile = new File(airportFilePath);
+        File airportFile = airport.getDataFile();
 
         DataWriter.writeAirport(airport, airportFile);
     }

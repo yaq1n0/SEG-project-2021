@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,9 +8,9 @@ import java.util.List;
 public class Airport {
     private String name;
     private List<Tarmac> tarmacs;
-    private String dataFile;
+    private File dataFile;
 
-    public Airport(String _name, Tarmac[] _tarmacs, String _dataFile) {
+    public Airport(String _name, Tarmac[] _tarmacs, File _dataFile) {
         name = _name;
 
         tarmacs = new ArrayList<Tarmac>();
@@ -20,7 +21,7 @@ public class Airport {
 
     public String getName() { return name; }
     public List<Tarmac> getTarmacs() { return tarmacs; }
-    public String getDataFile() { return dataFile; }
+    public File getDataFile() { return dataFile; }
 
     public Runway[] getRunways() {
         List<Runway> runways = new ArrayList<Runway>();

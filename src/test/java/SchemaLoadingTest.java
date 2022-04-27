@@ -6,37 +6,37 @@ public class SchemaLoadingTest {
 
     @Test
     void testAirportFileCorrectFormat() {
-        Assertions.assertDoesNotThrow(() -> {SystemModel.loadAirport("heathrow-correct.xml");});
+        Assertions.assertDoesNotThrow(() -> {SystemModel.openAirport("heathrow-correct.xml");});
     }
 
     @Test
     void testAirportFileWrongFormat() {
-        Assertions.assertThrows(Exception.class, () -> {SystemModel.loadAirport("heathrow-broken.xml");});
+        Assertions.assertThrows(Exception.class, () -> {SystemModel.openAirport("heathrow-broken.xml");});
     }
 
     @Test
     void testAirportFileNegativeRunwayValue() {
-        Assertions.assertThrows(Exception.class, () -> {SystemModel.loadAirport("airport-brokenNegativeValue.xml");});
+        Assertions.assertThrows(Exception.class, () -> {SystemModel.openAirport("airport-brokenNegativeValue.xml");});
     }
 
     @Test
     void testAirportFileInvalidRunwayNumPerTarmac() {
-        Assertions.assertThrows(Exception.class, () -> {SystemModel.loadAirport("airport-brokenInvalidNumRunways.xml");});
+        Assertions.assertThrows(Exception.class, () -> {SystemModel.openAirport("airport-brokenInvalidNumRunways.xml");});
     }
 
     @Test
     void testAirportFileCorrectFormat2() {
-        Assertions.assertDoesNotThrow(() -> {SystemModel.loadAirport("gatwick.xml");});
+        Assertions.assertDoesNotThrow(() -> {SystemModel.openAirport("gatwick.xml");});
     }
 
     @Test
     void testAirportFileCorrectFormat3() {
-        Assertions.assertDoesNotThrow(() -> {SystemModel.loadAirport("manchester.xml");});
+        Assertions.assertDoesNotThrow(() -> {SystemModel.openAirport("manchester.xml");});
     }
 
     @Test
     void testAirportFileCorrectFormat4() {
-        Assertions.assertDoesNotThrow(() -> {SystemModel.loadAirport("edinburgh.xml");});
+        Assertions.assertDoesNotThrow(() -> {SystemModel.openAirport("edinburgh.xml");});
     }
 
     @Test
