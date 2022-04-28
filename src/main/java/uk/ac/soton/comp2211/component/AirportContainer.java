@@ -20,6 +20,7 @@ import java.util.List;
 public class AirportContainer extends VBox {
 
     private final BooleanProperty topView = new SimpleBooleanProperty();
+    private final BooleanProperty colour = new SimpleBooleanProperty();
     private RunwayContainer[] runwayContainers;
     private DeleteTarmacListener deleteTarmacListener;
     private WarningListener warnDeletionListener;
@@ -39,6 +40,10 @@ public class AirportContainer extends VBox {
         this.topView.bind(viewProperty);
     }
 
+    public void bindColourProperty (BooleanProperty viewProperty) {
+        this.colour.bind(viewProperty);
+    }
+
     /**
      * Provide the component with all information necessary to be built.
      *
@@ -54,6 +59,7 @@ public class AirportContainer extends VBox {
         for (int i = 0; i < rws.length; i++) {
             RunwayContainer runwayContainer = new RunwayContainer(rws[i], this.stage);
             runwayContainer.bindViewProperty(this.topView);
+            runwayContainer.bindColourProperty(this.colour);
             runwayContainer.setDeleteTarmacListener(this.deleteTarmacListener);
             runwayContainer.setDeletionWarningListener(this.warnDeletionListener);
             VBox.setVgrow(runwayContainer, Priority.ALWAYS);

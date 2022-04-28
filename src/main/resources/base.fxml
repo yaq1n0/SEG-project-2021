@@ -63,16 +63,6 @@
             <SeparatorMenuItem mnemonicParsing="false" />
               <Menu mnemonicParsing="false" text="Preferences">
                   <items>
-                      <MenuItem mnemonicParsing="false" onAction="#darkMode" text="DarkMode ">
-                          <graphic>
-                              <!-- <FontAwesomeIconView glyphName="EYE" /> -->
-                          </graphic>
-                      </MenuItem>
-                      <MenuItem mnemonicParsing="false" onAction="#lightMode" text="LightMode">
-                          <graphic>
-                              <!-- <FontAwesomeIconView glyphName="BOLT" /> -->
-                          </graphic>
-                      </MenuItem>
                   </items>
               </Menu>
             <SeparatorMenuItem mnemonicParsing="false" />
@@ -84,6 +74,15 @@
         </Menu>
         <Menu mnemonicParsing="false" text="View">
           <items>
+              <Menu mnemonicParsing="false" text="Themes">
+                  <items>
+                      <MenuItem mnemonicParsing="false" onAction="#darkMode" text="DarkMode "/>
+                      <MenuItem mnemonicParsing="false" onAction="#lightMode" text="LightMode"/>
+                      <MenuItem mnemonicParsing="false" onAction="#Default" text="DefaultColour" />
+                      <MenuItem mnemonicParsing="false"  onAction="#ColourBlind" text="ColourBlind" />
+                  </items>
+              </Menu>
+
             <MenuItem mnemonicParsing="false" onAction="#selectTopView" text="Top-Down" />
             <MenuItem mnemonicParsing="false" onAction="#selectSideView" text="Side-On" />
           </items>

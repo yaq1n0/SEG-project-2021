@@ -1,6 +1,8 @@
 package uk.ac.soton.comp2211.component;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -14,6 +16,7 @@ import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Position;
 import uk.ac.soton.comp2211.model.Runway;
 
+import java.awt.event.ActionEvent;
 
 
 /**
@@ -28,6 +31,8 @@ public class RunwayView extends Canvas {
     private final double h;
     private final GraphicsContext gc;
     private int angle;
+    private final BooleanProperty colour = new SimpleBooleanProperty();
+
 
     //Handle size of runway and values lines
     private final double runwayStart;
@@ -66,6 +71,7 @@ public class RunwayView extends Canvas {
         this.offset_x = 0;
         this.offset_y = 0;
     }
+
     
     public void updateTopDown() {
         // variables for reuse
@@ -75,39 +81,77 @@ public class RunwayView extends Canvas {
         double y2;
 
         // Reset view
-        this.gc.clearRect(-w, -h, w * 3, h * 3);
-        this.gc.setFill(Color.LIGHTGREEN);
-        this.gc.fillRect(-w, -h, w * 3, h * 3);
+        if (this.colour.get()) {
+            this.gc.clearRect(-w, -h, w * 3, h * 3);
+            this.gc.setFill(Color.LIME);
+            this.gc.fillRect(-w, -h, w * 3, h * 3);
 
-        // Draw cleared and Graded Area
-        double[] pointsX = {
-                offset_x,
-                (0.2 * this.w * scale) + offset_x,
-                (0.3 * this.w * scale) + offset_x,
-                (0.7 * this.w * scale) + offset_x,
-                (0.8 * this.w * scale) + offset_x,
-                (this.w * scale) + offset_x,
-                (this.w * scale) + offset_x,
-                (0.8 * this.w * scale) + offset_x,
-                (0.7 * this.w * scale) + offset_x,
-                (0.3 * this.w * scale) + offset_x,
-                (0.2 * this.w * scale) + offset_x,
-                offset_x};
-        double[] pointsY = {
-                (0.3 * this.h * scale) + offset_y,
-                (0.3 * this.h * scale) + offset_y,
-                (0.2 * this.h * scale) + offset_y,
-                (0.2 * this.h * scale) + offset_y,
-                (0.3 * this.h * scale) + offset_y,
-                (0.3 * this.h * scale) + offset_y,
-                (0.7 * this.h * scale) + offset_y,
-                (0.7 * this.h * scale) + offset_y,
-                (0.8 * this.h * scale) + offset_y,
-                (0.8 * this.h * scale) + offset_y,
-                (0.7 * this.h * scale) + offset_y,
-                (0.7 * this.h * scale) + offset_y};
-        this.gc.setFill(Color.LIGHTBLUE);
-        this.gc.fillPolygon(pointsX , pointsY , 12);
+            // Draw cleared and Graded Area
+            double[] pointsX = {
+                    offset_x,
+                    (0.2 * this.w * scale) + offset_x,
+                    (0.3 * this.w * scale) + offset_x,
+                    (0.7 * this.w * scale) + offset_x,
+                    (0.8 * this.w * scale) + offset_x,
+                    (this.w * scale) + offset_x,
+                    (this.w * scale) + offset_x,
+                    (0.8 * this.w * scale) + offset_x,
+                    (0.7 * this.w * scale) + offset_x,
+                    (0.3 * this.w * scale) + offset_x,
+                    (0.2 * this.w * scale) + offset_x,
+                    offset_x};
+            double[] pointsY = {
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.2 * this.h * scale) + offset_y,
+                    (0.2 * this.h * scale) + offset_y,
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y,
+                    (0.8 * this.h * scale) + offset_y,
+                    (0.8 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y};
+            this.gc.setFill(Color.ORCHID);
+            this.gc.fillPolygon(pointsX, pointsY, 12);
+        }
+        else{
+            this.gc.clearRect(-w, -h, w * 3, h * 3);
+            this.gc.setFill(Color.LIGHTGREEN);
+            this.gc.fillRect(-w, -h, w * 3, h * 3);
+
+            // Draw cleared and Graded Area
+            double[] pointsX = {
+                    offset_x,
+                    (0.2 * this.w * scale) + offset_x,
+                    (0.3 * this.w * scale) + offset_x,
+                    (0.7 * this.w * scale) + offset_x,
+                    (0.8 * this.w * scale) + offset_x,
+                    (this.w * scale) + offset_x,
+                    (this.w * scale) + offset_x,
+                    (0.8 * this.w * scale) + offset_x,
+                    (0.7 * this.w * scale) + offset_x,
+                    (0.3 * this.w * scale) + offset_x,
+                    (0.2 * this.w * scale) + offset_x,
+                    offset_x};
+            double[] pointsY = {
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.2 * this.h * scale) + offset_y,
+                    (0.2 * this.h * scale) + offset_y,
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.3 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y,
+                    (0.8 * this.h * scale) + offset_y,
+                    (0.8 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y,
+                    (0.7 * this.h * scale) + offset_y};
+            this.gc.setFill(Color.LIGHTBLUE);
+            this.gc.fillPolygon(pointsX, pointsY, 12);
+
+        }
 
 
         // Draw tarmac
@@ -138,7 +182,11 @@ public class RunwayView extends Canvas {
 
 
         //Draw value lines
-        drawValueLines();
+        if (this.colour.get()){
+        drawColourLines();}
+        else{
+            drawDefaultLines();
+        }
 
         // Draw displaced threshold
         if (runway.getOriginalValues().getDT()>0) {
@@ -238,15 +286,31 @@ public class RunwayView extends Canvas {
         // Reset view
         this.gc.clearRect(0,0,this.w, this.h);
         // Draw ground
-        this.gc.setFill(Color.LIGHTGREEN);
-        this.gc.fillRect(-w, -h, w * 3, h * 3);
+        if (this.colour.get()) {
+            this.gc.setFill(Color.LIME);
+            this.gc.fillRect(-w, -h, w * 3, h * 3);
 
-        //Draw sky
-        this.gc.setFill(Color.LIGHTBLUE);
-        this.gc.fillRect(-w, -h, w * 3, (this.h * 0.60 * scale) + offset_y + h);
+            //Draw sky
+            this.gc.setFill(Color.ORCHID);
+            this.gc.fillRect(-w, -h, w * 3, (this.h * 0.60 * scale) + offset_y + h);
+
+        }
+        else {
+            this.gc.setFill(Color.LIGHTGREEN);
+            this.gc.fillRect(-w, -h, w * 3, h * 3);
+
+            //Draw sky
+            this.gc.setFill(Color.LIGHTBLUE);
+            this.gc.fillRect(-w, -h, w * 3, (this.h * 0.60 * scale) + offset_y + h);
+
+        }
 
         //Draw value lines
-        drawValueLines();
+        if (this.colour.get()){
+            drawColourLines();}
+        else{
+            drawDefaultLines();
+        }
 
         // Draw tarmac
         this.gc.setFill(Color.GRAY);
@@ -330,8 +394,242 @@ public class RunwayView extends Canvas {
         }
 
     }
+    private void drawColourLines() {
+        //Draw value lines
+        this.gc.setLineDashes(0);
+        // handle sizing
+        if (runway.getTarmac().getObstacle()!=null && runway.getTarmac().getObstacle().hasValidPosition()) {
+            try {
+                double slopeOrResa = Math.max(240, this.runway.getTarmac().getObstacle().getHeight()*50);
+                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
+                double blastAllowanceR = 300*runwayRepresentationSize/this.runway.getLength();
 
-    private void drawValueLines() {
+                if (runway.getTarmac().getObstacle().getPosition().getDistance()>(runway.getLength()-runway.getTarmac().getObstacle().getPosition().getDistance())) {
+                    this.gc.setStroke(Color.BLUE);
+                    this.gc.setLineWidth(5d * scale);
+                    this.gc.strokeLine((runwayStart * scale) + offset_x, (30 * scale) + offset_y,
+                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
+                            (30 * scale) + offset_y);
+
+                    this.gc.setFill(Color.BLACK);
+                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", (runwayStart*scale) + offset_x, (25 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.MAROON);
+                    this.gc.setLineWidth(5d * scale);
+                    this.gc.strokeLine((runwayStart * scale) + offset_x, (50 * scale) + offset_y,
+                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
+                            (50 * scale) + offset_y);
+                    this.gc.setFill(Color.BLACK);
+                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", (runwayStart*scale) + offset_x, (45 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.HOTPINK);
+                    this.gc.setLineWidth(5d * scale);
+                    this.gc.strokeLine((runwayStart * scale) + offset_x, (70 * scale) + offset_y,
+                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
+                            (70 * scale) + offset_y);
+                    this.gc.setFill(Color.BLACK);
+                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", (runwayStart*scale) + offset_x,(65 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.RED);
+                    this.gc.setLineWidth(5d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                            ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (90 * scale) + offset_y);
+                    this.gc.setFill(Color.BLACK);
+                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart+dtSize)*scale) + offset_x,(85 * scale) + offset_y);
+
+                    this.gc.setLineWidth(5d*scale);
+                    this.gc.setStroke(Color.DODGERBLUE);
+                    this.gc.strokeLine(((runwayStart + dtSize+ dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.HOTPINK);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y,
+                            ((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.BLACK);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                            (h * 0.7 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.SEAGREEN);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.7 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.WHITE);
+                    this.gc.setLineDashes(7d * scale, 7d * scale);
+                    this.gc.setLineWidth(2d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (30 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.WHITE);
+                    this.gc.setLineWidth(2d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                            (90 * scale) + offset_y);
+
+                    this.gc.setLineDashes(0);
+
+                } else {
+                    this.gc.setStroke(Color.BLUE);
+                    this.gc.setLineWidth(5d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
+                            (30 * scale) + offset_y,((runwayStart + runwayRepresentationSize) * scale) + offset_x,
+                            (30 * scale) + offset_y);
+                    this.gc.setFill(Color.BLACK);
+                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (25 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.MAROON);
+                    this.gc.setLineWidth(5d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (50 * scale) + offset_y,
+                            ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
+                    this.gc.setFill(Color.BLACK);
+                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart+dtSize+ blastAllowanceR+ dWestRepresentation) * scale) + offset_x, (45 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.HOTPINK);
+                    this.gc.setLineWidth(5d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
+                            (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x,
+                            (70 * scale) + offset_y);
+
+                    this.gc.setFill(Color.BLACK);
+                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                    this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart+dtSize + blastAllowanceR+ dWestRepresentation) * scale) + offset_x,(65 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.DARKORANGE);
+                    this.gc.setLineWidth(5d* scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y,
+                            ((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y);
+
+                    this.gc.setStroke(Color.WHITE);
+                    this.gc.setLineWidth(2d * scale);
+                    this.gc.setLineDashes(7d * scale, 7d * scale);
+                    this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                            (h * 0.75 * scale) + offset_y,
+                            (runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                            (30 * scale) + offset_y);
+                    this.gc.setLineDashes(0);
+
+                    //ldaLine
+                    if (runway.getOriginalValues().getDT()<dWestRepresentation+(slopeOrResa+60)) {
+                        this.gc.setStroke(Color.PINK);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                (90 * scale) + offset_y, ((runwayStart + runwayRepresentationSize) * scale) + offset_x,
+                                (90 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,(85 * scale) + offset_y);
+
+                        //resaLine
+                        if (slopeOrResa==240) {
+                            this.gc.setStroke(Color.BLACK);
+                        } else {
+                            this.gc.setStroke(Color.HOTPINK);
+                        }
+                        this.gc.setLineWidth(5d*scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y,
+                                ((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y);
+
+                        //stripendLine
+                        this.gc.setLineWidth(5d*scale);
+                        this.gc.setStroke(Color.DARKGREEN);
+                        this.gc.strokeLine(((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y,
+                                ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y);
+
+                        this.gc.setStroke(Color.WHITE);
+                        this.gc.setLineDashes(7d * scale, 7d * scale);
+                        this.gc.setLineWidth(2d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                (90 * scale) + offset_y);
+
+                        this.gc.setLineDashes(0);
+
+
+                    } else {
+                        this.gc.setStroke(Color.PINK);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                                ((runwayStart + dtSize + runwayRepresentationSize) * scale) + offset_x, (90 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart+ dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+                    }
+
+                }
+            } catch (PositionException ignored){
+                logger.info("Obstacle has no position");
+            }
+        } else {
+            this.gc.setStroke(Color.BLUE);
+            this.gc.setLineWidth(5d * scale);
+            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (30 * scale) + offset_y,
+                    ((runwayStart + runwayRepresentationSize) * scale) + offset_x, (30 * scale) + offset_y);
+            this.gc.setFill(Color.BLACK);
+            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+            this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart) * scale) + offset_x, (25 * scale) + offset_y);
+
+            this.gc.setStroke(Color.MAROON);
+            this.gc.setLineWidth(5d * scale);
+            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (50 * scale) + offset_y,
+                    ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
+            this.gc.setFill(Color.BLACK);
+            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+            this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart) * scale) + offset_x, (45 * scale) + offset_y);
+
+
+            this.gc.setStroke(Color.HOTPINK);
+            this.gc.setLineWidth(5d * scale);
+            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x, (70 * scale) + offset_y);
+            this.gc.setFill(Color.BLACK);
+            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+            this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart) * scale) + offset_x,(65 * scale) + offset_y);
+
+            this.gc.setStroke(Color.RED);
+            this.gc.setLineWidth(5d * scale);
+            this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                    ((runwayStart + runwayRepresentationSize) * scale) + offset_x,  (90 * scale) + offset_y);
+            this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x,(85 * scale) + offset_y);
+            this.gc.setFill(Color.BLACK);
+            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+        }
+
+
+        // add color meanings
+        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+        this.gc.setFill(Color.FORESTGREEN);
+        this.gc.fillText("Strip End", 10, this.h-25);
+
+        this.gc.setFill(Color.DODGERBLUE);
+        this.gc.fillText("Blast Allowance", 10, this.h-10);
+
+        this.gc.setFill(Color.BLACK);
+        this.gc.fillText("RESA", 10, this.h-55);
+
+        this.gc.setFill(Color.HOTPINK);
+        this.gc.fillText("Slope", 10, this.h-40);
+
+    }
+
+    private void drawDefaultLines() {
         //Draw value lines
         this.gc.setLineDashes(0);
         // handle sizing
@@ -618,6 +916,10 @@ public class RunwayView extends Canvas {
     /**
      * Handle rotation
      */
+    public void bindColourProperty(BooleanProperty viewProperty) {
+        this.colour.bind(viewProperty);
+    }
+
     public void rotate(int myAngle) {
         this.angle += myAngle;
         Rotate r = new Rotate(this.angle, w/2, h/2);

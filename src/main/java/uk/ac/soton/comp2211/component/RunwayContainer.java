@@ -33,6 +33,7 @@ public class RunwayContainer extends VBox {
     private final ParameterBox parameterBox;
     private final ObstacleBox obstacleBox;
     private final BooleanProperty topView = new SimpleBooleanProperty();
+    private final BooleanProperty colour = new SimpleBooleanProperty();
     private DeleteTarmacListener deleteTarmacListener;
     private WarningListener deletionWarningListener;
     private final Runway runway;
@@ -42,6 +43,7 @@ public class RunwayContainer extends VBox {
         
         this.runway = runway;
         this.topView.addListener((obs, oldVal, newVal) -> this.updateVisual());
+        this.colour.addListener((obs, oldVal, newVal) -> this.updateColour());
         
         this.runwayView = new RunwayView(750, 300, this.runway);
         this.runwayView.updateTopDown();
@@ -193,9 +195,14 @@ public class RunwayContainer extends VBox {
         this.topView.bind(viewProperty);
     }
 
+    public void bindColourProperty(BooleanProperty viewProperty) {
+        this.colour.bind(viewProperty);
+    }
+
     /**
      * Call the correct update method in the runwayView object.
      */
+
     public void updateVisual() {
         logger.info("Updating view.");
         if (this.topView.get()) {
@@ -206,6 +213,23 @@ public class RunwayContainer extends VBox {
             this.runwayView.resetAngle();
         }
     }
+    public void updateColour() {
+        logger.info("Updating colour.");
+        runwayView.bindColourProperty(this.colour);
+        if (this.topView.get()) {
+            this.runwayView.updateTopDown();
+            this.runwayView.resetAngle();
+        } else {
+            this.runwayView.updateSideOn();
+            this.runwayView.resetAngle();
+        }
+
+    }
+
+
+
+
+
 
     /**
      * Stop the user from being able to recalculate.

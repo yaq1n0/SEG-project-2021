@@ -36,6 +36,7 @@ public class MainController implements Initializable {
 
     private AirportContainer airportContainer;
     private final BooleanProperty topView;
+    private final BooleanProperty colour;
     private Stage stage;
     private Button openAirportButton;
     private Label openAirportLabel;
@@ -54,6 +55,7 @@ public class MainController implements Initializable {
 
     public MainController() {
         this.topView = new SimpleBooleanProperty(true);
+        this.colour = new SimpleBooleanProperty(false);
     }
     
     public void setStage(Stage stage) {
@@ -74,9 +76,11 @@ public class MainController implements Initializable {
 
 
         this.airportContainer = new AirportContainer(stage);
+
         
         // Bind the boolean properties to show which profile the runway view should be.
         this.airportContainer.bindViewProperty(this.topView);
+        this.airportContainer.bindColourProperty(this.colour);
         this.airportContainer.setDeleteTarmacListeners(this::deleteTarmac);
         logger.info("HEEE");
         this.airportContainer.setAddTarmacListener(this::openAddTarmacDialogue);
@@ -176,6 +180,15 @@ public class MainController implements Initializable {
     private void preferencesMenu(ActionEvent actionEvent) {
         // Preference menu could be good for later requirements such as colour blind mode
         System.out.println("Preferences");
+    }
+    @FXML
+    public void Default(ActionEvent action){
+        this.colour.set(false);
+
+    }
+    @FXML
+    public void ColourBlind(ActionEvent action){
+        this.colour.set(true);
     }
     @FXML
     private void darkMode(ActionEvent actionEvent) {
