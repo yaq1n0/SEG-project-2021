@@ -1,7 +1,10 @@
 package uk.ac.soton.comp2211.model;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -152,5 +155,23 @@ public class DataWriter {
         StreamResult result = new StreamResult(_file);
 
         transf.transform(source, result);
+    }
+
+    public static void writeCalculationLog(String _airportName, String _runwayDesignator, String[] _calculations, File _file) throws IOException {
+        String fileContent = "";
+        fileContent += "Date: " + LocalDate.now();
+        fileContent += "\nTime: " + LocalTime.now();
+
+        fileContent += "\n\nAirport: " + _airportName;
+        fileContent += "\nRunway: " + _runwayDesignator;
+
+        fileContent += "\nCalculations:\n";
+        for (String calculation : _calculations)
+            fileContent += "\n\t" + calculation;
+
+        FileWriter fileWriter;
+        fileWriter = new FileWriter(_file);
+        fileWriter.write(fileContent);
+        fileWriter.close();
     }
 }
