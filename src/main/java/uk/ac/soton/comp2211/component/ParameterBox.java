@@ -2,17 +2,21 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.RunwayValues;
 
 /**
  * Component to display and update runway parameters to the UI automatically.
  */
-public class ParameterBox extends VBox {
+public class ParameterBox extends HBox {
 
     /**
      * Bind-able parameter properties
@@ -25,13 +29,15 @@ public class ParameterBox extends VBox {
     private final String ogToda;
     private final String ogAsda;
     private final String ogLda;
+    private RunwayView runwayView;
 
     /**
      * Create a parameter box component from runway values.
      * @param values initial parameters
      */
-    public ParameterBox(RunwayValues values) {
+    public ParameterBox(RunwayValues values, RunwayView view) {
         super();
+        this.runwayView = view;
         
         // Initial parameters
         this.ogTora = values.getTORA() + "m";
@@ -44,6 +50,8 @@ public class ParameterBox extends VBox {
         double width = 150;
         
         Label recalculatedLabel = new Label("Recalculated Values:");
+
+        VBox valuesBox = new VBox();
         
         HBox recalculatedHeaders = new HBox();
         Label toraLabel = new Label("TORA");
@@ -114,8 +122,32 @@ public class ParameterBox extends VBox {
         recalculatedLabel.setPadding(new Insets(10, 0, 5, 0));
         originalLabel.setPadding(new Insets(10, 0, 5, 0));
         
-        this.getChildren().addAll(recalculatedLabel, recalculatedHeaders, recalculatedValues);
-        this.getChildren().addAll(originalLabel, originalHeaders, originalValues);
+        valuesBox.getChildren().addAll(recalculatedLabel, recalculatedHeaders, recalculatedValues);
+        valuesBox.getChildren().addAll(originalLabel, originalHeaders, originalValues);
+
+        VBox valuesButtonBox = new VBox();
+        CheckBox toraCheck = new CheckBox("TORA");
+        toraCheck.setSelected(true);
+        toraCheck.setOnAction((ActionEvent event) -> this.runwayView.displayTora());
+        CheckBox todaCheck = new CheckBox("TODA");
+        todaCheck.setSelected(true);
+        todaCheck.setOnAction((ActionEvent event) -> this.runwayView.displayToda());
+        CheckBox asdaCheck = new CheckBox("ASDA");
+        asdaCheck.setSelected(true);
+        asdaCheck.setOnAction((ActionEvent event) -> this.runwayView.displayAsda());
+        CheckBox ldaCheck = new CheckBox("LDA");
+        ldaCheck.setSelected(true);
+        ldaCheck.setOnAction((ActionEvent event) -> this.runwayView.displayLda());
+        CheckBox obsCheck = new CheckBox("Obstacle Distance Breakdown");
+        obsCheck.setSelected(true);
+        obsCheck.setOnAction((ActionEvent event) -> this.runwayView.displayObs());
+        valuesButtonBox.setAlignment(Pos.CENTER_LEFT);
+        valuesButtonBox.setPadding(new Insets(10, 0, 0, 0));
+        valuesButtonBox.setSpacing(10);
+
+        valuesButtonBox.getChildren().addAll(toraCheck, todaCheck, asdaCheck, ldaCheck, obsCheck);
+
+        this.getChildren().addAll(valuesBox, valuesButtonBox);
     }
 
     /**
