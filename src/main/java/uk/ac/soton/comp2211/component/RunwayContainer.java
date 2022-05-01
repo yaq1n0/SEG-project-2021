@@ -16,19 +16,21 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import uk.ac.soton.comp2211.event.DeleteTarmacListener;
-import uk.ac.soton.comp2211.event.WarningListener;
+import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.model.*;
 
+import java.util.ArrayList;
+
 /**
  * Component to contain data on each runway for an airport.
  */
-public class RunwayContainer extends VBox {
+public class RunwayContainer extends VBox implements ObstacleClearListener, RecalculateListener, ShowStepsListener {
 
     private static final Logger logger = LogManager.getLogger(RunwayContainer.class);
-    
+
+    private Stage stage;
     private final RunwayView runwayView;
     private final ParameterBox parameterBox;
     private final ObstacleBox obstacleBox;
@@ -40,7 +42,8 @@ public class RunwayContainer extends VBox {
     
     public RunwayContainer(Runway runway, Stage stage) {
         super();
-        
+
+        this.stage = stage;
         this.runway = runway;
         this.topView.addListener((obs, oldVal, newVal) -> this.updateVisual());
         this.colour.addListener((obs, oldVal, newVal) -> this.updateColour());
@@ -81,7 +84,6 @@ public class RunwayContainer extends VBox {
         // get obstacles needs to change for multiple obstacles
         Obstacle obs = runway.getTarmac().getObstacle();
         this.obstacleBox = new ObstacleBox(obs, this.runway.getLength());
-        this.obstacleBox.setVerifyObstacleListener(this::enableRecalculation);
         this.obstacleBox.setInsertObstacleListener(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
@@ -94,13 +96,15 @@ public class RunwayContainer extends VBox {
             dialog.setScene(dialogScene);
             dialog.show();
         });
-        this.obstacleBox.setObstacleClearListener(this::clearObstacle);
+
+        this.obstacleBox.setObstacleClearListener(this);
+        this.obstacleBox.setRecalculateListener(this);
+        this.obstacleBox.setShowStepsListener(this);
 
         HBox.setHgrow(this.parameterBox, Priority.ALWAYS);
         this.parameterBox.setStyle("-fx-border-color: black");
         HBox.setHgrow(obstacleBox, Priority.ALWAYS);
         this.obstacleBox.setStyle("-fx-border-color: black");
-
 
         this.obstacleBox.setPadding(new Insets(10, 10, 10, 10));
 
@@ -149,22 +153,6 @@ public class RunwayContainer extends VBox {
     }
 
     /**
-     * Perform the backend calculation and update this container.
-     */
-    public void recalculate() {
-        logger.info("Attempting recalculation for runway {}", runway.getRunwayDesignator());
-        this.parameterBox.resetValues();
-        try {
-            this.runway.recalculate(300);
-            this.parameterBox.updateValues(this.runway.getCurrentValues());
-        } catch (RunwayException | PositionException re) {
-            logger.error(re.getStackTrace());
-            logger.error("Could not recalculate runway parameters.");
-        }
-        updateVisual();
-    }
-    
-    /**
      * Set the tarmac obstacle.
      * @param obstacle obstacle
      */
@@ -178,9 +166,56 @@ public class RunwayContainer extends VBox {
     }
 
     /**
+     * Perform the backend calculation and update this container.
+     */
+    @Override
+    public void recalculate() {
+        logger.info("Attempting recalculation for runway {}", runway.getRunwayDesignator());
+        this.parameterBox.resetValues();
+        try {
+            this.runway.recalculate(300);
+            this.parameterBox.updateValues(this.runway.getCurrentValues());
+        } catch (RunwayException | PositionException re) {
+            logger.error(re.getStackTrace());
+            logger.error("Could not recalculate runway parameters.");
+        }
+        updateVisual();
+    }
+
+    /**
+     * Perform the backend calculation, update container and open a popup window with steps
+     */
+    @Override
+    public void showSteps() {
+        logger.info("Attempting recalculation for runway {}", runway.getRunwayDesignator());
+        this.parameterBox.resetValues();
+        ArrayList<String> steps = new ArrayList<>();
+        try {
+            steps = this.runway.recalculate(300);
+            this.parameterBox.updateValues(this.runway.getCurrentValues());
+        } catch (RunwayException | PositionException re) {
+            logger.error(re.getStackTrace());
+            logger.error("Could not recalculate runway parameters.");
+        }
+        updateVisual();
+
+        logger.info("Attempting to show recalculation steps for runway {}", runway.getRunwayDesignator());
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(this.stage);
+
+        ShowSteps showSteps = new ShowSteps(dialog, steps);
+
+        Scene dialogScene = new Scene(showSteps, 600, (40 * steps.size()));
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    /**
      * Reset the parameters of the parameter box.
      */
-    public void clearObstacle() {
+    @Override
+    public void reset() {
         this.runway.getTarmac().removeObstacle();
         this.parameterBox.resetValues();
         this.disableRecalculation();

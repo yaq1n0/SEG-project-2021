@@ -8,15 +8,16 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp2211.event.InsertObstacleListener;
-import uk.ac.soton.comp2211.event.ObstacleClearListener;
-import uk.ac.soton.comp2211.event.VerifyObstacleListener;
+import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Position;
 
-public class ObstacleBox extends VBox {
+/**
+ * Component that obstacle controls (add, remove, set size, set pos, recalculate, show steps, save steps)
+ */
+public class ObstacleBox extends VBox{
 
     protected static final Logger logger = LogManager.getLogger(ObstacleBox.class);
 
@@ -29,7 +30,9 @@ public class ObstacleBox extends VBox {
     private final Button obsButton;
     private InsertObstacleListener insertObstacleListener;
     private ObstacleClearListener obstacleClearListener;
-    private VerifyObstacleListener verifyObstacleListener;
+
+    private RecalculateListener recalculateListener;
+    private ShowStepsListener showStepsListener;
     private final int runwayLength;
     private Obstacle obstacle;
 
@@ -84,14 +87,21 @@ public class ObstacleBox extends VBox {
             }
         });
 
-        Button save = new Button("Save");
-        save.setOnAction(this::checkParams);
+        Button recalculate = new Button("Recalculate");
+        recalculate.setOnAction(this::recalculate);
+
+        Button showSteps = new Button("Show Steps");
+        showSteps.setOnAction(this::recalculateSteps);
+
+        //TODO: link this to the SystemModel.recordCalculation method
+        Button logSteps = new Button("Log Steps");
+        logSteps.setOnAction(this::recalculateLog);
 
         Button clearObs = new Button("Remove Obstacle");
         clearObs.setOnAction(this::clearObstacle);
 
         leftPart.getChildren().add(obsButton);
-        rightPart.getChildren().addAll(save, clearObs);
+        rightPart.getChildren().addAll(recalculate, showSteps, logSteps, clearObs);
         HBox.setHgrow(leftPart, Priority.ALWAYS);
         HBox.setHgrow(rightPart, Priority.ALWAYS);
         HBox partBox = new HBox();
@@ -99,8 +109,27 @@ public class ObstacleBox extends VBox {
         this.getChildren().add(partBox);
     }
 
-    private void checkParams(ActionEvent actionEvent) {
+    private void recalculate(ActionEvent actionEvent) {
+        if (validateParams()) {
+            recalculateListener.recalculate();
+        }
+    }
+
+    private void recalculateSteps(ActionEvent actionEvent) {
+        if (validateParams()) {
+            showStepsListener.showSteps();
+        }
+    }
+
+    private void recalculateLog(ActionEvent actionEvent) {
+        //TODO: implement recalculate and log
+        logger.info("user attempted to recalculate and log runway parameters");
+    }
+
+    private boolean validateParams() {
         int center, thresh;
+        boolean valid = false;
+
         try {
             center = Integer.parseInt(this.centerField.getText());
             thresh = Integer.parseInt(this.tDistField.getText());
@@ -111,17 +140,18 @@ public class ObstacleBox extends VBox {
             
             try {
                 this.obstacle.setPosition(new Position(thresh, center));
+                valid = true;
+                logger.info("User set obstacle position.");
             } catch (PositionException | SizeException pe) {
                 logger.error("Invalid parameters to Position constructor.");
             }
-            
-            this.verifyObstacleListener.confirm();
-            logger.info("User set obstacle position.");
 
         } catch (NumberFormatException | PositionException nfe) {
             this.centerField.clear();
             this.tDistField.clear();
         }
+
+        return valid;
     }
 
     private void clearObstacle(ActionEvent actionEvent) {
@@ -145,8 +175,12 @@ public class ObstacleBox extends VBox {
         this.obstacleClearListener = listener;
     }
 
-    public void setVerifyObstacleListener(VerifyObstacleListener listener) {
-        this.verifyObstacleListener = listener;
+    public void setRecalculateListener(RecalculateListener recalculateListener) {
+        this.recalculateListener = recalculateListener;
+    }
+
+    public void setShowStepsListener(ShowStepsListener showStepsListener) {
+        this.showStepsListener = showStepsListener;
     }
 
     public void update(Obstacle obstacle) {
@@ -162,7 +196,6 @@ public class ObstacleBox extends VBox {
                 Position pos = obstacle.getPosition();
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
                 this.tDistField.setText("" + pos.getDistance());
-                this.verifyObstacleListener.confirm();
             } catch (PositionException pe) {
                 logger.error(pe.getStackTrace());
                 this.centerField.setText("");
