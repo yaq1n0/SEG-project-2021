@@ -1,12 +1,11 @@
 package uk.ac.soton.comp2211.model;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -16,22 +15,27 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import uk.ac.soton.comp2211.exceptions.ExtractionException;
-import uk.ac.soton.comp2211.exceptions.LoadingException;
-import uk.ac.soton.comp2211.exceptions.SchemaException;
-import uk.ac.soton.comp2211.exceptions.SizeException;
+import uk.ac.soton.comp2211.exceptions.*;
 
 public class DataReader {
+    
+    private static final Logger logger = LogManager.getLogger(DataReader.class);
+    
     private static DocumentBuilderFactory documentBuilderFactory;
     private static DocumentBuilder documentBuilder;
     private static Document document;
 
     private static XPathFactory factory;
     private static XPath xpath;
+
+    private static final String NOTIFICATIONS_FOLDER = "/notifications";
+    private static final int MAX_NOTIFS = 15;
 
     /**
      * Load XML file into memory so data can be extracted.
@@ -43,6 +47,7 @@ public class DataReader {
      * @throws SchemaException
      */
     public static void loadFile(File _xmlFile, File _xsdFile) throws SchemaException, LoadingException {
+        
         if (documentBuilderFactory == null || documentBuilder == null) {
             try {
                 documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -149,5 +154,60 @@ public class DataReader {
         }
 
         return obstacles;
+    }
+    
+    public static ArrayList<String> getNotifications() throws LoadingException {
+        ArrayList<String> notifs = new ArrayList<>();
+
+        try {
+            String folder = DataReader.class.getResource(NOTIFICATIONS_FOLDER).getPath();
+            File airportFile = new File(folder, "notifications.txt");
+            BufferedReader in = new BufferedReader(new FileReader(airportFile));
+            String line;
+            while ((line = in.readLine()) != null) {
+                // Add to start of array (most recent -> least recent)
+                notifs.add(0, line);
+            }
+        } catch (IOException e) {
+            throw new LoadingException("Could not load notifications.txt");
+        }
+        
+        return notifs;
+    }
+    
+    public static ArrayList<String> addNotification(String newNotif) throws WritingException, LoadingException {
+        ArrayList<String> notifs = new ArrayList<>();
+        File notifFile;
+        
+        try {
+            String folder = DataReader.class.getResource(NOTIFICATIONS_FOLDER).getPath();
+            notifFile = new File(folder, "notifications.txt");
+            BufferedReader in = new BufferedReader(new FileReader(notifFile));
+            String line;
+            while ((line = in.readLine()) != null) {
+                // Add to start of array (most recent -> least recent)
+                notifs.add(0, line);
+            }
+        } catch (IOException e) {
+            throw new LoadingException("Could not load notifications.txt: " + e.getMessage());
+        }
+        
+        notifs.add(0, newNotif);
+        if (notifs.size() > MAX_NOTIFS) {
+            notifs.remove(notifs.size() - 1);
+        }
+        
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(notifFile));
+            for (String notif : notifs) {
+                out.write(notif + "\n");
+            }
+            out.close();
+        } catch (IOException e) {
+            throw new WritingException("Could not update notifications.txt: " + e.getMessage());
+        }
+        logger.info("Updated notifications file.");
+        
+        return notifs;
     }
 }

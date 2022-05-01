@@ -18,7 +18,9 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportContainer;
 import javafx.event.ActionEvent;
 
+import uk.ac.soton.comp2211.component.NotificationsBox;
 import uk.ac.soton.comp2211.event.*;
+import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.model.*;
 
 import java.net.URL;
@@ -40,6 +42,7 @@ public class MainController implements Initializable {
     private Stage stage;
     private Button openAirportButton;
     private Label openAirportLabel;
+    private VBox mainBox;
     
     //Listeners
     private QuitListener quitListener;
@@ -64,6 +67,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.mainBox = new VBox();
         // Add button to start to make it obvious how to open an airport.
         this.openAirportLabel = new Label("Don't know where to start? Why not try: ");
         this.openAirportButton = new Button("Open Airport");
@@ -72,21 +76,25 @@ public class MainController implements Initializable {
         HBox startBox = new HBox(10);
         startBox.setPadding(new Insets(0,0,0,230));
         startBox.getChildren().addAll(this.openAirportLabel, this.openAirportButton);
-        this.airportParent.getChildren().add(startBox);
-
 
         this.airportContainer = new AirportContainer(stage);
 
+        NotificationsBox notbox = new NotificationsBox();
+        try {
+            notbox.addNotifications(DataReader.getNotifications());
+        } catch (LoadingException e) {
+            logger.error("Issue loading notifications: " + e.getMessage());
+        }
         
+        this.mainBox.getChildren().addAll(startBox, notbox);
         // Bind the boolean properties to show which profile the runway view should be.
         this.airportContainer.bindViewProperty(this.topView);
         this.airportContainer.bindColourProperty(this.colour);
         this.airportContainer.setDeleteTarmacListeners(this::deleteTarmac);
-        logger.info("HEEE");
         this.airportContainer.setAddTarmacListener(this::openAddTarmacDialogue);
         
-        // Add airport container to scene
-        this.airportParent.getChildren().add(this.airportContainer);
+        // Add airport container and mainBox to scene
+        this.airportParent.getChildren().addAll(this.mainBox, this.airportContainer);
         VBox.setVgrow(this.airportContainer, Priority.ALWAYS);
         
     }
@@ -159,8 +167,7 @@ public class MainController implements Initializable {
     private void closeAirport(ActionEvent actionEvent) {
         this.airportName.setText("");
         this.airportContainer.closeAirport();
-        this.openAirportButton.setVisible(true);
-        this.openAirportLabel.setVisible(true);
+        this.mainBox.setVisible(true);
     }
 
     /**
@@ -240,8 +247,7 @@ public class MainController implements Initializable {
             Airport airport = SystemModel.getAirport();
             this.airportName.setText(airport.getName());
             this.airportContainer.updateAirport(airport);
-            this.openAirportButton.setVisible(false);
-            this.openAirportLabel.setVisible(false);
+            this.mainBox.setVisible(false);
         } catch (Exception e) {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();
