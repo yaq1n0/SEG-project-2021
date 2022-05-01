@@ -75,7 +75,7 @@ public class RunwayContainer extends VBox {
         viewTools.setAlignment(Pos.CENTER_RIGHT);
         viewBox.getChildren().addAll(this.runwayView, viewTools);
         
-        this.parameterBox = new ParameterBox(runway.getOriginalValues());
+        this.parameterBox = new ParameterBox(runway.getOriginalValues(), this.runwayView);
         this.parameterBox.setPadding(new Insets(0, 10, 10, 10));
         
         // get obstacles needs to change for multiple obstacles
@@ -204,6 +204,7 @@ public class RunwayContainer extends VBox {
      */
 
     public void updateVisual() {
+        this.runwayView.bindViewProperty(this.topView);
         logger.info("Updating view.");
         if (this.topView.get()) {
             this.runwayView.updateTopDown();

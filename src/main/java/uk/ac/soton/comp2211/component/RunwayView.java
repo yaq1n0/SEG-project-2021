@@ -47,6 +47,15 @@ public class RunwayView extends Canvas {
     private int offset_x;
     private int offset_y;
     // (x * scale) * offset_x, (y * scale) + offset_y
+
+    private Boolean toraB;
+    private Boolean todaB;
+    private Boolean asdaB;
+    private Boolean ldaB;
+    private Boolean obsB;
+
+    private int whiteDottedLineHeight;
+    private BooleanProperty topView;
     
     public RunwayView(double width, double height, Runway runway) {
         super();
@@ -54,11 +63,19 @@ public class RunwayView extends Canvas {
         this.gc = this.getGraphicsContext2D();
         this.setHeight(height);
         this.setWidth(width);
+        this.topView = new SimpleBooleanProperty(true);
 
         this.runway = runway;
         this.w = width;
         this.h = height;
         this.angle = 0;
+        whiteDottedLineHeight = 30;
+
+        this.toraB = true;
+        this.todaB = true;
+        this.asdaB = true;
+        this.ldaB = true;
+        this.obsB = true;
 
         //Handle size of runway and values lines
         runwayStart = this.w * 0.15;
@@ -70,6 +87,63 @@ public class RunwayView extends Canvas {
         this.scale = 1.0;
         this.offset_x = 0;
         this.offset_y = 0;
+    }
+
+    public void displayTora() {
+        this.toraB = !this.toraB;
+        if (!this.toraB) {
+            whiteDottedLineHeight = 50;
+        } else {
+            whiteDottedLineHeight = 30;
+        }
+        if (topView.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+    }
+
+    public void displayToda() {
+        this.todaB = !this.todaB;
+        if (!this.todaB && !this.toraB) {
+            whiteDottedLineHeight = 70;
+        } else if (this.todaB && !this.toraB){
+            whiteDottedLineHeight = 50;
+        } else {
+            whiteDottedLineHeight = 30;
+        }
+        if (topView.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+    }
+
+    public void displayAsda() {
+        this.asdaB = !this.asdaB;
+        if (topView.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+    }
+
+    public void displayLda() {
+        this.ldaB = !this.ldaB;
+        if (topView.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+    }
+
+    public void displayObs() {
+        this.obsB = !this.obsB;
+        if (topView.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
     }
 
     
@@ -239,11 +313,13 @@ public class RunwayView extends Canvas {
                 logger.info("Obstacle drawn to top-down.");
 
                 //Draw obstacle dotted line
-                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
-                this.gc.setStroke(Color.WHITE);
-                this.gc.setLineWidth(2d * scale);
-                this.gc.setLineDashes(7d * scale, 7d * scale);
-                this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, (h * 0.5 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, (h * 0.75 * scale) + offset_y);
+                if (this.obsB){
+                    double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance() * runwayRepresentationSize / runway.getLength();
+                    this.gc.setStroke(Color.WHITE);
+                    this.gc.setLineWidth(2d * scale);
+                    this.gc.setLineDashes(7d * scale, 7d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, (h * 0.5 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x, (h * 0.75 * scale) + offset_y);
+                }
 
 
             } catch (PositionException ignored) {
@@ -375,14 +451,16 @@ public class RunwayView extends Canvas {
                 logger.info("Obstacle drawn to side-on.");
 
                 // draw obstacle dotted line
-                double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance()*runwayRepresentationSize/runway.getLength();
-                this.gc.setStroke(Color.WHITE);
-                this.gc.setLineWidth(2d * scale);
-                this.gc.setLineDashes(7d * scale, 7d * scale);
-                this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                                   (h * 0.6 * scale) + offset_y,
-                                   ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                                   (h * 0.75 * scale) + offset_y);
+                if (this.obsB){
+                    double dWestRepresentation = this.runway.getTarmac().getObstacle().getPosition().getDistance() * runwayRepresentationSize / runway.getLength();
+                    this.gc.setStroke(Color.WHITE);
+                    this.gc.setLineWidth(2d * scale);
+                    this.gc.setLineDashes(7d * scale, 7d * scale);
+                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                            (h * 0.6 * scale) + offset_y,
+                            ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                            (h * 0.75 * scale) + offset_y);
+                }
 
             } catch (PositionException ignored) {
                 logger.info("Obstacle has not position, so is not being drawn.");
@@ -405,173 +483,205 @@ public class RunwayView extends Canvas {
                 double blastAllowanceR = 300*runwayRepresentationSize/this.runway.getLength();
 
                 if (runway.getTarmac().getObstacle().getPosition().getDistance()>(runway.getLength()-runway.getTarmac().getObstacle().getPosition().getDistance())) {
-                    this.gc.setStroke(Color.BLUE);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine((runwayStart * scale) + offset_x, (30 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
-                            (30 * scale) + offset_y);
+                    if (this.toraB){
+                        this.gc.setStroke(Color.BLUE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine((runwayStart * scale) + offset_x, (30 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (30 * scale) + offset_y);
 
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", (runwayStart*scale) + offset_x, (25 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", (runwayStart * scale) + offset_x, (25 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.MAROON);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine((runwayStart * scale) + offset_x, (50 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
-                            (50 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", (runwayStart*scale) + offset_x, (45 * scale) + offset_y);
+                    if (this.todaB){
+                        this.gc.setStroke(Color.MAROON);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine((runwayStart * scale) + offset_x, (50 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (50 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", (runwayStart * scale) + offset_x, (45 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.HOTPINK);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine((runwayStart * scale) + offset_x, (70 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
-                            (70 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", (runwayStart*scale) + offset_x,(65 * scale) + offset_y);
+                    if (this.asdaB){
+                        this.gc.setStroke(Color.HOTPINK);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine((runwayStart * scale) + offset_x, (70 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (70 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", (runwayStart * scale) + offset_x, (65 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.RED);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (90 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart+dtSize)*scale) + offset_x,(85 * scale) + offset_y);
+                    if (this.ldaB){
+                        this.gc.setStroke(Color.RED);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (90 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+                    }
 
-                    this.gc.setLineWidth(5d*scale);
-                    this.gc.setStroke(Color.DODGERBLUE);
-                    this.gc.strokeLine(((runwayStart + dtSize+ dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y);
+                    if (this.obsB){
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.setStroke(Color.DODGERBLUE);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y);
 
-                    this.gc.setStroke(Color.HOTPINK);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y);
+                        this.gc.setStroke(Color.HOTPINK);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y);
 
-                    this.gc.setStroke(Color.BLACK);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y);
+                        this.gc.setStroke(Color.BLACK);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y);
 
-                    this.gc.setStroke(Color.SEAGREEN);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y);
+                        this.gc.setStroke(Color.SEAGREEN);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.WHITE);
-                    this.gc.setLineDashes(7d * scale, 7d * scale);
-                    this.gc.setLineWidth(2d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (30 * scale) + offset_y);
+                    if (this.obsB && (this.toraB || this.todaB || this.asdaB)) {
+                        this.gc.setStroke(Color.WHITE);
+                        this.gc.setLineDashes(7d * scale, 7d * scale);
+                        this.gc.setLineWidth(2d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (whiteDottedLineHeight * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.WHITE);
-                    this.gc.setLineWidth(2d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (90 * scale) + offset_y);
+                    if (this.obsB && this.ldaB){
+                        this.gc.setStroke(Color.WHITE);
+                        this.gc.setLineDashes(7d * scale, 7d * scale);
+                        this.gc.setLineWidth(2d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (90 * scale) + offset_y);
+                    }
 
                     this.gc.setLineDashes(0);
 
                 } else {
-                    this.gc.setStroke(Color.BLUE);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
-                            (30 * scale) + offset_y,((runwayStart + runwayRepresentationSize) * scale) + offset_x,
-                            (30 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (25 * scale) + offset_y);
+                    if (this.toraB) {
+                        this.gc.setStroke(Color.BLUE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
+                                (30 * scale) + offset_y, ((runwayStart + runwayRepresentationSize) * scale) + offset_x,
+                                (30 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (25 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.MAROON);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (50 * scale) + offset_y,
-                            ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart+dtSize+ blastAllowanceR+ dWestRepresentation) * scale) + offset_x, (45 * scale) + offset_y);
+                    if (this.todaB){
+                        this.gc.setStroke(Color.MAROON);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (50 * scale) + offset_y,
+                                ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (45 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.HOTPINK);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
-                            (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x,
-                            (70 * scale) + offset_y);
+                    if (this.asdaB){
+                        this.gc.setStroke(Color.HOTPINK);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
+                                (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x,
+                                (70 * scale) + offset_y);
 
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart+dtSize + blastAllowanceR+ dWestRepresentation) * scale) + offset_x,(65 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (65 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.DARKORANGE);
-                    this.gc.setLineWidth(5d* scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y);
+                    if (this.obsB){
+                        this.gc.setStroke(Color.DARKORANGE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.WHITE);
-                    this.gc.setLineWidth(2d * scale);
-                    this.gc.setLineDashes(7d * scale, 7d * scale);
-                    this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
-                            (h * 0.75 * scale) + offset_y,
-                            (runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
-                            (30 * scale) + offset_y);
-                    this.gc.setLineDashes(0);
+                    if (this.obsB && (this.toraB || this.todaB || this.asdaB)) {
+                        this.gc.setStroke(Color.WHITE);
+                        this.gc.setLineWidth(2d * scale);
+                        this.gc.setLineDashes(7d * scale, 7d * scale);
+                        this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                                (h * 0.75 * scale) + offset_y,
+                                (runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                                (whiteDottedLineHeight * scale) + offset_y);
+                        this.gc.setLineDashes(0);
+                    }
 
                     //ldaLine
                     if (runway.getOriginalValues().getDT()<dWestRepresentation+(slopeOrResa+60)) {
-                        this.gc.setStroke(Color.PINK);
-                        this.gc.setLineWidth(5d * scale);
-                        this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (90 * scale) + offset_y, ((runwayStart + runwayRepresentationSize) * scale) + offset_x,
-                                (90 * scale) + offset_y);
-                        this.gc.setFill(Color.BLACK);
-                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,(85 * scale) + offset_y);
-
-                        //resaLine
-                        if (slopeOrResa==240) {
-                            this.gc.setStroke(Color.BLACK);
-                        } else {
-                            this.gc.setStroke(Color.HOTPINK);
+                        if (this.ldaB){
+                            this.gc.setStroke(Color.PINK);
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (90 * scale) + offset_y, ((runwayStart + runwayRepresentationSize) * scale) + offset_x,
+                                    (90 * scale) + offset_y);
+                            this.gc.setFill(Color.BLACK);
+                            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                            this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, (85 * scale) + offset_y);
                         }
-                        this.gc.setLineWidth(5d*scale);
-                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y,
-                                ((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y);
+                        //resaLine
+                        if (this.obsB){
+                            if (slopeOrResa == 240) {
+                                this.gc.setStroke(Color.BLACK);
+                            } else {
+                                this.gc.setStroke(Color.HOTPINK);
+                            }
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y,
+                                    ((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y);
 
-                        //stripendLine
-                        this.gc.setLineWidth(5d*scale);
-                        this.gc.setStroke(Color.DARKGREEN);
-                        this.gc.strokeLine(((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y,
-                                ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y);
+                            //stripendLine
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.setStroke(Color.DARKGREEN);
+                            this.gc.strokeLine(((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y,
+                                    ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y);
+                        }
 
-                        this.gc.setStroke(Color.WHITE);
-                        this.gc.setLineDashes(7d * scale, 7d * scale);
-                        this.gc.setLineWidth(2d * scale);
-                        this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (90 * scale) + offset_y);
+                        if (this.ldaB && this.obsB){
+                            this.gc.setStroke(Color.WHITE);
+                            this.gc.setLineDashes(7d * scale, 7d * scale);
+                            this.gc.setLineWidth(2d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (90 * scale) + offset_y);
+                        }
 
                         this.gc.setLineDashes(0);
 
 
                     } else {
-                        this.gc.setStroke(Color.PINK);
-                        this.gc.setLineWidth(5d * scale);
-                        this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
-                                ((runwayStart + dtSize + runwayRepresentationSize) * scale) + offset_x, (90 * scale) + offset_y);
-                        this.gc.setFill(Color.BLACK);
-                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart+ dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+                        if (this.ldaB){
+                            this.gc.setStroke(Color.PINK);
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                                    ((runwayStart + dtSize + runwayRepresentationSize) * scale) + offset_x, (90 * scale) + offset_y);
+                            this.gc.setFill(Color.BLACK);
+                            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                            this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+                        }
                     }
 
                 }
@@ -579,37 +689,45 @@ public class RunwayView extends Canvas {
                 logger.info("Obstacle has no position");
             }
         } else {
-            this.gc.setStroke(Color.BLUE);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (30 * scale) + offset_y,
-                    ((runwayStart + runwayRepresentationSize) * scale) + offset_x, (30 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart) * scale) + offset_x, (25 * scale) + offset_y);
+            if (this.toraB){
+                this.gc.setStroke(Color.BLUE);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart) * scale) + offset_x, (30 * scale) + offset_y,
+                        ((runwayStart + runwayRepresentationSize) * scale) + offset_x, (30 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart) * scale) + offset_x, (25 * scale) + offset_y);
+            }
 
-            this.gc.setStroke(Color.MAROON);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (50 * scale) + offset_y,
-                    ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart) * scale) + offset_x, (45 * scale) + offset_y);
+            if (this.todaB){
+                this.gc.setStroke(Color.MAROON);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart) * scale) + offset_x, (50 * scale) + offset_y,
+                        ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart) * scale) + offset_x, (45 * scale) + offset_y);
+            }
 
 
-            this.gc.setStroke(Color.HOTPINK);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x, (70 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart) * scale) + offset_x,(65 * scale) + offset_y);
+            if (this.asdaB){
+                this.gc.setStroke(Color.HOTPINK);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart) * scale) + offset_x, (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x, (70 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart) * scale) + offset_x, (65 * scale) + offset_y);
+            }
 
-            this.gc.setStroke(Color.RED);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
-                    ((runwayStart + runwayRepresentationSize) * scale) + offset_x,  (90 * scale) + offset_y);
-            this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x,(85 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+            if (this.ldaB){
+                this.gc.setStroke(Color.RED);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                        ((runwayStart + runwayRepresentationSize) * scale) + offset_x, (90 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+            }
         }
 
 
@@ -640,173 +758,204 @@ public class RunwayView extends Canvas {
                 double blastAllowanceR = 300*runwayRepresentationSize/this.runway.getLength();
 
                 if (runway.getTarmac().getObstacle().getPosition().getDistance()>(runway.getLength()-runway.getTarmac().getObstacle().getPosition().getDistance())) {
-                    this.gc.setStroke(Color.BLUE);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine((runwayStart * scale) + offset_x, (30 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
-                            (30 * scale) + offset_y);
+                    if (this.toraB){
+                        this.gc.setStroke(Color.BLUE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine((runwayStart * scale) + offset_x, (30 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (30 * scale) + offset_y);
 
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", (runwayStart*scale) + offset_x, (25 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", (runwayStart * scale) + offset_x, (25 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.YELLOW);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine((runwayStart * scale) + offset_x, (50 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
-                            (50 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", (runwayStart*scale) + offset_x, (45 * scale) + offset_y);
+                    if (this.todaB){
+                        this.gc.setStroke(Color.YELLOW);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine((runwayStart * scale) + offset_x, (50 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (50 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", (runwayStart * scale) + offset_x, (45 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.PURPLE);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine((runwayStart * scale) + offset_x, (70 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize/runway.getLength())) * scale) + offset_x,
-                            (70 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", (runwayStart*scale) + offset_x,(65 * scale) + offset_y);
+                    if (this.asdaB) {
+                        this.gc.setStroke(Color.PURPLE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine((runwayStart * scale) + offset_x, (70 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (70 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", (runwayStart * scale) + offset_x, (65 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.PINK);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (90 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart+dtSize)*scale) + offset_x,(85 * scale) + offset_y);
+                    if (this.ldaB) {
+                        this.gc.setStroke(Color.PINK);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (90 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+                    }
 
-                    this.gc.setLineWidth(5d*scale);
-                    this.gc.setStroke(Color.HOTPINK);
-                    this.gc.strokeLine(((runwayStart + dtSize+ dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y);
+                    if (this.obsB) {
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.setStroke(Color.HOTPINK);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y);
 
-                    this.gc.setStroke(Color.DARKGREEN);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y);
+                        this.gc.setStroke(Color.DARKGREEN);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation - (slopeOrResa * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y);
 
-                    this.gc.setStroke(Color.BLACK);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y);
+                        this.gc.setStroke(Color.BLACK);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y);
 
-                    this.gc.setStroke(Color.DARKGREEN);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y);
+                        this.gc.setStroke(Color.DARKGREEN);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (240 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.WHITE);
-                    this.gc.setLineDashes(7d * scale, 7d * scale);
-                    this.gc.setLineWidth(2d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (30 * scale) + offset_y);
-
-                    this.gc.setStroke(Color.WHITE);
-                    this.gc.setLineWidth(2d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
-                            (90 * scale) + offset_y);
+                    if (this.obsB && (this.toraB || this.todaB || this.asdaB)) {
+                        this.gc.setStroke(Color.WHITE);
+                        this.gc.setLineDashes(7d * scale, 7d * scale);
+                        this.gc.setLineWidth(2d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (whiteDottedLineHeight * scale) + offset_y);
+                    }
+                    if (this.ldaB && this.obsB) {
+                        this.gc.setStroke(Color.WHITE);
+                        this.gc.setLineDashes(7d * scale, 7d * scale);
+                        this.gc.setLineWidth(2d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + dWestRepresentation - (300 * runwayRepresentationSize / runway.getLength())) * scale) + offset_x,
+                                (90 * scale) + offset_y);
+                    }
 
                     this.gc.setLineDashes(0);
 
                 } else {
-                    this.gc.setStroke(Color.BLUE);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
-                            (30 * scale) + offset_y,((runwayStart + runwayRepresentationSize) * scale) + offset_x,
-                            (30 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (25 * scale) + offset_y);
+                    if (this.toraB){
+                        this.gc.setStroke(Color.BLUE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
+                                (30 * scale) + offset_y, ((runwayStart + runwayRepresentationSize) * scale) + offset_x,
+                                (30 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (25 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.YELLOW);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (50 * scale) + offset_y,
-                            ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart+dtSize+ blastAllowanceR+ dWestRepresentation) * scale) + offset_x, (45 * scale) + offset_y);
+                    if (this.todaB) {
+                        this.gc.setStroke(Color.YELLOW);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (50 * scale) + offset_y,
+                                ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (45 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.PURPLE);
-                    this.gc.setLineWidth(5d * scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
-                            (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x,
-                            (70 * scale) + offset_y);
+                    if (this.asdaB){
+                        this.gc.setStroke(Color.PURPLE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x,
+                                (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x,
+                                (70 * scale) + offset_y);
 
-                    this.gc.setFill(Color.BLACK);
-                    this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                    this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart+dtSize + blastAllowanceR+ dWestRepresentation) * scale) + offset_x,(65 * scale) + offset_y);
+                        this.gc.setFill(Color.BLACK);
+                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                        this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart + dtSize + blastAllowanceR + dWestRepresentation) * scale) + offset_x, (65 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.DARKORANGE);
-                    this.gc.setLineWidth(5d* scale);
-                    this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y,
-                            ((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) * scale) + offset_x,
-                            (h * 0.75 * scale) + offset_y);
+                    if (this.obsB){
+                        this.gc.setStroke(Color.DARKORANGE);
+                        this.gc.setLineWidth(5d * scale);
+                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y,
+                                ((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) * scale) + offset_x,
+                                (h * 0.75 * scale) + offset_y);
+                    }
 
-                    this.gc.setStroke(Color.WHITE);
-                    this.gc.setLineWidth(2d * scale);
-                    this.gc.setLineDashes(7d * scale, 7d * scale);
-                    this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
-                            (h * 0.75 * scale) + offset_y,
-                            (runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
-                            (30 * scale) + offset_y);
-                    this.gc.setLineDashes(0);
+                    if (this.obsB && (this.toraB || this.todaB || this.asdaB)) {
+                        this.gc.setStroke(Color.WHITE);
+                        this.gc.setLineWidth(2d * scale);
+                        this.gc.setLineDashes(7d * scale, 7d * scale);
+                        this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                                (h * 0.75 * scale) + offset_y,
+                                (runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                                (whiteDottedLineHeight * scale) + offset_y);
+                        this.gc.setLineDashes(0);
+                    }
 
                     //ldaLine
                     if (runway.getOriginalValues().getDT()<dWestRepresentation+(slopeOrResa+60)) {
-                        this.gc.setStroke(Color.PINK);
-                        this.gc.setLineWidth(5d * scale);
-                        this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (90 * scale) + offset_y, ((runwayStart + runwayRepresentationSize) * scale) + offset_x,
-                                (90 * scale) + offset_y);
-                        this.gc.setFill(Color.BLACK);
-                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,(85 * scale) + offset_y);
-
-                        //resaLine
-                        if (slopeOrResa==240) {
-                            this.gc.setStroke(Color.BLACK);
-                        } else {
-                            this.gc.setStroke(Color.HOTPINK);
+                        if (this.ldaB){
+                            this.gc.setStroke(Color.PINK);
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (90 * scale) + offset_y, ((runwayStart + runwayRepresentationSize) * scale) + offset_x,
+                                    (90 * scale) + offset_y);
+                            this.gc.setFill(Color.BLACK);
+                            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                            this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x, (85 * scale) + offset_y);
                         }
-                        this.gc.setLineWidth(5d*scale);
-                        this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y,
-                                ((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y);
+                        //resaLine
+                        if (this.obsB){
+                            if (slopeOrResa == 240) {
+                                this.gc.setStroke(Color.BLACK);
+                            } else {
+                                this.gc.setStroke(Color.HOTPINK);
+                            }
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y,
+                                    ((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y);
 
-                        //stripendLine
-                        this.gc.setLineWidth(5d*scale);
-                        this.gc.setStroke(Color.DARKGREEN);
-                        this.gc.strokeLine(((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y,
-                                ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y);
+                            //stripendLine
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.setStroke(Color.DARKGREEN);
+                            this.gc.strokeLine(((runwayStart + dtSize + (slopeOrResa * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y,
+                                    ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y);
+                        }
 
-                        this.gc.setStroke(Color.WHITE);
-                        this.gc.setLineDashes(7d * scale, 7d * scale);
-                        this.gc.setLineWidth(2d * scale);
-                        this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
-                                (90 * scale) + offset_y);
+                        if (this.ldaB && this.obsB){
+                            this.gc.setStroke(Color.WHITE);
+                            this.gc.setLineDashes(7d * scale, 7d * scale);
+                            this.gc.setLineWidth(2d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (h * 0.7 * scale) + offset_y, ((runwayStart + dtSize + ((slopeOrResa + 60) * runwayRepresentationSize / runway.getLength()) + dWestRepresentation) * scale) + offset_x,
+                                    (90 * scale) + offset_y);
 
-                        this.gc.setLineDashes(0);
+                            this.gc.setLineDashes(0);
+                        }
 
 
                     } else {
-                        this.gc.setStroke(Color.PINK);
-                        this.gc.setLineWidth(5d * scale);
-                        this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
-                                ((runwayStart + dtSize + runwayRepresentationSize) * scale) + offset_x, (90 * scale) + offset_y);
-                        this.gc.setFill(Color.BLACK);
-                        this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-                        this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart+ dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+                        if (this.ldaB) {
+                            this.gc.setStroke(Color.PINK);
+                            this.gc.setLineWidth(5d * scale);
+                            this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                                    ((runwayStart + dtSize + runwayRepresentationSize) * scale) + offset_x, (90 * scale) + offset_y);
+                            this.gc.setFill(Color.BLACK);
+                            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                            this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+                        }
                     }
 
                 }
@@ -814,37 +963,45 @@ public class RunwayView extends Canvas {
                 logger.info("Obstacle has no position");
             }
         } else {
-            this.gc.setStroke(Color.BLUE);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (30 * scale) + offset_y,
-                    ((runwayStart + runwayRepresentationSize) * scale) + offset_x, (30 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart) * scale) + offset_x, (25 * scale) + offset_y);
+            if (this.toraB){
+                this.gc.setStroke(Color.BLUE);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart) * scale) + offset_x, (30 * scale) + offset_y,
+                        ((runwayStart + runwayRepresentationSize) * scale) + offset_x, (30 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("TORA: " + runway.getCurrentValues().getTORA() + "m", ((runwayStart) * scale) + offset_x, (25 * scale) + offset_y);
+            }
 
-            this.gc.setStroke(Color.YELLOW);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (50 * scale) + offset_y,
-                    ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart) * scale) + offset_x, (45 * scale) + offset_y);
+            if (this.todaB){
+                this.gc.setStroke(Color.YELLOW);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart) * scale) + offset_x, (50 * scale) + offset_y,
+                        ((runwayStart + runwayRepresentationSize + clearwaySize) * scale) + offset_x, (50 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("TODA: " + runway.getCurrentValues().getTODA() + "m", ((runwayStart) * scale) + offset_x, (45 * scale) + offset_y);
+            }
 
 
-            this.gc.setStroke(Color.PURPLE);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart) * scale) + offset_x, (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x, (70 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-            this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart) * scale) + offset_x,(65 * scale) + offset_y);
+            if (this.asdaB){
+                this.gc.setStroke(Color.PURPLE);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart) * scale) + offset_x, (70 * scale) + offset_y, ((runwayStart + runwayRepresentationSize + stopwaySize) * scale) + offset_x, (70 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("ASDA: " + runway.getCurrentValues().getASDA() + "m", ((runwayStart) * scale) + offset_x, (65 * scale) + offset_y);
+            }
 
-            this.gc.setStroke(Color.PINK);
-            this.gc.setLineWidth(5d * scale);
-            this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
-                    ((runwayStart + runwayRepresentationSize) * scale) + offset_x,  (90 * scale) + offset_y);
-            this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x,(85 * scale) + offset_y);
-            this.gc.setFill(Color.BLACK);
-            this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+            if (this.ldaB){
+                this.gc.setStroke(Color.PINK);
+                this.gc.setLineWidth(5d * scale);
+                this.gc.strokeLine(((runwayStart + dtSize) * scale) + offset_x, (90 * scale) + offset_y,
+                        ((runwayStart + runwayRepresentationSize) * scale) + offset_x, (90 * scale) + offset_y);
+                this.gc.setFill(Color.BLACK);
+                this.gc.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+                this.gc.fillText("LDA: " + runway.getCurrentValues().getLDA() + "m", ((runwayStart + dtSize) * scale) + offset_x, (85 * scale) + offset_y);
+            }
         }
 
 
@@ -948,6 +1105,13 @@ public class RunwayView extends Canvas {
 
     public void resetAngle(){
         this.angle = 0;
+    }
+
+    /**
+     * Bind view property from controller. True:Top, False:Side
+     */
+    public void bindViewProperty(BooleanProperty viewProperty) {
+        this.topView.bind(viewProperty);
     }
 
 }

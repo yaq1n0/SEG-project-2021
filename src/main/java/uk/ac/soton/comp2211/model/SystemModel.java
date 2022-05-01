@@ -3,6 +3,7 @@ package uk.ac.soton.comp2211.model;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -20,6 +21,7 @@ public class SystemModel {
     private static final String OBSTACLE_DATA_FILE = "/obstacles.xml";
     private static final String OBSTACLE_SCHEMA = "/obstacles.xsd";
     private static final String DATA_FILE_REGEX = "[a-zA-Z0-9-_]+.xml";
+    private static final String CALCULATIONS_FOLDER = "/calculations";
 
     protected static final Logger LOGGER = LogManager.getLogger(SystemModel.class);
 
@@ -339,5 +341,20 @@ public class SystemModel {
         File airportFile = airport.getDataFile();
 
         DataWriter.writeAirport(airport, airportFile);
+    }
+
+    public static void recordCalculation(String _airportName, String _runwayDesignator, String[] _calculations) throws IOException {
+        String calculationsFolderPath = SystemModel.class.getResource(CALCULATIONS_FOLDER).getPath();
+        File calculationsFolder = new File(calculationsFolderPath);
+
+        String fileNamePrefix = _airportName + "-" + _runwayDesignator + "-";
+        int fileNamePostfix = 0;
+        File calculationsLog = new File(calculationsFolder, fileNamePrefix + fileNamePostfix);
+        while (calculationsLog.exists()) {
+            fileNamePostfix++;
+            calculationsLog = new File(calculationsFolder, fileNamePrefix + fileNamePostfix);
+        }
+
+        DataWriter.writeCalculationLog(_airportName, _runwayDesignator, _calculations, calculationsLog);
     }
 }
