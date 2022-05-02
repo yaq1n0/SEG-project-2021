@@ -178,7 +178,7 @@ public class App extends Application {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
-            CreateTarmac createTarmac = new CreateTarmac(dialog, tarmacID, controller.getAirportName());
+            CreateTarmac createTarmac = new CreateTarmac(dialog, tarmacID);
             createTarmac.setResetAirportListener(controller::resetAirport);
             createTarmac.setNotificationListener(controller::addNotification);
 

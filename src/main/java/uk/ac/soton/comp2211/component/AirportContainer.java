@@ -58,7 +58,7 @@ public class AirportContainer extends VBox {
         this.runwayContainers = new RunwayContainer[rws.length];
 
         for (int i = 0; i < rws.length; i++) {
-            RunwayContainer runwayContainer = new RunwayContainer(rws[i], this.stage, this.airport.getName());
+            RunwayContainer runwayContainer = new RunwayContainer(rws[i], this.stage);
             runwayContainer.bindViewProperty(this.topView);
             runwayContainer.bindColourProperty(this.colour);
             runwayContainer.setDeleteTarmacListener(this.deleteTarmacListener);
