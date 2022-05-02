@@ -25,15 +25,12 @@ public class CreateTarmac extends VBox {
 
     private final TarmacVBox tarmacVBox;
     private final Button createButton;
-    private final String airportName;
 
     private ResetAirportListener resetAirportListener;
     private NotificationListener notificationListener;
 
-    public CreateTarmac(Stage dialog, int _newTarmacID, String airportName) {
+    public CreateTarmac(Stage dialog, int _newTarmacID) {
         super(20);
-
-        this.airportName = airportName;
         
         Text text = new Text("Create A Tarmac:");
         text.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, 20));
@@ -90,7 +87,11 @@ public class CreateTarmac extends VBox {
             this.resetAirportListener.reset();
         }
         if (this.notificationListener != null) {
-            this.notificationListener.addNotification("Created new tarmac in " + this.airportName + ".");
+            try {
+                this.notificationListener.addNotification("Created new tarmac in " + SystemModel.getAirport().getName() + ".");
+            } catch (Exception e) {
+                logger.error("Could not notify tarmac creation: " + e.getMessage());
+            }
         }
         
     }

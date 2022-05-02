@@ -39,15 +39,13 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
     private DeleteTarmacListener deleteTarmacListener;
     private WarningListener deletionWarningListener;
     private final Runway runway;
-    private String airportName;
     private NotificationListener notificationListener;
 
-    public RunwayContainer(Runway runway, Stage stage, String airportName) {
+    public RunwayContainer(Runway runway, Stage stage) {
         super();
 
         this.stage = stage;
         this.runway = runway;
-        this.airportName = airportName;
         this.topView.addListener((obs, oldVal, newVal) -> this.updateVisual());
         this.colour.addListener((obs, oldVal, newVal) -> this.updateColour());
         
@@ -147,7 +145,11 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
                         this.deleteTarmacListener.attemptDeletion(this.runway);
                         
                         // Notify tarmac deletion
-                        this.notificationListener.addNotification("Tarmac " + this.runway.getRunwayDesignator() + " deleted in " + airportName + ".");
+                        try {
+                            this.notificationListener.addNotification("Tarmac " + this.runway.getRunwayDesignator() + " deleted in " + SystemModel.getAirport().getName() + ".");
+                        } catch (Exception e) {
+                            logger.error("Couldn't notify tarmac deletion: " + e.getMessage());
+                        }
                     } else {
                         System.out.println("No deleteTarmacListener!");
                     }
@@ -184,8 +186,12 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
             
             // Notify that a redeclaration was performed.
             if (this.notificationListener != null) {
-                String notif = "Redeclaration performed on " + this.runway.getRunwayDesignator() + " in " + this.airportName + ".";
-                this.notificationListener.addNotification(notif);
+                try {
+                    String notif = "Redeclaration performed on " + this.runway.getRunwayDesignator() + " in " + SystemModel.getAirport().getName() + ".";
+                    this.notificationListener.addNotification(notif);
+                } catch (Exception e) {
+                    logger.error("Couldn't notify redeclaration: " + e.getMessage());
+                }
             }
         } catch (RunwayException | PositionException re) {
             logger.error(re.getStackTrace());
