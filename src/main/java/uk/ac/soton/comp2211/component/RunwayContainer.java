@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
+import uk.ac.soton.comp2211.exceptions.WritingException;
 import uk.ac.soton.comp2211.model.*;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 /**
  * Component to contain data on each runway for an airport.
  */
-public class RunwayContainer extends VBox implements ObstacleClearListener, RecalculateListener, ShowStepsListener {
+public class RunwayContainer extends VBox implements ObstacleClearListener, RecalculateListener, ShowStepsListener, LogStepsListener {
 
     private static final Logger logger = LogManager.getLogger(RunwayContainer.class);
 
@@ -100,9 +101,11 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
             dialog.show();
         });
 
+        // setting obstacleBox listeners
         this.obstacleBox.setObstacleClearListener(this);
         this.obstacleBox.setRecalculateListener(this);
         this.obstacleBox.setShowStepsListener(this);
+        this.obstacleBox.setLogStepsListener(this);
 
         HBox.setHgrow(this.parameterBox, Priority.ALWAYS);
         this.parameterBox.setStyle("-fx-border-color: black");
@@ -221,6 +224,38 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         Scene dialogScene = new Scene(showSteps, 600, (40 * steps.size()));
         dialog.setScene(dialogScene);
         dialog.show();
+    }
+
+    /**
+     * Perform the backend calculation, update container and output the steps to a file
+     */
+    @Override
+    public void logSteps(){
+        logger.info("Attempting recalculation for runway {}", runway.getRunwayDesignator());
+        this.parameterBox.resetValues();
+        ArrayList<String> steps = new ArrayList<>();
+        try {
+            steps = this.runway.recalculate(300);
+            this.parameterBox.updateValues(this.runway.getCurrentValues());
+        } catch (RunwayException | PositionException re) {
+            logger.error(re.getStackTrace());
+            logger.error("Could not recalculate runway parameters.");
+        }
+        updateVisual();
+
+        logger.info("Attempting to save recalculation steps for runway {}", runway.getRunwayDesignator());
+        // there is definitely a better way to do ArrayList<String> to String[] but this works
+        String[] _steps = new String[steps.size()];
+        for(int j =0;j<steps.size();j++){
+            _steps[j] = steps.get(j);
+        }
+
+        try {
+            SystemModel.recordCalculation(runway.getRunwayDesignator(), _steps);
+        } catch (WritingException e) {
+            logger.error(e.getStackTrace());
+            logger.error("Could not write runway recalculation steps to file");
+        }
     }
 
     /**
