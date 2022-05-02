@@ -345,8 +345,8 @@ public class SystemModel {
         }
     }
 
-    public static void recordCalculation(String _airportName, String _runwayDesignator, String[] _calculations) throws WritingException {
-
+    public static void recordCalculation(String _runwayDesignator, String[] _calculations) throws WritingException {
+        String _airportName = airport.getName();
         String calculationsFolderPath = SystemModel.class.getResource(CALCULATIONS_FOLDER).getPath();
         File calculationsFolder = new File(calculationsFolderPath);
 

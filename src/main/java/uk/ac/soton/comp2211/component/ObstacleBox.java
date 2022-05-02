@@ -33,6 +33,7 @@ public class ObstacleBox extends VBox{
 
     private RecalculateListener recalculateListener;
     private ShowStepsListener showStepsListener;
+    private LogStepsListener logStepsListener;
     private Obstacle obstacle;
 
     public ObstacleBox(Obstacle obstacle) {
@@ -120,8 +121,9 @@ public class ObstacleBox extends VBox{
     }
 
     private void recalculateLog(ActionEvent actionEvent) {
-        //TODO: implement recalculate and log
-        logger.info("user attempted to recalculate and log runway parameters");
+        if (validateParams()) {
+            logStepsListener.logSteps();
+        }
     }
 
     private boolean validateParams() {
@@ -179,6 +181,10 @@ public class ObstacleBox extends VBox{
 
     public void setShowStepsListener(ShowStepsListener showStepsListener) {
         this.showStepsListener = showStepsListener;
+    }
+
+    public void setLogStepsListener(LogStepsListener logStepsListener) {
+        this.logStepsListener = logStepsListener;
     }
 
     public void update(Obstacle obstacle) {
