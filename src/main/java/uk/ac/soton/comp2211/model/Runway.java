@@ -7,13 +7,13 @@ import java.util.ArrayList;
 
 public class Runway {
     public static final int MIN_TORA = 1;
-    public static final int MAX_TORA = 1000;
+    public static final int MAX_TORA = 5000;
     public static final int MIN_TODA = 1;
-    public static final int MAX_TODA = 1000;
+    public static final int MAX_TODA = 10000;
     public static final int MIN_ASDA = 1;
-    public static final int MAX_ASDA = 1000;
+    public static final int MAX_ASDA = 10000;
     public static final int MIN_LDA = 1;
-    public static final int MAX_LDA = 1000;
+    public static final int MAX_LDA = 5000;
 
     private String runwayDesignator;
     private Tarmac tarmac; // Corresponding tarmac

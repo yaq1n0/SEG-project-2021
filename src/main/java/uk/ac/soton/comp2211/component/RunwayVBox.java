@@ -75,7 +75,7 @@ public class RunwayVBox extends VBox {
 
         if (inputLDA.getValue() == 0) return false;
         if (inputLDA.getValue() > _tarmacLength) return false;
-        if (inputLDA.getValue() < inputTORA.getValue()) return false;
+        if (inputLDA.getValue() > inputTORA.getValue()) return false;
 
         if (inputASDA.getValue() == 0) return false;
         if (inputASDA.getValue() < inputTORA.getValue()) return false;

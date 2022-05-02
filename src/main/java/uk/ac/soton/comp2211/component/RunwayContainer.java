@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -41,6 +42,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
     private WarningListener deletionWarningListener;
     private final Runway runway;
     private NotificationListener notificationListener;
+    private final Button delete;
 
     public RunwayContainer(Runway runway, Stage stage) {
         super();
@@ -113,8 +115,15 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         this.obstacleBox.setPadding(new Insets(10, 10, 10, 10));
 
         // Delete button for runway
-        Button delete = new Button("Delete Tarmac");
-        delete.setOnAction(this::showDeletionWarning);
+        this.delete = new Button("Delete Tarmac");
+        this.delete.setOnAction(this::showDeletionWarning);
+        try {
+            if (SystemModel.getAirport().getTarmacs().size() < 2) {
+                this.delete.setDisable(true);
+            }
+        } catch (Exception e) {
+            logger.error("Could not load airport runways to check length: " + e.getMessage());
+        }
         
         Label designator = new Label(this.runway.getRunwayDesignator());
         
