@@ -11,6 +11,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2211.event.ResetAirportListener;
 import uk.ac.soton.comp2211.model.SystemModel;
 import uk.ac.soton.comp2211.model.Tarmac;
 
@@ -23,6 +24,8 @@ public class CreateTarmac extends VBox {
 
     private final TarmacVBox tarmacVBox;
     private final Button createButton;
+    
+    private ResetAirportListener resetAirportListener;
 
     public CreateTarmac(Stage dialog, int _newTarmacID) {
         super(20);
@@ -49,6 +52,7 @@ public class CreateTarmac extends VBox {
         createButton.setOnAction((ActionEvent event) -> {
             try {
                 generateTarmac();
+                dialog.close();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -75,6 +79,20 @@ public class CreateTarmac extends VBox {
         SystemModel.addTarmac(newTarmac);
 
         logger.info("Tarmac successfully created.");
+        
+        // Reset airport container component
+        if (this.resetAirportListener != null) {
+            this.resetAirportListener.reset();
+        }
+        
+    }
+
+    /**
+     * Set reset airport listener
+     * @param listener listener
+     */
+    public void setResetAirportListener(ResetAirportListener listener) {
+        this.resetAirportListener = listener;
     }
 
 }

@@ -383,4 +383,12 @@ public class MainController implements Initializable {
         this.airportContainer.setDeletionWarningListeners(this.tarmacDeleteWarning);
     }
 
+    /**
+     * Not a reset, more of a refresh tbh
+     */
+    public void resetAirport() {
+        this.airportContainer.updateAirport(this.airportContainer.getAirport());
+        logger.info("Reset (refreshed) airport.");
+    }
+    
 }
