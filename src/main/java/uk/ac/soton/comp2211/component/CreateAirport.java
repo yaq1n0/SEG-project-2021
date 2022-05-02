@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.event.ErrorListener;
 import uk.ac.soton.comp2211.event.MessageListener;
+import uk.ac.soton.comp2211.event.NotificationListener;
 import uk.ac.soton.comp2211.event.WarningListener;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
@@ -37,6 +38,7 @@ public class CreateAirport extends VBox {
     private ErrorListener errorListener;
     private WarningListener warningListener;
     private MessageListener messageListener;
+    private NotificationListener notificationListener;
 
     public CreateAirport(Stage dialog) {
         super(20);
@@ -134,6 +136,10 @@ public class CreateAirport extends VBox {
         }
 
         SystemModel.addAirport(airportName, tarmacs);
+        
+        if (this.notificationListener != null) {
+            this.notificationListener.addNotification("Created new airport: " + airportName);
+        }
     }
 
     /**
@@ -175,4 +181,12 @@ public class CreateAirport extends VBox {
      * @param listener listener
      */
     public void setMessageListener(MessageListener listener) { this.messageListener = listener; }
+
+    /**
+     * Set the notification listener to notify airport creation
+     * @param listener listener
+     */
+    public void setNotificationListener(NotificationListener listener) {
+        this.notificationListener = listener;
+    }
 }

@@ -12,6 +12,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2211.event.NotificationListener;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.SystemModel;
 
@@ -23,6 +24,7 @@ public class CreateObstacle extends VBox {
     private NumberField inputObstacleHeight;
 
     private Button create;
+    private NotificationListener notificationListener;
 
     public CreateObstacle(Stage dialog) {
         super(20);
@@ -100,5 +102,17 @@ public class CreateObstacle extends VBox {
         Obstacle obstacle = new Obstacle(obstacleName, obstacleLength, obstacleWidth, obstacleHeight);
 
         SystemModel.addObstacle(obstacle);
+        
+        if (this.notificationListener != null) {
+            this.notificationListener.addNotification("Added new obstacle preset: " + obstacleName);
+        }
+    }
+
+    /**
+     * Set notification listener
+     * @param listener listener
+     */
+    public void setNotificationListener(NotificationListener listener) {
+        this.notificationListener = listener;
     }
 }

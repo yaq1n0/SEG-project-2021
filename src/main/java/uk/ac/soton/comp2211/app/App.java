@@ -144,6 +144,7 @@ public class App extends Application {
             airportCreate.setErrorListener(controller.getErrorListener());
             airportCreate.setMessageListener(controller.getMessageListener());
             airportCreate.setWarningListener(controller.getWarningListener());
+            airportCreate.setNotificationListener(controller::addNotification);
 
             Scene dialogScene = new Scene(airportCreate, 400, 250);
             dialog.setScene(dialogScene);
@@ -154,6 +155,7 @@ public class App extends Application {
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
             CreateObstacle obstacleCreate = new CreateObstacle(dialog);
+            obstacleCreate.setNotificationListener(controller::addNotification);
 
             Scene dialogScene = new Scene(obstacleCreate, 300, 200);
             dialog.setScene(dialogScene);
@@ -176,8 +178,9 @@ public class App extends Application {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.initOwner(stage);
-            CreateTarmac createTarmac = new CreateTarmac(dialog, tarmacID);
+            CreateTarmac createTarmac = new CreateTarmac(dialog, tarmacID, controller.getAirportName());
             createTarmac.setResetAirportListener(controller::resetAirport);
+            createTarmac.setNotificationListener(controller::addNotification);
 
             Scene dialogScene = new Scene(createTarmac, 300, 200);
             dialog.setScene(dialogScene);

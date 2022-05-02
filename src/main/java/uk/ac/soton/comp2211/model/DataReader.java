@@ -2,6 +2,7 @@ package uk.ac.soton.comp2211.model;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -163,51 +164,16 @@ public class DataReader {
             BufferedReader in = new BufferedReader(new FileReader(airportFile));
             String line;
             while ((line = in.readLine()) != null) {
-                // Add to start of array (most recent -> least recent)
-                notifs.add(0, line);
+                notifs.add(line);
             }
             in.close();
         } catch (IOException e) {
             throw new LoadingException("Could not load notifications.txt");
         }
         
+        // Reverse the order to put most recent first
+        Collections.reverse(notifs);
         return notifs;
     }
-    
-    public static ArrayList<String> addNotification(String newNotif) throws WritingException, LoadingException {
-        ArrayList<String> notifs = new ArrayList<>();
-        File notifFile;
-        
-        try {
-            String folder = DataReader.class.getResource(NOTIFICATIONS_FOLDER).getPath();
-            notifFile = new File(folder, "notifications.txt");
-            BufferedReader in = new BufferedReader(new FileReader(notifFile));
-            String line;
-            while ((line = in.readLine()) != null) {
-                // Add to start of array (most recent -> least recent)
-                notifs.add(0, line);
-            }
-            in.close();
-        } catch (IOException e) {
-            throw new LoadingException("Could not load notifications.txt: " + e.getMessage());
-        }
-        
-        notifs.add(0, newNotif);
-        if (notifs.size() > MAX_NOTIFS) {
-            notifs.remove(notifs.size() - 1);
-        }
-        
-        try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(notifFile));
-            for (String notif : notifs) {
-                out.write(notif + "\n");
-            }
-            out.close();
-        } catch (IOException e) {
-            throw new WritingException("Could not update notifications.txt: " + e.getMessage());
-        }
-        logger.info("Updated notifications file.");
-        
-        return notifs;
-    }
+
 }

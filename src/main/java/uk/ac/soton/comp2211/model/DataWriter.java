@@ -1,8 +1,7 @@
 package uk.ac.soton.comp2211.model;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -34,6 +33,8 @@ public class DataWriter {
 
     private static TransformerFactory transformerFactory;
     private static Transformer transf;
+
+    private static final String NOTIFICATIONS_FOLDER = "/notifications";
 
     private static void setupDataWriter() throws ParserConfigurationException, TransformerConfigurationException {
         if (documentBuilderFactory == null)
@@ -173,5 +174,27 @@ public class DataWriter {
         fileWriter = new FileWriter(_file);
         fileWriter.write(fileContent);
         fileWriter.close();
+    }
+
+    /**
+     * Append a new notification to notifications.txt
+     * @param notif notification to be added
+     */
+    public static void writeNotification(String notif) {
+        File notifFile;
+        
+        try {
+            String folder = DataReader.class.getResource(NOTIFICATIONS_FOLDER).getPath();
+            notifFile = new File(folder, "notifications.txt");
+            FileWriter fw = new FileWriter(notifFile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            
+            bw.write(notif);
+            bw.newLine();
+            bw.flush();
+            bw.close();
+        } catch (IOException e) {
+            LOGGER.error("Couldn't open notifications file for writing. {}", e.getMessage());
+        }
     }
 }

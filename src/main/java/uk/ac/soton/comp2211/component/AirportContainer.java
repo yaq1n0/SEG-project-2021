@@ -27,6 +27,7 @@ public class AirportContainer extends VBox {
     private AddTarmacListener addTarmacListener;
     private Stage stage;
     private Airport airport;
+    private NotificationListener notificationListener;
 
     public AirportContainer(Stage stage) {
         this.topView.set(true);
@@ -57,11 +58,12 @@ public class AirportContainer extends VBox {
         this.runwayContainers = new RunwayContainer[rws.length];
 
         for (int i = 0; i < rws.length; i++) {
-            RunwayContainer runwayContainer = new RunwayContainer(rws[i], this.stage);
+            RunwayContainer runwayContainer = new RunwayContainer(rws[i], this.stage, this.airport.getName());
             runwayContainer.bindViewProperty(this.topView);
             runwayContainer.bindColourProperty(this.colour);
             runwayContainer.setDeleteTarmacListener(this.deleteTarmacListener);
             runwayContainer.setDeletionWarningListener(this.warnDeletionListener);
+            runwayContainer.setNotificationListener(this.notificationListener);
             VBox.setVgrow(runwayContainer, Priority.ALWAYS);
             this.getChildren().add(runwayContainer);
             this.runwayContainers[i] = runwayContainer;
@@ -75,6 +77,8 @@ public class AirportContainer extends VBox {
                 this.addTarmacListener.openAddTarmac(tid);
             }
         });
+        // Airports can have a maximum of 3 tarmacs with their naming convention
+        if (this.airport.getTarmacs().size() >= 3) addTarmac.setDisable(true);
         this.getChildren().add(addTarmac);
     }
 
@@ -115,5 +119,13 @@ public class AirportContainer extends VBox {
      */
     public Airport getAirport() {
         return this.airport;
+    }
+
+    /**
+     * Set notification listener
+     * @param listener listener
+     */
+    public void setNotificationListener(NotificationListener listener) {
+        this.notificationListener = listener;
     }
 }

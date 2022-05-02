@@ -24,6 +24,8 @@ import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.model.*;
 
 import java.net.URL;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 
@@ -43,6 +45,7 @@ public class MainController implements Initializable {
     private Button openAirportButton;
     private Label openAirportLabel;
     private VBox mainBox;
+    private NotificationsBox notbox;
     
     //Listeners
     private QuitListener quitListener;
@@ -79,9 +82,10 @@ public class MainController implements Initializable {
 
         this.airportContainer = new AirportContainer(stage);
 
-        NotificationsBox notbox = new NotificationsBox();
+        this.notbox = new NotificationsBox();
         try {
-            notbox.addNotifications(DataReader.getNotifications());
+            this.notbox.addNotifications(DataReader.getNotifications());
+            
         } catch (LoadingException e) {
             logger.error("Issue loading notifications: " + e.getMessage());
         }
@@ -92,6 +96,7 @@ public class MainController implements Initializable {
         this.airportContainer.bindColourProperty(this.colour);
         this.airportContainer.setDeleteTarmacListeners(this::deleteTarmac);
         this.airportContainer.setAddTarmacListener(this::openAddTarmacDialogue);
+        this.airportContainer.setNotificationListener(this::addNotification);
         
         // Add airport container and mainBox to scene
         this.airportParent.getChildren().addAll(this.mainBox, this.airportContainer);
@@ -391,4 +396,24 @@ public class MainController implements Initializable {
         logger.info("Reset (refreshed) airport.");
     }
     
+    public void addNotification(String notif) {
+        Date date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        
+        notif = timestamp.toString() + " : " + notif;
+        DataWriter.writeNotification(notif);
+        try {
+            this.notbox.addNotifications(DataReader.getNotifications());
+        } catch (LoadingException e) {
+            logger.error("Could not read notifications file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Get the name of the airport for use in other parts of the program like notifications.
+     * @return name of the current airport.
+     */
+    public String getAirportName() {
+        return this.airportName.getText();
+    }
 }

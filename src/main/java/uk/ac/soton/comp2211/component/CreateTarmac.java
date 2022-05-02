@@ -11,6 +11,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2211.event.NotificationListener;
 import uk.ac.soton.comp2211.event.ResetAirportListener;
 import uk.ac.soton.comp2211.model.SystemModel;
 import uk.ac.soton.comp2211.model.Tarmac;
@@ -24,12 +25,16 @@ public class CreateTarmac extends VBox {
 
     private final TarmacVBox tarmacVBox;
     private final Button createButton;
-    
-    private ResetAirportListener resetAirportListener;
+    private final String airportName;
 
-    public CreateTarmac(Stage dialog, int _newTarmacID) {
+    private ResetAirportListener resetAirportListener;
+    private NotificationListener notificationListener;
+
+    public CreateTarmac(Stage dialog, int _newTarmacID, String airportName) {
         super(20);
 
+        this.airportName = airportName;
+        
         Text text = new Text("Create A Tarmac:");
         text.setFont(Font.font("Helvetica", FontWeight.BOLD, FontPosture.REGULAR, 20));
 
@@ -84,6 +89,9 @@ public class CreateTarmac extends VBox {
         if (this.resetAirportListener != null) {
             this.resetAirportListener.reset();
         }
+        if (this.notificationListener != null) {
+            this.notificationListener.addNotification("Created new tarmac in " + this.airportName + ".");
+        }
         
     }
 
@@ -95,4 +103,11 @@ public class CreateTarmac extends VBox {
         this.resetAirportListener = listener;
     }
 
+    /**
+     * Set notification listener
+     * @param listener listener
+     */
+    public void setNotificationListener(NotificationListener listener) {
+        this.notificationListener = listener;
+    }
 }

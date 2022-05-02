@@ -39,12 +39,15 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
     private DeleteTarmacListener deleteTarmacListener;
     private WarningListener deletionWarningListener;
     private final Runway runway;
-    
-    public RunwayContainer(Runway runway, Stage stage) {
+    private String airportName;
+    private NotificationListener notificationListener;
+
+    public RunwayContainer(Runway runway, Stage stage, String airportName) {
         super();
 
         this.stage = stage;
         this.runway = runway;
+        this.airportName = airportName;
         this.topView.addListener((obs, oldVal, newVal) -> this.updateVisual());
         this.colour.addListener((obs, oldVal, newVal) -> this.updateColour());
         
@@ -142,6 +145,9 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
                     if (this.deleteTarmacListener != null) {
                         System.out.println("Attempting tarmac deletion.");
                         this.deleteTarmacListener.attemptDeletion(this.runway);
+                        
+                        // Notify tarmac deletion
+                        this.notificationListener.addNotification("Tarmac " + this.runway.getRunwayDesignator() + " deleted in " + airportName + ".");
                     } else {
                         System.out.println("No deleteTarmacListener!");
                     }
@@ -175,6 +181,12 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         try {
             this.runway.recalculate(300);
             this.parameterBox.updateValues(this.runway.getCurrentValues());
+            
+            // Notify that a redeclaration was performed.
+            if (this.notificationListener != null) {
+                String notif = "Redeclaration performed on " + this.runway.getRunwayDesignator() + " in " + this.airportName + ".";
+                this.notificationListener.addNotification(notif);
+            }
         } catch (RunwayException | PositionException re) {
             logger.error(re.getStackTrace());
             logger.error("Could not recalculate runway parameters.");
@@ -249,6 +261,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
             this.runwayView.resetAngle();
         }
     }
+    
     public void updateColour() {
         logger.info("Updating colour.");
         runwayView.bindColourProperty(this.colour);
@@ -262,25 +275,11 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
 
     }
 
-
-
-
-
-
     /**
      * Stop the user from being able to recalculate.
      */
     public void disableRecalculation() {
         this.updateVisual();
-    }
-
-    /**
-     * Allow the user to attempt a recalculation.
-     */
-    public void enableRecalculation() {
-        this.runway.reset();
-        this.updateVisual();
-        this.recalculate();
     }
 
     /**
@@ -297,5 +296,13 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
      */
     public void setDeletionWarningListener(WarningListener listener) {
         this.deletionWarningListener = listener;
+    }
+
+    /**
+     * Set notification listener
+     * @param listener listener
+     */
+    public void setNotificationListener(NotificationListener listener) {
+        this.notificationListener = listener;
     }
 }
