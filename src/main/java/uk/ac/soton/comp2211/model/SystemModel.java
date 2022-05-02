@@ -83,8 +83,6 @@ public class SystemModel {
         File airportFolder = new File(airportFolderPath);
         LOGGER.info("Airport data folder loaded.");
 
-        System.out.println(airportFolder.getAbsolutePath());
-
         FilenameFilter filter = (d, s) -> { return s.matches(DATA_FILE_REGEX); };
         File[] files = airportFolder.listFiles(filter);
 

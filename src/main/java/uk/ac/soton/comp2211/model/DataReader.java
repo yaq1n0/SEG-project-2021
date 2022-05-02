@@ -99,7 +99,6 @@ public class DataReader {
     public static Tarmac[] getTarmacs() throws XPathExpressionException {
         int tarmacCount = ((Number) xpath.evaluate("count(//tarmac)", document, XPathConstants.NUMBER)).intValue();
         Tarmac[] tarmacs = new Tarmac[tarmacCount];
-        System.out.println("TarmacCount " + tarmacCount);
         for (int tarmacID = 1; tarmacID <= tarmacCount; tarmacID++) {
             Tarmac tarmac = new Tarmac(tarmacID);
             tarmac.setRunways(getTarmacRunways(tarmac));
@@ -113,7 +112,6 @@ public class DataReader {
         int runwayCount = ((Number) xpath.evaluate("count(//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway)", document, XPathConstants.NUMBER)).intValue();
         Runway[] runways = new Runway[runwayCount];
-        System.out.println(runwayCount);
 
         for (int runwayID = 1; runwayID <= runwayCount; runwayID++) {
             String designator = (String) xpath.evaluate("//tarmac[@id='" + _tarmac.getID()
