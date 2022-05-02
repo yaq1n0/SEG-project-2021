@@ -168,6 +168,7 @@ public class DataReader {
                 // Add to start of array (most recent -> least recent)
                 notifs.add(0, line);
             }
+            in.close();
         } catch (IOException e) {
             throw new LoadingException("Could not load notifications.txt");
         }
@@ -188,6 +189,7 @@ public class DataReader {
                 // Add to start of array (most recent -> least recent)
                 notifs.add(0, line);
             }
+            in.close();
         } catch (IOException e) {
             throw new LoadingException("Could not load notifications.txt: " + e.getMessage());
         }

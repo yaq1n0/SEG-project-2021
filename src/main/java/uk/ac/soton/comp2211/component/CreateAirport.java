@@ -21,7 +21,6 @@ import uk.ac.soton.comp2211.event.WarningListener;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.exceptions.WritingException;
-import uk.ac.soton.comp2211.model.Airport;
 import uk.ac.soton.comp2211.model.SystemModel;
 import uk.ac.soton.comp2211.model.Tarmac;
 

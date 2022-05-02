@@ -83,7 +83,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         
         // get obstacles needs to change for multiple obstacles
         Obstacle obs = runway.getTarmac().getObstacle();
-        this.obstacleBox = new ObstacleBox(obs, this.runway.getLength());
+        this.obstacleBox = new ObstacleBox(obs);
         this.obstacleBox.setInsertObstacleListener(() -> {
             final Stage dialog = new Stage();
             dialog.initModality(Modality.APPLICATION_MODAL);

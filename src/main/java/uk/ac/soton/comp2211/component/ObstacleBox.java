@@ -33,14 +33,12 @@ public class ObstacleBox extends VBox{
 
     private RecalculateListener recalculateListener;
     private ShowStepsListener showStepsListener;
-    private final int runwayLength;
     private Obstacle obstacle;
 
-    public ObstacleBox(Obstacle obstacle, int runwayLength) {
+    public ObstacleBox(Obstacle obstacle) {
         super();
 
         this.obstacle = obstacle;
-        this.runwayLength = runwayLength;
 
         this.obsButton = new Button();
         Label centerLabel = new Label("Centre line Displacement: ");

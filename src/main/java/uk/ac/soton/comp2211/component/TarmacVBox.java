@@ -37,7 +37,7 @@ public class TarmacVBox extends VBox {
         Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
         textTarmacName.setFont(Font.font("Verdana"));
 
-        inputTarmacLength = new NumberField(1, 1000);
+        inputTarmacLength = new NumberField(Tarmac.MIN_LENGTH, Tarmac.MAX_LENGTH);
         inputTarmacLength.setPromptText("length");
         inputTarmacLength.textProperty().addListener((e) -> { this.validateListener.validate(); });
 

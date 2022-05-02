@@ -65,6 +65,9 @@ public class CreateTarmac extends VBox {
      * @throws Exception exception
      */
     public void generateTarmac() throws Exception {
+
+        // ********** ADD CODE **********
+
         logger.info("Tarmac successfully created.");
     }
 
