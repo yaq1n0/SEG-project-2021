@@ -1,7 +1,10 @@
 package uk.ac.soton.comp2211.model;
 
-import java.io.*;
-import java.sql.Timestamp;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
