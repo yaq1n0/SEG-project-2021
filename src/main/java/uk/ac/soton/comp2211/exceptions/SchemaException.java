@@ -1,5 +1,12 @@
 package uk.ac.soton.comp2211.exceptions;
 
-public class SchemaException extends Exception {
-    public SchemaException(String _message) { super(_message); }
+import org.apache.logging.log4j.Logger;
+
+/**
+ * Thrown when an XML file doesn't match the schema.
+ */
+public class SchemaException extends ProgramException {
+    public SchemaException(Logger _logger, String _message) { 
+        super(_logger, _message); 
+    }
 }

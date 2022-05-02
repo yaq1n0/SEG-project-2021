@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import uk.ac.soton.comp2211.model.Runway;
 import uk.ac.soton.comp2211.model.RunwayValues;
 
 /**

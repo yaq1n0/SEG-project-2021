@@ -26,7 +26,7 @@ import uk.ac.soton.comp2211.exceptions.*;
 
 public class DataReader {
     
-    private static final Logger logger = LogManager.getLogger(DataReader.class);
+    private static final Logger LOGGER = LogManager.getLogger(DataReader.class);
     
     private static DocumentBuilderFactory documentBuilderFactory;
     private static DocumentBuilder documentBuilder;
@@ -57,7 +57,7 @@ public class DataReader {
                 factory = XPathFactory.newInstance();
                 xpath = factory.newXPath();
             } catch (Exception e) {
-                throw new LoadingException("Couldn't create XML document builder!");
+                throw new LoadingException(LOGGER, "Couldn't create XML document builder!");
             }
         }
 
@@ -66,12 +66,12 @@ public class DataReader {
             catch (Exception e) { 
                 document = null;
                 
-                throw new LoadingException("Can't parse XML file: " + _xmlFile); 
+                throw new LoadingException(LOGGER, "Can't parse XML file: " + _xmlFile); 
             } 
         } else {
             document = null;
 
-            throw new SchemaException(_xmlFile.getName() + " doesn't match the schema in " + _xsdFile.getName() + "!");
+            throw new SchemaException(LOGGER, _xmlFile.getName() + " doesn't match the schema in " + _xsdFile.getName() + "!");
         }
     }
 
@@ -93,7 +93,7 @@ public class DataReader {
             Node airport = (Node) xpath.evaluate("/airport", document, XPathConstants.NODE);
             return airport.getAttributes().getNamedItem("name").getTextContent();
         } catch (XPathExpressionException e) {
-            throw new ExtractionException("Failed to extract airport name from XML file!");
+            throw new ExtractionException(LOGGER, "Failed to extract airport name from XML file!");
         }
     }
 
@@ -168,7 +168,7 @@ public class DataReader {
             }
             in.close();
         } catch (IOException e) {
-            throw new LoadingException("Could not load notifications.txt");
+            throw new LoadingException(LOGGER, "Could not load notifications.txt");
         }
         
         // Reverse the order to put most recent first

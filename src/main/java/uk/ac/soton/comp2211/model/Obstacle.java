@@ -16,13 +16,13 @@ public class Obstacle {
         name = _name;
 
         if (_length >= 0) length = _length;
-        else throw new SizeException("Length must be positive!");
+        else throw new SizeException(null, "Length must be positive!");
 
         if (_width >= 0) width = _width;
-        else throw new SizeException("Width must be positive!");
+        else throw new SizeException(null, "Width must be positive!");
 
         if (_height >= 0) height = _height;
-        else throw new SizeException("Height must be positive!");
+        else throw new SizeException(null, "Height must be positive!");
 
         position = null;
     }
@@ -36,7 +36,7 @@ public class Obstacle {
         return this.position != null;
     }
     public Position getPosition() throws PositionException {
-        if (position == null) throw new PositionException("Position of obstacle not set!");
+        if (position == null) throw new PositionException(null, "Position of obstacle not set!");
 
         return position;
     }

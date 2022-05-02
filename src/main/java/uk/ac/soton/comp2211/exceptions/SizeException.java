@@ -1,5 +1,12 @@
 package uk.ac.soton.comp2211.exceptions;
 
-public class SizeException extends Exception {
-    public SizeException(String _message) { super(_message); }
+import org.apache.logging.log4j.Logger;
+
+/**
+ * Thrown when an invalid size parameter is assigned to an obstacle.
+ */
+public class SizeException extends ProgramException {
+    public SizeException(Logger _logger, String _message) { 
+        super(_logger, _message);
+    }
 }

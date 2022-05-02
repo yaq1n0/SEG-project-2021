@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import uk.ac.soton.comp2211.exceptions.LoadingException;
+import uk.ac.soton.comp2211.exceptions.SchemaException;
+import uk.ac.soton.comp2211.exceptions.SizeException;
 import uk.ac.soton.comp2211.exceptions.WritingException;
 
 public class SystemModel {
@@ -43,9 +45,7 @@ public class SystemModel {
             airportSchemaFile = new File(airportSchemaPath);
             LOGGER.info("Airport XSD schema loaded.");
         } catch (Exception e) {
-            String errorMessage = "Airport XSD schema not found!";
-            LOGGER.error(errorMessage);
-            throw new LoadingException(errorMessage);
+            throw new LoadingException(LOGGER, "Airport XSD schema not found!");
         }
 
         try {
@@ -53,9 +53,7 @@ public class SystemModel {
             obstalceSchemaFile = new File(obstacleSchemaPath);
             LOGGER.info("Obstacle XSD schema loaded.");
         } catch (Exception e) {
-            String errorMessage = "Obstacle XSD schema not found!";
-            LOGGER.error(errorMessage);
-            throw new LoadingException(errorMessage);
+            throw new LoadingException(LOGGER, "Obstacle XSD schema not found!");
         }
     }
 
@@ -75,9 +73,7 @@ public class SystemModel {
         try {
             airportFolderPath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath();
         } catch (Exception e) {
-            String errorMessage = "Airport data folder not found!";
-            LOGGER.error(errorMessage);
-            throw new LoadingException(errorMessage);
+            throw new LoadingException(LOGGER, "Airport data folder not found!");
         }
 
         File airportFolder = new File(airportFolderPath);
@@ -87,9 +83,7 @@ public class SystemModel {
         File[] files = airportFolder.listFiles(filter);
 
         if (files == null) {
-            String errorMessage = "No airport data files loaded!";
-            LOGGER.error(errorMessage);
-            throw new LoadingException(errorMessage);
+            throw new LoadingException(LOGGER, "No airport data files loaded!");
         }
 
         String[][] airportList = new String[files.length][2];
@@ -123,9 +117,7 @@ public class SystemModel {
         try {
             airportFolderPath = SystemModel.class.getResource(AIRPORT_DATA_FOLDER).getPath();
         } catch (Exception e) {
-            String errorMessage = "Airport data file not found!";
-            LOGGER.error(errorMessage);
-            throw new LoadingException(errorMessage);
+            throw new LoadingException(LOGGER, "Airport data file not found!");
         }
 
         // Get airport data file.
@@ -169,9 +161,7 @@ public class SystemModel {
             // Instantiate the airport with the airport name and runway data.
             airport = new Airport(airportName, tarmacs, _airportFile);
         } catch (Exception e) {
-            LOGGER.error("Failed to extract airport data: " + e.getMessage());
-
-            throw new LoadingException(e.getMessage());
+            throw new LoadingException(LOGGER, "Failed to extract airport data: " + e.getMessage());
         }
     }
 
@@ -186,9 +176,12 @@ public class SystemModel {
      * 
      * Side effects:
      *  - Load schemas if not already loaded.
+     * @throws LoadingException
+     * @throws SchemaException
+     * @throws SizeException
      * @throws Exception
      */
-    public static void loadObstacles() throws Exception {
+    public static void loadObstacles() throws LoadingException, SchemaException, SizeException {
         LOGGER.info("Loading obstacle data from: " + OBSTACLE_DATA_FILE);
 
         if (airportSchemaFile == null || obstalceSchemaFile == null) loadSchemas(); 
@@ -197,35 +190,27 @@ public class SystemModel {
         try {
             obstacleFilePath = SystemModel.class.getResource(OBSTACLE_DATA_FILE).getPath();
         } catch (Exception e) {
-            String errorMessage = "Obstacle data file not found!";
-            LOGGER.error(errorMessage);
-            throw new Exception(errorMessage);
+            throw new LoadingException(LOGGER, "Obstacle data file not found!");
         }
 
         File obstacleFile = new File(obstacleFilePath);
         LOGGER.info("Obstacle data file loaded.");
 
-        try {
-            DataReader.loadFile(obstacleFile, obstalceSchemaFile);
+        DataReader.loadFile(obstacleFile, obstalceSchemaFile);
 
-            obstacles = DataReader.getObstacles();
+        obstacles = DataReader.getObstacles();
 
-            LOGGER.info("Obstacle data extracted.");
-        } catch (Exception e) {
-            LOGGER.error("Failed to extract obstacle data: " + e.getMessage());
-
-            throw e;
-        }
+        LOGGER.info("Obstacle data extracted.");
     }
 
     /**
      * Adds a new obstacle to the obstacle data file,
      * and then reloads the obstacles from that file.
-     * 
-     * @param _newObstacle
-     * @throws Exception
+     * @throws WritingException
+     * @throws SizeException
+     * @throws SchemaException
      */
-    public static void addObstacle(Obstacle _newObstacle) throws Exception {
+    public static void addObstacle(Obstacle _newObstacle) throws LoadingException, WritingException, SchemaException, SizeException {
         LOGGER.info("Adding new obstacle...");
 
         String obstacleFilePath;
@@ -233,20 +218,19 @@ public class SystemModel {
 
         File obstacleFile = new File(obstacleFilePath);
 
-        if (obstacleFile.exists()) {
-            LOGGER.info("Writing obstacle data to XML file...");
-            
-            DataWriter.writeObstacle(_newObstacle, obstacleFile);
-
-            LOGGER.info("New obstacle added successfully.");
-
-        } else {
-            String errorMessage = "Obstacle data file not found!";
-
-            LOGGER.error(errorMessage);
-
-            throw new Exception(errorMessage);
+        if (!obstacleFile.exists()) {
+            throw new LoadingException(LOGGER, "Obstacle data file not found!");
         }
+        
+        LOGGER.info("Writing obstacle data to XML file...");
+        
+        try {
+            DataWriter.writeObstacle(_newObstacle, obstacleFile);
+        } catch (TransformerException | SAXException | IOException | ParserConfigurationException e) {
+            throw new WritingException(LOGGER, "Failed to write obstacle data.");
+        }
+
+        LOGGER.info("New obstacle added successfully.");
 
         loadObstacles();
     }
@@ -268,11 +252,7 @@ public class SystemModel {
         File airportFile = new File(airportFilePath);
 
         if (airportFile.exists()) {
-            String errorMessage = "Cannot write airport data to a file that already exists!";
-
-            LOGGER.error(errorMessage);
-
-            throw new WritingException(errorMessage);
+            throw new WritingException(LOGGER, "Cannot write airport data to a file that already exists!");
         }
 
         LOGGER.info("Writing airport data to XML file...");
@@ -282,12 +262,7 @@ public class SystemModel {
         try {
             DataWriter.writeAirport(newAirport, airportFile);
         } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
-            e.printStackTrace();
-            String errorMessage = "Failed to write airport data to XML file.";
-
-            LOGGER.error(errorMessage);
-
-            throw new WritingException(errorMessage);
+            throw new WritingException(LOGGER, "Failed to write airport data to XML file.");
         }
 
         LOGGER.info("New airport added successfully.");
@@ -337,11 +312,7 @@ public class SystemModel {
         try {
             DataWriter.writeAirport(airport, airportFile);
         } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
-            String errorMessage = "Failed to write new tarmac data to airport data file.";
-
-            LOGGER.error(errorMessage);
-
-            throw new WritingException(errorMessage);
+            throw new WritingException(LOGGER, "Failed to write new tarmac data to airport data file.");
         }
     }
 
@@ -361,11 +332,7 @@ public class SystemModel {
         try {
             DataWriter.writeCalculationLog(_airportName, _runwayDesignator, _calculations, calculationsLog);
         } catch (IOException e) {
-            String errorMessage = "Failed to write calculations to a log file.";
-
-            LOGGER.error(errorMessage);
-
-            throw new WritingException(errorMessage);
+            throw new WritingException(LOGGER, "Failed to write calculations to a log file.");
         }
     }
 }

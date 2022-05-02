@@ -1,5 +1,9 @@
 package uk.ac.soton.comp2211.exceptions;
 
-public class PositionException extends Exception {
-    public PositionException(String _message) { super(_message); }
+import org.apache.logging.log4j.Logger;
+
+public class PositionException extends ProgramException {
+    public PositionException(Logger _logger, String _message) { 
+        super(_logger, _message); 
+    }
 }

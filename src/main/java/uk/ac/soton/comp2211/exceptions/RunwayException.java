@@ -1,5 +1,9 @@
 package uk.ac.soton.comp2211.exceptions;
 
-public class RunwayException extends Exception {
-    public RunwayException(String _message) { super(_message); }
+import org.apache.logging.log4j.Logger;
+
+public class RunwayException extends ProgramException {
+    public RunwayException(Logger _logger, String _message) { 
+        super(_logger, _message);
+    }
 }
