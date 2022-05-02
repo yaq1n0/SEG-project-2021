@@ -325,12 +325,9 @@ public class SystemModel {
     /**
      * Add a new tarmac to the currently loaded airport 
      * and modify the airport data file.
-     * @throws ParserConfigurationException
-     * @throws TransformerException
-     * @throws IOException
-     * @throws SAXException
+     * @throws WritingException
      */
-    public static void addTarmac(Tarmac _tarmac) throws SAXException, IOException, TransformerException, ParserConfigurationException {
+    public static void addTarmac(Tarmac _tarmac) throws WritingException {
         LOGGER.info("Adding tarmac to airport.");
 
         airport.getTarmacs().add(_tarmac);
@@ -339,10 +336,19 @@ public class SystemModel {
 
         File airportFile = airport.getDataFile();
 
-        DataWriter.writeAirport(airport, airportFile);
+        try {
+            DataWriter.writeAirport(airport, airportFile);
+        } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
+            String errorMessage = "Failed to write new tarmac data to airport data file.";
+
+            LOGGER.error(errorMessage);
+
+            throw new WritingException(errorMessage);
+        }
     }
 
-    public static void recordCalculation(String _airportName, String _runwayDesignator, String[] _calculations) throws IOException {
+    public static void recordCalculation(String _airportName, String _runwayDesignator, String[] _calculations) throws WritingException {
+
         String calculationsFolderPath = SystemModel.class.getResource(CALCULATIONS_FOLDER).getPath();
         File calculationsFolder = new File(calculationsFolderPath);
 
@@ -354,6 +360,14 @@ public class SystemModel {
             calculationsLog = new File(calculationsFolder, fileNamePrefix + fileNamePostfix);
         }
 
-        DataWriter.writeCalculationLog(_airportName, _runwayDesignator, _calculations, calculationsLog);
+        try {
+            DataWriter.writeCalculationLog(_airportName, _runwayDesignator, _calculations, calculationsLog);
+        } catch (IOException e) {
+            String errorMessage = "Failed to write calculations to a log file.";
+
+            LOGGER.error(errorMessage);
+
+            throw new WritingException(errorMessage);
+        }
     }
 }
