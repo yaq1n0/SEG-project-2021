@@ -135,7 +135,7 @@ public class ObstacleBox extends VBox{
             thresh = Integer.parseInt(this.tDistField.getText());
             
             if (this.obstacle == null) {
-                throw new PositionException("Can't change position of null obstacle.");
+                throw new PositionException(logger, "Can't change position of null obstacle.");
             }
             
             try {

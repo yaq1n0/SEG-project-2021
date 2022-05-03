@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,12 +28,10 @@ import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
+import javafx.embed.swing.SwingFXUtils;
 
 import java.awt.image.RenderedImage;
-
-import javafx.embed.swing.SwingFXUtils;
 
 public class DataWriter {
 
@@ -214,7 +213,7 @@ public class DataWriter {
             WritableImage writableImage = new WritableImage((int) _canvas.getWidth(), (int) _canvas.getHeight());
             _canvas.snapshot(null, writableImage);
             RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
-            ImageIO.write(renderedImage, "png", file);
+            ImageIO.write(renderedImage, "png", _file);
         } catch (IOException ex) {
             ex.printStackTrace();
             System.out.println("Error!");
