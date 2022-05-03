@@ -26,6 +26,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.WritableImage;
+
+import java.awt.image.RenderedImage;
+
+import javafx.embed.swing.SwingFXUtils;
+
 public class DataWriter {
 
     protected static final Logger LOGGER = LogManager.getLogger(DataWriter.class);
@@ -198,6 +206,18 @@ public class DataWriter {
             bw.close();
         } catch (IOException e) {
             LOGGER.error("Couldn't open notifications file for writing. {}", e.getMessage());
+        }
+    }
+
+    public static void savePicture(Canvas _canvas, File _file) {
+        try {
+            WritableImage writableImage = new WritableImage((int) _canvas.getWidth(), (int) _canvas.getHeight());
+            _canvas.snapshot(null, writableImage);
+            RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+            ImageIO.write(renderedImage, "png", file);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("Error!");
         }
     }
 }
