@@ -21,6 +21,10 @@ import java.io.IOException;
 public class App extends Application {
 
     private static final Logger logger = LogManager.getLogger(App.class);
+    private static final int SMALL_WIDTH = 300;
+    private static final int SMALL_HEIGHT = 200;
+    private static final int BIG_WIDTH = 500;
+    private static final int BIG_HEIGHT = 300;
     
     /**
      * Launch the JavaFx Application
@@ -36,13 +40,6 @@ public class App extends Application {
      */
     public void init() {
         logger.info("Initialising...");
-        
-        // Initialise model
-        try {
-            SystemModel.loadObstacles();
-        } catch (Exception e) {
-            logger.error("Couldn't load obstacles.");
-        }
     }
 
     /**
@@ -80,7 +77,7 @@ public class App extends Application {
             dialog.initOwner(stage);
             ErrorBox box = new ErrorBox(dialog, messages);
 
-            Scene dialogScene = new Scene(box, 300, 200);
+            Scene dialogScene = new Scene(box, SMALL_WIDTH, SMALL_HEIGHT);
             dialog.setScene(dialogScene);
 
             dialog.show();
@@ -92,7 +89,7 @@ public class App extends Application {
             WarningBox box = new WarningBox(dialog, messages);
             box.setConfirmationListener(listener);
 
-            Scene dialogScene = new Scene(box, 300, 200);
+            Scene dialogScene = new Scene(box, SMALL_WIDTH, SMALL_HEIGHT);
             dialog.setScene(dialogScene);
 
             dialog.show();
@@ -103,7 +100,7 @@ public class App extends Application {
             dialog.initOwner(stage);
             MessageBox box = new MessageBox(dialog, messages);
 
-            Scene dialogScene = new Scene(box, 300, 200);
+            Scene dialogScene = new Scene(box, SMALL_WIDTH, SMALL_HEIGHT);
             dialog.setScene(dialogScene);
 
             dialog.show();
@@ -119,7 +116,7 @@ public class App extends Application {
                 airportSelect = new AirportSelect(dialog, SystemModel.listAirports());
                 airportSelect.setPassAirportListener(controller::setAirport);
 
-                Scene dialogScene = new Scene(airportSelect, 300, 200);
+                Scene dialogScene = new Scene(airportSelect, SMALL_WIDTH, SMALL_HEIGHT);
                 dialog.setScene(dialogScene);
                 dialog.show();
             } catch (Exception e) {
@@ -146,7 +143,7 @@ public class App extends Application {
             airportCreate.setWarningListener(controller.getWarningListener());
             airportCreate.setNotificationListener(controller::addNotification);
 
-            Scene dialogScene = new Scene(airportCreate, 400, 250);
+            Scene dialogScene = new Scene(airportCreate, BIG_WIDTH, BIG_HEIGHT);
             dialog.setScene(dialogScene);
             dialog.show();
         });
@@ -157,7 +154,7 @@ public class App extends Application {
             CreateObstacle obstacleCreate = new CreateObstacle(dialog);
             obstacleCreate.setNotificationListener(controller::addNotification);
 
-            Scene dialogScene = new Scene(obstacleCreate, 300, 200);
+            Scene dialogScene = new Scene(obstacleCreate, SMALL_WIDTH, SMALL_HEIGHT);
             dialog.setScene(dialogScene);
 
             dialog.show();
@@ -169,7 +166,7 @@ public class App extends Application {
             WarningBox warnDeletion = new WarningBox(dialog, messages);
             warnDeletion.setConfirmationListener(listener);
 
-            Scene dialogScene = new Scene(warnDeletion, 500, 300);
+            Scene dialogScene = new Scene(warnDeletion, BIG_WIDTH, BIG_HEIGHT);
             dialog.setScene(dialogScene);
 
             dialog.show();
@@ -182,7 +179,7 @@ public class App extends Application {
             createTarmac.setResetAirportListener(controller::resetAirport);
             createTarmac.setNotificationListener(controller::addNotification);
 
-            Scene dialogScene = new Scene(createTarmac, 300, 200);
+            Scene dialogScene = new Scene(createTarmac, SMALL_WIDTH, SMALL_HEIGHT);
             dialog.setScene(dialogScene);
 
             dialog.show();
@@ -200,6 +197,14 @@ public class App extends Application {
         stage.show();
 
         StyleManager.getInstance().addUserAgentStylesheet("Styles/Button.css");
+
+
+        // Initialise model
+        try {
+            SystemModel.loadObstacles();
+        } catch (Exception e) {
+            controller.getErrorListener().openDialog(new String[]{"Couldn't load obstacles."});
+        }
         
     }
     
