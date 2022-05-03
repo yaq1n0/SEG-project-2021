@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
+import javafx.scene.canvas.Canvas;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.SchemaException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
@@ -23,6 +24,7 @@ public class SystemModel {
     private static final String OBSTACLE_SCHEMA = "/obstacles.xsd";
     private static final String DATA_FILE_REGEX = "[a-zA-Z0-9-_]+.xml";
     private static final String CALCULATIONS_FOLDER = "/calculations";
+    private static final String IMAGES_FOLDER = "/images";
 
     protected static final Logger LOGGER = LogManager.getLogger(SystemModel.class);
 
@@ -317,11 +319,11 @@ public class SystemModel {
     }
 
     public static void recordCalculation(String _runwayDesignator, String[] _calculations) throws WritingException {
-        String _airportName = airport.getName();
+        String airportName = airport.getName();
         String calculationsFolderPath = SystemModel.class.getResource(CALCULATIONS_FOLDER).getPath();
         File calculationsFolder = new File(calculationsFolderPath);
 
-        String fileNamePrefix = _airportName + "-" + _runwayDesignator + "-";
+        String fileNamePrefix = airportName + "-" + _runwayDesignator + "-";
         int fileNamePostfix = 0;
         File calculationsLog = new File(calculationsFolder, fileNamePrefix + fileNamePostfix);
         while (calculationsLog.exists()) {
@@ -330,9 +332,31 @@ public class SystemModel {
         }
 
         try {
-            DataWriter.writeCalculationLog(_airportName, _runwayDesignator, _calculations, calculationsLog);
+            DataWriter.writeCalculationLog(airportName, _runwayDesignator, _calculations, calculationsLog);
         } catch (IOException e) {
             throw new WritingException(LOGGER, "Failed to write calculations to a log file.");
+        }
+    }
+
+    public static void printAirport(Canvas _canvas) throws WritingException {
+        String airportName = airport.getName();
+        String imagesFolderPath = SystemModel.class.getResource(IMAGES_FOLDER).getPath();
+        File imagesFolder = new File(imagesFolderPath);
+
+        if (!imagesFolder.exists()) imagesFolder.mkdirs();
+
+        String fileNamePrefix = airportName + "-";
+        int fileNamePostfix = 0;
+        File imageFile = new File(imagesFolder, fileNamePrefix + fileNamePostfix);
+        while (imageFile.exists()) {
+            fileNamePostfix++;
+            imageFile = new File(imagesFolder, fileNamePrefix + fileNamePostfix);
+        }
+
+        try {
+            DataWriter.savePicture(_canvas, imageFile);
+        } catch (IOException e) {
+            throw new WritingException(LOGGER, "Failed to canvas as an image.");
         }
     }
 }

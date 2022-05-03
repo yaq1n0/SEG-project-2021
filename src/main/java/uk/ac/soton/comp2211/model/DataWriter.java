@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
+import uk.ac.soton.comp2211.exceptions.WritingException;
 import javafx.embed.swing.SwingFXUtils;
 
 import java.awt.image.RenderedImage;
@@ -208,15 +209,10 @@ public class DataWriter {
         }
     }
 
-    public static void savePicture(Canvas _canvas, File _file) {
-        try {
-            WritableImage writableImage = new WritableImage((int) _canvas.getWidth(), (int) _canvas.getHeight());
-            _canvas.snapshot(null, writableImage);
-            RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
-            ImageIO.write(renderedImage, "png", _file);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            System.out.println("Error!");
-        }
+    public static void savePicture(Canvas _canvas, File _file) throws IOException {
+        WritableImage writableImage = new WritableImage((int) _canvas.getWidth(), (int) _canvas.getHeight());
+        _canvas.snapshot(null, writableImage);
+        RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        ImageIO.write(renderedImage, "png", _file);
     }
 }
