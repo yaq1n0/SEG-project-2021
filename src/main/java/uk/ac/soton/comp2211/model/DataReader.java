@@ -173,10 +173,6 @@ public class DataReader {
         
         // Reverse the order to put most recent first
         Collections.reverse(notifs);
-
-        // Get N most recent notifications.
-        notifs = (ArrayList<String>) notifs.subList(0, MAX_NOTIFS - 1);
-
         return notifs;
     }
 

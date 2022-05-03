@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.WritableImage;
+import uk.ac.soton.comp2211.exceptions.WritingException;
 import javafx.embed.swing.SwingFXUtils;
 
 import java.awt.image.RenderedImage;
