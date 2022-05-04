@@ -11,13 +11,12 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.event.NotificationListener;
 import uk.ac.soton.comp2211.event.ResetAirportListener;
 import uk.ac.soton.comp2211.model.SystemModel;
 import uk.ac.soton.comp2211.model.Tarmac;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class CreateTarmac extends VBox {
 

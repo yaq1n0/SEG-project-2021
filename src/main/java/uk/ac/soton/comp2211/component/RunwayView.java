@@ -14,7 +14,6 @@ import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Position;
 import uk.ac.soton.comp2211.model.Runway;
-import uk.ac.soton.comp2211.model.SystemModel;
 
 
 /**

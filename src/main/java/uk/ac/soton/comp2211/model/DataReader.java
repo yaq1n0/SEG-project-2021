@@ -1,8 +1,14 @@
 package uk.ac.soton.comp2211.model;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+import uk.ac.soton.comp2211.exceptions.ExtractionException;
+import uk.ac.soton.comp2211.exceptions.LoadingException;
+import uk.ac.soton.comp2211.exceptions.SchemaException;
+import uk.ac.soton.comp2211.exceptions.SizeException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -15,14 +21,12 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-
-import uk.ac.soton.comp2211.exceptions.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class DataReader {
     

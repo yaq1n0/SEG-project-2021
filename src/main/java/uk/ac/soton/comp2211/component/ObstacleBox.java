@@ -28,9 +28,10 @@ public class ObstacleBox extends VBox{
     private final NumberField centerField;
     private final NumberField tDistField;
     private final Button obsButton;
+    
     private InsertObstacleListener insertObstacleListener;
     private ObstacleClearListener obstacleClearListener;
-
+    private ErrorListener errorListener;
     private RecalculateListener recalculateListener;
     private ShowStepsListener showStepsListener;
     private LogStepsListener logStepsListener;
@@ -60,7 +61,7 @@ public class ObstacleBox extends VBox{
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
                 this.tDistField.setText("" + pos.getDistance());
             } catch (PositionException pe) {
-                logger.error(pe.getStackTrace());
+                errorListener.openDialog(new String[]{"Could not retrieve obstacle position:", pe.getMessage()});
             }
         } else {
             disablePositionFields();
@@ -143,7 +144,7 @@ public class ObstacleBox extends VBox{
                 valid = true;
                 logger.info("User set obstacle position.");
             } catch (PositionException | SizeException pe) {
-                logger.error("Invalid parameters to Position constructor.");
+                errorListener.openDialog(new String[]{"Invalid position parameters:", pe.getMessage()});
             }
 
         } catch (NumberFormatException | PositionException nfe) {
@@ -201,7 +202,7 @@ public class ObstacleBox extends VBox{
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
                 this.tDistField.setText("" + pos.getDistance());
             } catch (PositionException pe) {
-                logger.error(pe.getStackTrace());
+                errorListener.openDialog(new String[]{"Could not retrieve obstacle position:", pe.getMessage()});
                 this.centerField.setText("");
                 this.tDistField.setText("");
             }
@@ -222,5 +223,13 @@ public class ObstacleBox extends VBox{
     public void enablePositionFields() {
         this.centerField.setDisable(false);
         this.tDistField.setDisable(false);
+    }
+
+    /**
+     * Set the error listener to display errors
+     * @param listener listener
+     */
+    public void setErrorListener(ErrorListener listener) {
+        this.errorListener = listener;
     }
 }

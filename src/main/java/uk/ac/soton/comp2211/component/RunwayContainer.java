@@ -3,7 +3,6 @@ package uk.ac.soton.comp2211.component;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -16,12 +15,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.exceptions.RunwayException;
 import uk.ac.soton.comp2211.exceptions.WritingException;
-import uk.ac.soton.comp2211.model.*;
+import uk.ac.soton.comp2211.model.Obstacle;
+import uk.ac.soton.comp2211.model.Runway;
+import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.util.ArrayList;
 
@@ -107,6 +107,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         this.obstacleBox.setRecalculateListener(this);
         this.obstacleBox.setShowStepsListener(this);
         this.obstacleBox.setLogStepsListener(this);
+        this.obstacleBox.setErrorListener(this.errorListener);
 
         HBox.setHgrow(this.parameterBox, Priority.ALWAYS);
         this.parameterBox.setStyle("-fx-border-color: black");
@@ -123,7 +124,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
                 this.delete.setDisable(true);
             }
         } catch (Exception e) {
-            logger.error("Could not load airport runways to check length: " + e.getMessage());
+            errorListener.openDialog(new String[]{"Could not load airport runways to check length:", e.getMessage()});
         }
         
         Label designator = new Label(this.runway.getRunwayDesignator());
@@ -151,8 +152,6 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
             
             if (messageListener != null) {
                 messageListener.openDialog(new String[]{"Runway exported successfully.", "Path: " + path});
-            } else {
-                logger.error("Couldn't find message listener");
             }
         });
 
@@ -189,7 +188,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
                         try {
                             this.notificationListener.addNotification("Tarmac " + this.runway.getRunwayDesignator() + " deleted in " + SystemModel.getAirport().getName() + ".");
                         } catch (Exception e) {
-                            logger.error("Couldn't notify tarmac deletion: " + e.getMessage());
+                            errorListener.openDialog(new String[]{"Couldn't notify tarmac deletion.", e.getMessage()});
                         }
                     } else {
                         System.out.println("No deleteTarmacListener!");
@@ -231,12 +230,11 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
                     String notif = "Redeclaration performed on " + this.runway.getRunwayDesignator() + " in " + SystemModel.getAirport().getName() + ".";
                     this.notificationListener.addNotification(notif);
                 } catch (Exception e) {
-                    logger.error("Couldn't notify redeclaration: " + e.getMessage());
+                    errorListener.openDialog(new String[]{"Couldn't notify redeclaration:", e.getMessage()});
                 }
             }
         } catch (RunwayException | PositionException re) {
-            logger.error(re.getStackTrace());
-            logger.error("Could not recalculate runway parameters.");
+            errorListener.openDialog(new String[]{"Could not recalculate runway parameters.", re.getMessage()});
         }
         updateVisual();
     }
@@ -253,8 +251,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
             steps = this.runway.recalculate(300);
             this.parameterBox.updateValues(this.runway.getCurrentValues());
         } catch (RunwayException | PositionException re) {
-            logger.error(re.getStackTrace());
-            logger.error("Could not recalculate runway parameters.");
+            errorListener.openDialog(new String[]{"Could not recalculate runway parameters.", re.getMessage()});
         }
         updateVisual();
 
@@ -282,8 +279,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
             steps = this.runway.recalculate(300);
             this.parameterBox.updateValues(this.runway.getCurrentValues());
         } catch (RunwayException | PositionException re) {
-            logger.error(re.getStackTrace());
-            logger.error("Could not recalculate runway parameters.");
+            errorListener.openDialog(new String[]{"Could not recalculate runway parameters.", re.getMessage()});
         }
         updateVisual();
 
@@ -295,10 +291,10 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         }
 
         try {
-            SystemModel.recordCalculation(runway.getRunwayDesignator(), _steps);
+            String path = SystemModel.recordCalculation(runway.getRunwayDesignator(), _steps);
+            messageListener.openDialog(new String[]{"Runway recalculation steps logged to file:", path});
         } catch (WritingException e) {
-            logger.error(e.getStackTrace());
-            logger.error("Could not write runway recalculation steps to file");
+            errorListener.openDialog(new String[]{"Could not write runway recalculation steps to file", e.getMessage()});
         }
     }
 

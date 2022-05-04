@@ -11,7 +11,9 @@ import uk.ac.soton.comp2211.exceptions.WritingException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -313,7 +315,7 @@ public class SystemModel {
         }
     }
 
-    public static void recordCalculation(String _runwayDesignator, String[] _calculations) throws WritingException {
+    public static String recordCalculation(String _runwayDesignator, String[] _calculations) throws WritingException {
         String airportName = airport.getName();
         String calculationsFolderPath = SystemModel.class.getResource(CALCULATIONS_FOLDER).getPath();
         File calculationsFolder = new File(calculationsFolderPath);
@@ -331,6 +333,8 @@ public class SystemModel {
         } catch (IOException e) {
             throw new WritingException(LOGGER, "Failed to write calculations to a log file.");
         }
+        
+        return calculationsLog.getPath();
     }
 
     public static String printAirport(Canvas _canvas) throws WritingException, NullPointerException {

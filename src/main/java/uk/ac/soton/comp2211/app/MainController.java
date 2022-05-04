@@ -3,6 +3,7 @@ package uk.ac.soton.comp2211.app;
 import com.sun.javafx.css.StyleManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -16,8 +17,6 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.AirportContainer;
-import javafx.event.ActionEvent;
-
 import uk.ac.soton.comp2211.component.NotificationsBox;
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
