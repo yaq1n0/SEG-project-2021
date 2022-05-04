@@ -61,7 +61,7 @@ public class ObstacleBox extends VBox{
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
                 this.tDistField.setText("" + pos.getDistance());
             } catch (PositionException pe) {
-                errorListener.openDialog(new String[]{"Could not retrieve obstacle position:", pe.getMessage()});
+                logger.error("Could not retrieve obstacle position.");
             }
         } else {
             disablePositionFields();
@@ -202,7 +202,7 @@ public class ObstacleBox extends VBox{
                 this.centerField.setText("" + pos.getCentreLineDisplacement());
                 this.tDistField.setText("" + pos.getDistance());
             } catch (PositionException pe) {
-                errorListener.openDialog(new String[]{"Could not retrieve obstacle position:", pe.getMessage()});
+                logger.error("Could not retrieve obstacle position.");
                 this.centerField.setText("");
                 this.tDistField.setText("");
             }

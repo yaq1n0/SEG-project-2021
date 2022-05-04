@@ -107,7 +107,6 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         this.obstacleBox.setRecalculateListener(this);
         this.obstacleBox.setShowStepsListener(this);
         this.obstacleBox.setLogStepsListener(this);
-        this.obstacleBox.setErrorListener(this.errorListener);
 
         HBox.setHgrow(this.parameterBox, Priority.ALWAYS);
         this.parameterBox.setStyle("-fx-border-color: black");
@@ -387,6 +386,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
      */
     public void setErrorListener(ErrorListener listener) {
         this.errorListener = listener;
+        this.obstacleBox.setErrorListener(this.errorListener);
     }
 
     /**
