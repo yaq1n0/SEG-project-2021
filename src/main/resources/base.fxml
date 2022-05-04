@@ -61,11 +61,6 @@
             <MenuItem mnemonicParsing="false" onAction="#closeAirport" text="Close" />
             <MenuItem mnemonicParsing="false" onAction="#exportAs" text="Export As..." />
             <SeparatorMenuItem mnemonicParsing="false" />
-              <Menu mnemonicParsing="false" text="Preferences">
-                  <items>
-                  </items>
-              </Menu>
-            <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Quit" />
           </items>
             <graphic>
@@ -90,15 +85,6 @@
                 <!-- <FontAwesomeIconView glyphName="FILM" /> -->
             </graphic>
         </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
-                  <MenuItem mnemonicParsing="false" onAction="#showInstructions" text="Instructions" />
-               </items>
-                <graphic>
-                    <!-- <FontAwesomeIconView glyphName="QUESTION" /> -->
-                </graphic>
-            </Menu>
       </menus>
     </MenuBar>
       <Label fx:id="airportName" alignment="CENTER" minWidth="60.0" prefWidth="-1.0" style="&#10;" textAlignment="CENTER" wrapText="false">
