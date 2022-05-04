@@ -12,6 +12,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2211.event.MessageListener;
 import uk.ac.soton.comp2211.event.NotificationListener;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.SystemModel;
@@ -25,6 +26,7 @@ public class CreateObstacle extends VBox {
 
     private Button create;
     private NotificationListener notificationListener;
+    private MessageListener messageListener;
 
     public CreateObstacle(Stage dialog) {
         super(20);
@@ -106,6 +108,9 @@ public class CreateObstacle extends VBox {
         if (this.notificationListener != null) {
             this.notificationListener.addNotification("Added new obstacle preset: " + obstacleName);
         }
+        if (this.messageListener != null) {
+            this.messageListener.openDialog(new String[]{"Obstacle creation was successful."});
+        }
     }
 
     /**
@@ -114,5 +119,13 @@ public class CreateObstacle extends VBox {
      */
     public void setNotificationListener(NotificationListener listener) {
         this.notificationListener = listener;
+    }
+
+    /**
+     * Set message listener
+     * @param listener listener
+     */
+    public void setMessageListener(MessageListener listener) {
+        this.messageListener = listener;
     }
 }

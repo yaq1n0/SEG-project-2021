@@ -118,6 +118,7 @@ public class App extends Application {
             try {
                 airportSelect = new AirportSelect(dialog, SystemModel.listAirports());
                 airportSelect.setPassAirportListener(controller::setAirport);
+                airportSelect.setErrorListener(controller.getErrorListener());
 
                 Scene dialogScene = new Scene(airportSelect, SMALL_WIDTH, SMALL_HEIGHT);
                 dialog.setScene(dialogScene);
@@ -156,6 +157,7 @@ public class App extends Application {
             dialog.initOwner(stage);
             CreateObstacle obstacleCreate = new CreateObstacle(dialog);
             obstacleCreate.setNotificationListener(controller::addNotification);
+            obstacleCreate.setMessageListener(controller.getMessageListener());
 
             Scene dialogScene = new Scene(obstacleCreate, SMALL_WIDTH, SMALL_HEIGHT);
             dialog.setScene(dialogScene);

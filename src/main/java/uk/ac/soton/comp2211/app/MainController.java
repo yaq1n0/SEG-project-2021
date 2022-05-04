@@ -222,25 +222,7 @@ public class MainController implements Initializable {
     private void quitApplication(ActionEvent actionEvent) {
         this.quitListener.quitApplication();
     }
-
-    /**
-     * Ran when user selects About in Menu>Help
-     * @param actionEvent event
-     */
-    @FXML
-    private void showAbout(ActionEvent actionEvent) {
-        System.out.println("About");
-    }
-
-    /**
-     * Ran when user selects Instructions in Menu>Help
-     * @param actionEvent event
-     */
-    @FXML
-    private void showInstructions(ActionEvent actionEvent) {
-        System.out.print("Instructions");
-    }
-
+    
     /**
      * Receive airport selection from user.
      * @param airportPath path of relevant airport.xml
@@ -253,10 +235,9 @@ public class MainController implements Initializable {
             this.airportContainer.updateAirport(airport);
             this.mainBox.setVisible(false);
         } catch (Exception e) {
-            logger.error("Could not load airport! {}", airportPath);
-            e.printStackTrace();
+            this.errorListener.openDialog(new String[]{"Could not load airport!", airportPath, e.getMessage()});
             closeAirport(new ActionEvent());
-            this.airportName.setText("Error loading airport file: " + airportPath);
+            this.airportName.setText("");
         }
     }
 
@@ -271,9 +252,9 @@ public class MainController implements Initializable {
             this.airportName.setText(airport.getName());
             this.airportContainer.updateAirport(airport);
         } catch (Exception e) {
-            logger.error("Could not load airport! {}", airportPath);
-            e.printStackTrace();
+            this.errorListener.openDialog(new String[]{"Could not load airport!", airportPath, e.getMessage()});
             closeAirport(new ActionEvent());
+            this.airportName.setText("");
         }
     }
 
@@ -411,13 +392,5 @@ public class MainController implements Initializable {
         } catch (LoadingException e) {
             logger.error("Could not read notifications file: " + e.getMessage());
         }
-    }
-
-    /**
-     * Get the name of the airport for use in other parts of the program like notifications.
-     * @return name of the current airport.
-     */
-    public String getAirportName() {
-        return this.airportName.getText();
     }
 }

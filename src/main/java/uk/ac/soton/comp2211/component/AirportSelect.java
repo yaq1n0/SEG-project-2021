@@ -9,6 +9,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import uk.ac.soton.comp2211.event.ErrorListener;
 import uk.ac.soton.comp2211.event.PassAirportListener;
 
 /**
@@ -17,6 +18,7 @@ import uk.ac.soton.comp2211.event.PassAirportListener;
 public class AirportSelect extends VBox {
     
     private PassAirportListener passAirportListener;
+    private ErrorListener errorListener;
     
     public AirportSelect(Stage dialog, String[][] airports) {
         super(20);
@@ -61,5 +63,13 @@ public class AirportSelect extends VBox {
      */
     public void setPassAirportListener(PassAirportListener listener) {
         this.passAirportListener = listener;
+    }
+
+    /**
+     * Set error listener
+     * @param listener listener
+     */
+    public void setErrorListener(ErrorListener listener) {
+        this.errorListener = listener;
     }
 }
