@@ -333,7 +333,7 @@ public class SystemModel {
         }
     }
 
-    public static void printAirport(Canvas _canvas) throws WritingException {
+    public static String printAirport(Canvas _canvas) throws WritingException, NullPointerException {
         String airportName = airport.getName();
         String imagesFolderPath = SystemModel.class.getResource(IMAGES_FOLDER).getPath();
         File imagesFolder = new File(imagesFolderPath);
@@ -342,10 +342,10 @@ public class SystemModel {
 
         String fileNamePrefix = airportName + "-";
         int fileNamePostfix = 0;
-        File imageFile = new File(imagesFolder, fileNamePrefix + fileNamePostfix);
+        File imageFile = new File(imagesFolder, fileNamePrefix + fileNamePostfix + ".png");
         while (imageFile.exists()) {
             fileNamePostfix++;
-            imageFile = new File(imagesFolder, fileNamePrefix + fileNamePostfix);
+            imageFile = new File(imagesFolder, fileNamePrefix + fileNamePostfix + ".png");
         }
 
         try {
@@ -353,5 +353,7 @@ public class SystemModel {
         } catch (IOException e) {
             throw new WritingException(LOGGER, "Failed to canvas as an image.");
         }
+        
+        return imageFile.getPath();
     }
 }

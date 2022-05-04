@@ -24,6 +24,8 @@ public class AirportContainer extends VBox {
     private RunwayContainer[] runwayContainers;
     private DeleteTarmacListener deleteTarmacListener;
     private WarningListener warnDeletionListener;
+    private ErrorListener errorListener;
+    private MessageListener messageListener;
     private AddTarmacListener addTarmacListener;
     private Stage stage;
     private Airport airport;
@@ -64,6 +66,8 @@ public class AirportContainer extends VBox {
             runwayContainer.setDeleteTarmacListener(this.deleteTarmacListener);
             runwayContainer.setDeletionWarningListener(this.warnDeletionListener);
             runwayContainer.setNotificationListener(this.notificationListener);
+            runwayContainer.setErrorListener(this.errorListener);
+            runwayContainer.setMessageListener(this.messageListener);
             VBox.setVgrow(runwayContainer, Priority.ALWAYS);
             this.getChildren().add(runwayContainer);
             this.runwayContainers[i] = runwayContainer;
@@ -127,5 +131,21 @@ public class AirportContainer extends VBox {
      */
     public void setNotificationListener(NotificationListener listener) {
         this.notificationListener = listener;
+    }
+
+    /**
+     * Set error listener to output error message to user.
+     * @param listener listener
+     */
+    public void setErrorListener(ErrorListener listener) {
+        this.errorListener = listener;
+    }
+
+    /**
+     * Set message listener to output messages.
+     * @param listener listener
+     */
+    public void setMessageListener(MessageListener listener) {
+        this.messageListener = listener;
     }
 }

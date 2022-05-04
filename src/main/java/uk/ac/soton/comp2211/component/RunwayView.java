@@ -14,6 +14,7 @@ import uk.ac.soton.comp2211.exceptions.PositionException;
 import uk.ac.soton.comp2211.model.Obstacle;
 import uk.ac.soton.comp2211.model.Position;
 import uk.ac.soton.comp2211.model.Runway;
+import uk.ac.soton.comp2211.model.SystemModel;
 
 
 /**
@@ -379,7 +380,7 @@ public class RunwayView extends Canvas {
 
         this.gc.setLineDashes(0);
         this.gc.setStroke(Color.RED);
-        this.gc.setLineWidth(4d * scale);
+        this.gc.setLineWidth(4d);
         this.gc.fillOval(x1 - 5, y1 - 5, 10, 10);
         this.gc.strokeLine(x1, y1, x2, y2);
         

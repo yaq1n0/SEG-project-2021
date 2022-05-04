@@ -59,7 +59,6 @@
               <MenuItem mnemonicParsing="false" onAction="#createObstacle" text="Create Obstacle" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#closeAirport" text="Close" />
-            <MenuItem mnemonicParsing="false" onAction="#exportAs" text="Export As..." />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Quit" />
           </items>

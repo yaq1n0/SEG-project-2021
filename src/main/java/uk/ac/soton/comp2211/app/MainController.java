@@ -101,7 +101,6 @@ public class MainController implements Initializable {
         // Add airport container and mainBox to scene
         this.airportParent.getChildren().addAll(this.mainBox, this.airportContainer);
         VBox.setVgrow(this.airportContainer, Priority.ALWAYS);
-        
     }
 
     /**
@@ -346,7 +345,10 @@ public class MainController implements Initializable {
      * Set the error listener to show error messages.
      * @param listener listener
      */
-    public void setErrorListener(ErrorListener listener) { this.errorListener = listener; }
+    public void setErrorListener(ErrorListener listener) { 
+        this.errorListener = listener;
+        this.airportContainer.setErrorListener(this.errorListener);
+    }
 
     /**
      * Get the error listener.
@@ -370,7 +372,10 @@ public class MainController implements Initializable {
      * Set the message listener to display an arbitrary message to the user.
      * @param listener listener
      */
-    public void setMessageListener(MessageListener listener) { this.messageListener = listener; }
+    public void setMessageListener(MessageListener listener) { 
+        this.messageListener = listener;
+        this.airportContainer.setMessageListener(this.messageListener);
+    }
 
     /**
      * Get the message listener.

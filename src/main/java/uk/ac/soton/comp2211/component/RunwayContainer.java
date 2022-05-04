@@ -40,6 +40,8 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
     private final BooleanProperty colour = new SimpleBooleanProperty();
     private DeleteTarmacListener deleteTarmacListener;
     private WarningListener deletionWarningListener;
+    private ErrorListener errorListener;
+    private MessageListener messageListener;
     private final Runway runway;
     private NotificationListener notificationListener;
     private final Button delete;
@@ -134,9 +136,28 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
 
         Button resetPanning = new Button("Reset Panning");
         resetPanning.setOnAction((ActionEvent event) -> this.runwayView.resetPanning(topView));
+        
+        Button exportImage = new Button("Export");
+        exportImage.setOnAction((ActionEvent event) -> {
+            String path = "";
+            try {
+                logger.info("Exporting visualisation.");
+                path = SystemModel.printAirport(this.runwayView);
+            } catch (WritingException e) {
+                this.errorListener.openDialog(new String[]{"Could not export runway visualisation.", e.getMessage()});
+            } catch (NullPointerException e2) {
+                this.errorListener.openDialog(new String[]{"Could not find images folder.", e2.getMessage()});
+            }
+            
+            if (messageListener != null) {
+                messageListener.openDialog(new String[]{"Runway exported successfully.", "Path: " + path});
+            } else {
+                logger.error("Couldn't find message listener");
+            }
+        });
 
         HBox topBox = new HBox();
-        topBox.getChildren().addAll(designator, delete, matchHeading, resetAngle,resetPanning);
+        topBox.getChildren().addAll(designator, delete, matchHeading, resetAngle,resetPanning, exportImage);
         
         this.getChildren().addAll(topBox, viewBox, this.parameterBox, this.obstacleBox);
         this.setStyle("-fx-border-color: black;");
@@ -362,5 +383,21 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
      */
     public void setNotificationListener(NotificationListener listener) {
         this.notificationListener = listener;
+    }
+
+    /**
+     * Set error message output listener
+     * @param listener listener
+     */
+    public void setErrorListener(ErrorListener listener) {
+        this.errorListener = listener;
+    }
+
+    /**
+     * Set message output listener
+     * @param listener listener
+     */
+    public void setMessageListener(MessageListener listener) {
+        this.messageListener = listener;
     }
 }
