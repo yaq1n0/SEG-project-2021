@@ -49,7 +49,6 @@ public class SystemModel {
         try {
             String obstacleSchemaPath = SystemModel.class.getResource(OBSTACLE_SCHEMA).getPath();
             obstalceSchemaFile = new File(obstacleSchemaPath);
-            BufferedReader br = new BufferedReader(new FileReader(obstalceSchemaFile));
             LOGGER.info("Obstacle XSD schema loaded.");
         } catch (Exception e) {
             throw new LoadingException(LOGGER, "Obstacle XSD schema not found!");
