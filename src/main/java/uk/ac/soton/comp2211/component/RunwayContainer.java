@@ -52,7 +52,6 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         this.colour.addListener((obs, oldVal, newVal) -> this.updateColour());
         
         this.runwayView = new RunwayView(750, 300, this.runway);
-        this.runwayView.updateTopDown();
         
         VBox viewBox = new VBox();
         HBox viewTools = new HBox();
@@ -73,9 +72,9 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         downPan.setOnAction((ActionEvent event) -> this.runwayView.move(0, -10, topView));
 
         Button rotateClockWise = new Button("Rotate Clockwise");
-        rotateClockWise.setOnAction((ActionEvent event) -> this.runwayView.drawRotated(5, topView));
+        rotateClockWise.setOnAction((ActionEvent event) -> this.runwayView.drawRotated(5));
         Button rotateAnti = new Button("Rotate Anti-Clockwise");
-        rotateAnti.setOnAction((ActionEvent event) -> this.runwayView.drawRotated(-5, topView));
+        rotateAnti.setOnAction((ActionEvent event) -> this.runwayView.drawRotated(-5));
         
         viewTools.getChildren().addAll(leftPan, upPan, downPan, rightPan, zoomInButton, zoomOutButton, rotateClockWise, rotateAnti);
         viewTools.setAlignment(Pos.CENTER_RIGHT);

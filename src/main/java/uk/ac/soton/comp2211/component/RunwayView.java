@@ -28,6 +28,7 @@ public class RunwayView extends Canvas {
     private final double h;
     private final GraphicsContext gc;
     private int angle;
+    private int compass_offset;
     private final BooleanProperty colour = new SimpleBooleanProperty();
 
 
@@ -65,7 +66,18 @@ public class RunwayView extends Canvas {
         this.runway = runway;
         this.w = width;
         this.h = height;
-        this.angle = 0;
+
+        // Work out correct initial angle from designator
+        String designator = runway.getRunwayDesignator();
+        if (designator.length() == 3) {
+            this.angle = 90 - ((Integer.parseInt(designator.substring(0, 1)) * 100) + (Integer.parseInt(designator.substring(1, 2)) * 10));
+            logger.info(this.angle + " degrees");
+        } else {
+            this.angle = 0;
+            logger.info("Invalid designator");
+        }
+        this.compass_offset = - this.angle; // Compass will always point north by default
+        
         whiteDottedLineHeight = 30;
 
         this.toraB = true;
@@ -84,6 +96,7 @@ public class RunwayView extends Canvas {
         this.scale = 1.0;
         this.offset_x = 0;
         this.offset_y = 0;
+        
     }
 
     public void displayTora() {
@@ -348,11 +361,26 @@ public class RunwayView extends Canvas {
 
 
         // Draw scale indicator
-        // Draw compass
         
-        if (this.angle == 0) {
-            drawBorder();
-        }
+        
+        // Draw compass
+        x1 = 50;
+        y1 = 100;
+        x2 = x1 + (20 * Math.sin(Math.toRadians(this.compass_offset)));
+        y2 = y1 - (20 * Math.cos(Math.toRadians(this.compass_offset)));
+        logger.info(compass_offset);
+
+        //this.gc.setStroke(Color.BLUE);
+        //this.gc.fillOval(x1 - 20, y1 - 20, 40, 40);
+        
+        this.gc.setStroke(Color.RED);
+        this.gc.setLineWidth(4d * scale);
+        this.gc.fillOval(x1 - 5, y1 - 5, 10, 10);
+        this.gc.strokeLine(x1, y1, x2, y2);
+        
+        this.gc.setStroke(Color.DARKGREY);
+        this.gc.strokeOval(x1 - 20, y1 - 20, 40, 40);
+        
     }
 
     public void updateSideOn() {
@@ -464,9 +492,6 @@ public class RunwayView extends Canvas {
             }
         }
 
-        if (this.angle == 0) {
-            drawBorder();
-        }
 
     }
     private void drawColourLines() {
@@ -1029,7 +1054,7 @@ public class RunwayView extends Canvas {
         } else {
             updateSideOn();
         }
-        drawRotated(0, top);
+        drawRotated(0);
     }
 
     /**
@@ -1046,7 +1071,7 @@ public class RunwayView extends Canvas {
         } else {
             updateSideOn();
         }
-        drawRotated(0, top);
+        drawRotated(0);
     }
 
     /**
@@ -1064,7 +1089,7 @@ public class RunwayView extends Canvas {
         }
         logger.info("OffsetX {}", offset_x);
         logger.info("OffsetY {}", offset_y);
-        drawRotated(0, top);
+        drawRotated(0);
     }
 
     /**
@@ -1080,16 +1105,16 @@ public class RunwayView extends Canvas {
         this.gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
     }
 
-    public void drawRotated(int myAngle, BooleanProperty top) {
+    public void drawRotated(int myAngle) {
         this.gc.save();
         this.gc.clearRect(0,0,this.w, this.h);
         rotate(myAngle);
-        if (top.get()) {
+        if (topView.get()) {
             updateTopDown();
         } else {
             updateSideOn();
         }
-        gc.restore();
+        this.gc.restore();
         drawBorder();
     }
     
@@ -1101,7 +1126,14 @@ public class RunwayView extends Canvas {
     }
 
     public void resetAngle(){
-        this.angle = 0;
+        String designator = this.runway.getRunwayDesignator();
+        if (designator.length() == 3) {
+            this.angle = 90 - ((Integer.parseInt(designator.substring(0, 1)) * 100) + (Integer.parseInt(designator.substring(1, 2)) * 10));
+        } else {
+            this.angle = 0;
+        }
+        this.compass_offset = - this.angle; // Compass will always point north by default
+
     }
 
     /**
