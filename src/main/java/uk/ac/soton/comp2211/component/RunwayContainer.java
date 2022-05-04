@@ -132,8 +132,11 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         Button resetAngle = new Button("Reset Angle");
         resetAngle.setOnAction((ActionEvent event) -> this.runwayView.resetAngle(topView));
 
+        Button resetPanning = new Button("Reset Panning");
+        resetPanning.setOnAction((ActionEvent event) -> this.runwayView.resetPanning(topView));
+
         HBox topBox = new HBox();
-        topBox.getChildren().addAll(designator, delete, matchHeading, resetAngle);
+        topBox.getChildren().addAll(designator, delete, matchHeading, resetAngle,resetPanning);
         
         this.getChildren().addAll(topBox, viewBox, this.parameterBox, this.obstacleBox);
         this.setStyle("-fx-border-color: black;");

@@ -28,6 +28,7 @@ public class RunwayView extends Canvas {
     private final double h;
     private final GraphicsContext gc;
     private int angle;
+    private int compassAngle;
     private int compass_offset;
     private final BooleanProperty colour = new SimpleBooleanProperty();
 
@@ -69,14 +70,17 @@ public class RunwayView extends Canvas {
 
         // Work out correct initial angle from designator
         String designator = runway.getRunwayDesignator();
+
+        this.angle = 0;
+
         if (designator.length() == 3) {
-            this.angle = 90 - ((Integer.parseInt(designator.substring(0, 1)) * 100) + (Integer.parseInt(designator.substring(1, 2)) * 10));
-            logger.info(this.angle + " degrees");
+            this.compassAngle = 90 - ((Integer.parseInt(designator.substring(0, 1)) * 100) + (Integer.parseInt(designator.substring(1, 2)) * 10));
+            logger.info(this.compassAngle + " degrees");
         } else {
-            this.angle = 0;
+            this.compassAngle = 0;
             logger.info("Invalid designator");
         }
-        this.compass_offset = - this.angle; // Compass will always point north by default
+        this.compass_offset = - this.compassAngle; // Compass will always point north by default
         
         whiteDottedLineHeight = 30;
 
@@ -372,7 +376,8 @@ public class RunwayView extends Canvas {
 
         //this.gc.setStroke(Color.BLUE);
         //this.gc.fillOval(x1 - 20, y1 - 20, 40, 40);
-        
+
+        this.gc.setLineDashes(0);
         this.gc.setStroke(Color.RED);
         this.gc.setLineWidth(4d * scale);
         this.gc.fillOval(x1 - 5, y1 - 5, 10, 10);
@@ -641,9 +646,9 @@ public class RunwayView extends Canvas {
                         this.gc.setStroke(Color.WHITE);
                         this.gc.setLineWidth(2d * scale);
                         this.gc.setLineDashes(7d * scale, 7d * scale);
-                        this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                        this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR)*scale + offset_x,
                                 (h * 0.75 * scale) + offset_y,
-                                (runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                                (runwayStart + dtSize + dWestRepresentation + blastAllowanceR)*scale + offset_x,
                                 (whiteDottedLineHeight * scale) + offset_y);
                         this.gc.setLineDashes(0);
                     }
@@ -915,9 +920,9 @@ public class RunwayView extends Canvas {
                         this.gc.setStroke(Color.WHITE);
                         this.gc.setLineWidth(2d * scale);
                         this.gc.setLineDashes(7d * scale, 7d * scale);
-                        this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                        this.gc.strokeLine((runwayStart + dtSize + dWestRepresentation + blastAllowanceR)*scale + offset_x,
                                 (h * 0.75 * scale) + offset_y,
-                                (runwayStart + dtSize + dWestRepresentation + blastAllowanceR) + offset_x,
+                                (runwayStart + dtSize + dWestRepresentation + blastAllowanceR)*scale + offset_x,
                                 (whiteDottedLineHeight * scale) + offset_y);
                         this.gc.setLineDashes(0);
                     }
@@ -1093,6 +1098,23 @@ public class RunwayView extends Canvas {
     }
 
     /**
+     * Reset the offset.
+     * @param top whether current representation is top down or side on
+     */
+    public void resetPanning(BooleanProperty top) {
+        this.offset_x = 0;
+        this.offset_y = 0;
+        if (top.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+        logger.info("OffsetX {}", offset_x);
+        logger.info("OffsetY {}", offset_y);
+        drawRotated(0);
+    }
+
+    /**
      * Handle rotation
      */
     public void bindColourProperty(BooleanProperty viewProperty) {
@@ -1160,11 +1182,11 @@ public class RunwayView extends Canvas {
     public void resetAngle(){
         String designator = this.runway.getRunwayDesignator();
         if (designator.length() == 3) {
-            this.angle = 90 - ((Integer.parseInt(designator.substring(0, 1)) * 100) + (Integer.parseInt(designator.substring(1, 2)) * 10));
+            this.compassAngle = 90 - ((Integer.parseInt(designator.substring(0, 1)) * 100) + (Integer.parseInt(designator.substring(1, 2)) * 10));
         } else {
-            this.angle = 0;
+            this.compassAngle = 0;
         }
-        this.compass_offset = - this.angle; // Compass will always point north by default
+        this.compass_offset = - this.compassAngle; // Compass will always point north by default
 
     }
 
