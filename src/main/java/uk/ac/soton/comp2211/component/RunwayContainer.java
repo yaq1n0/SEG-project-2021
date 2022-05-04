@@ -3,6 +3,7 @@ package uk.ac.soton.comp2211.component;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -124,9 +125,15 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
         }
         
         Label designator = new Label(this.runway.getRunwayDesignator());
-        
+
+        Button matchHeading = new Button("Match Compass Heading");
+        matchHeading.setOnAction((ActionEvent event) -> this.runwayView.drawToFixedAngle(topView));
+
+        Button resetAngle = new Button("Reset Angle");
+        resetAngle.setOnAction((ActionEvent event) -> this.runwayView.resetAngle(topView));
+
         HBox topBox = new HBox();
-        topBox.getChildren().addAll(designator, delete);
+        topBox.getChildren().addAll(designator, delete, matchHeading, resetAngle);
         
         this.getChildren().addAll(topBox, viewBox, this.parameterBox, this.obstacleBox);
         this.setStyle("-fx-border-color: black;");

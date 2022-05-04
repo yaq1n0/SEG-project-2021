@@ -1099,6 +1099,38 @@ public class RunwayView extends Canvas {
         this.colour.bind(viewProperty);
     }
 
+    public void toFixedAngle(int myAngle) {
+        Rotate r = new Rotate(myAngle, w/2, h/2);
+        this.angle = myAngle;
+        this.gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+    }
+
+    public void drawToFixedAngle(BooleanProperty top) {
+        if (top.get()) {
+            this.gc.save();
+            this.gc.clearRect(0, 0, this.w, this.h);
+            toFixedAngle(Integer.parseInt(this.runway.getRunwayDesignator().substring(0, 2)) * 10 - 90);
+
+            updateTopDown();
+
+            gc.restore();
+            drawBorder();
+        }
+    }
+
+    public void resetAngle(BooleanProperty top) {
+        this.gc.save();
+        this.gc.clearRect(0,0,this.w, this.h);
+        toFixedAngle(0);
+        if (top.get()) {
+            updateTopDown();
+        } else {
+            updateSideOn();
+        }
+        gc.restore();
+        drawBorder();
+    }
+
     public void rotate(int myAngle) {
         this.angle += myAngle;
         Rotate r = new Rotate(this.angle, w/2, h/2);
@@ -1106,16 +1138,16 @@ public class RunwayView extends Canvas {
     }
 
     public void drawRotated(int myAngle) {
-        this.gc.save();
-        this.gc.clearRect(0,0,this.w, this.h);
-        rotate(myAngle);
-        if (topView.get()) {
+        if (topView.get()){
+            this.gc.save();
+            this.gc.clearRect(0, 0, this.w, this.h);
+            rotate(myAngle);
+
             updateTopDown();
-        } else {
-            updateSideOn();
+
+            this.gc.restore();
+            drawBorder();
         }
-        this.gc.restore();
-        drawBorder();
     }
     
     public void drawBorder() {
