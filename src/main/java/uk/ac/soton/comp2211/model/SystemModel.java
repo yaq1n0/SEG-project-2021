@@ -1,21 +1,17 @@
 package uk.ac.soton.comp2211.model;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
+import javafx.scene.canvas.Canvas;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
-
-import javafx.scene.canvas.Canvas;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.SchemaException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 import uk.ac.soton.comp2211.exceptions.WritingException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import java.io.*;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -108,7 +104,7 @@ public class SystemModel {
     /**
      * Extract airport data from XML file.
      * 
-     * @param _airportFilename
+     * @param _airportFilename filename
      * @throws LoadingException
      * @throws Exception
      */
@@ -135,7 +131,7 @@ public class SystemModel {
      * Side effects:
      *  - Loads schemas if not already loaded.
      *
-     * @param _airportFilename
+     * @param _airportPath filename
      * @throws Exception
      */
     public static void importAirport(String _airportPath) throws LoadingException {
@@ -238,13 +234,12 @@ public class SystemModel {
     }
 
     /**
-     * Adds a new airport to a new XML file,
+     *  Adds a new airport to a new XML file,
      * and then loads that airport into the model.
-     * 
-     * @param _newAirport
-     * @param _airportFileName
+     * @param _airportName
+     * @param _tarmacs
+     * @throws WritingException
      * @throws LoadingException
-     * @throws Exception
      */
     public static void addAirport(String _airportName, Tarmac[] _tarmacs) throws WritingException, LoadingException {
         LOGGER.info("Adding new airport...");

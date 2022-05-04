@@ -275,7 +275,6 @@ public class MainController implements Initializable {
             logger.error("Could not load airport! {}", airportPath);
             e.printStackTrace();
             closeAirport(new ActionEvent());
-            this.airportName.setText("Error loading airport file: " + airportPath);
         }
     }
 

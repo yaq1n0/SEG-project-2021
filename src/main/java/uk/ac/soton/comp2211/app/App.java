@@ -1,11 +1,14 @@
 package uk.ac.soton.comp2211.app;
 
 import com.sun.javafx.css.StyleManager;
-import javafx.application.*;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.*;
@@ -203,7 +206,7 @@ public class App extends Application {
         try {
             SystemModel.loadObstacles();
         } catch (Exception e) {
-            controller.getErrorListener().openDialog(new String[]{"Couldn't load obstacles."});
+            controller.getErrorListener().openDialog(new String[]{"Couldn't load obstacles.", e.getMessage()});
         }
         
     }
