@@ -1,10 +1,12 @@
 package uk.ac.soton.comp2211.model;
 
 import javafx.scene.canvas.Canvas;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
+import uk.ac.soton.comp2211.exceptions.ReadingException;
 import uk.ac.soton.comp2211.exceptions.SchemaException;
 import uk.ac.soton.comp2211.exceptions.SizeException;
 import uk.ac.soton.comp2211.exceptions.WritingException;
@@ -14,6 +16,7 @@ import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class SystemModel {
     private static final String AIRPORT_DATA_FOLDER = "/airports";
@@ -23,14 +26,27 @@ public class SystemModel {
     private static final String DATA_FILE_REGEX = "[a-zA-Z0-9-_]+.xml";
     private static final String CALCULATIONS_FOLDER = "/calculations";
     private static final String IMAGES_FOLDER = "/images";
+    private static final String NOTIFICATIONS_FOLDER = "/notifications";
 
     protected static final Logger LOGGER = LogManager.getLogger(SystemModel.class);
 
     private static File airportSchemaFile;
     private static File obstalceSchemaFile;
 
+    private static DataReader dataReader;
+    private static DataWriter dataWriter;
+
     private static Airport airport;
     private static Obstacle[] obstacles;
+
+    public static void setup() throws LoadingException {
+        LOGGER.info("Setting up system model...");
+
+        dataReader = new DataReader();
+        dataWriter = new DataWriter();
+
+        loadSchemas();
+    }
 
     /**
      * Load XSD schema files, used to validate XML files.
@@ -91,8 +107,8 @@ public class SystemModel {
             airportList[i][0] = files[i].getName();
 
             try {
-                DataReader.loadFile(files[i], airportSchemaFile);
-                airportList[i][1] = DataReader.getAirportName();
+                dataReader.loadFile(files[i], airportSchemaFile);
+                airportList[i][1] = dataReader.getAirportName();
 
             } catch (Exception e) {
                 LOGGER.error("Couldn't read " + files[i].getName() + ": " + e.getMessage());
@@ -150,13 +166,13 @@ public class SystemModel {
 
         try {
             // Load the airport data file into the data reader, with the XSD schema.
-            DataReader.loadFile(_airportFile, airportSchemaFile);
+            dataReader.loadFile(_airportFile, airportSchemaFile);
 
             // Extract airport name from airport data file.
-            String airportName = DataReader.getAirportName();
+            String airportName = dataReader.getAirportName();
 
             // Extract tarmac data from airport data file.
-            Tarmac[] tarmacs = DataReader.getTarmacs();
+            Tarmac[] tarmacs = dataReader.getTarmacs();
 
             // Instantiate the airport with the airport name and runway data.
             airport = new Airport(airportName, tarmacs, _airportFile);
@@ -196,9 +212,9 @@ public class SystemModel {
         File obstacleFile = new File(obstacleFilePath);
         LOGGER.info("Obstacle data file loaded.");
 
-        DataReader.loadFile(obstacleFile, obstalceSchemaFile);
+        dataReader.loadFile(obstacleFile, obstalceSchemaFile);
 
-        obstacles = DataReader.getObstacles();
+        obstacles = dataReader.getObstacles();
 
         LOGGER.info("Obstacle data extracted.");
     }
@@ -225,7 +241,7 @@ public class SystemModel {
         LOGGER.info("Writing obstacle data to XML file...");
         
         try {
-            DataWriter.writeObstacle(_newObstacle, obstacleFile);
+            dataWriter.writeObstacle(_newObstacle, obstacleFile);
         } catch (TransformerException | SAXException | IOException | ParserConfigurationException e) {
             throw new WritingException(LOGGER, "Failed to write obstacle data.");
         }
@@ -259,7 +275,7 @@ public class SystemModel {
         Airport newAirport = new Airport(_airportName, _tarmacs, airportFile);
 
         try {
-            DataWriter.writeAirport(newAirport, airportFile);
+            dataWriter.writeAirport(newAirport, airportFile);
         } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
             throw new WritingException(LOGGER, "Failed to write airport data to XML file.");
         }
@@ -286,7 +302,7 @@ public class SystemModel {
         File airportFile = airport.getDataFile();
 
         try {
-            DataWriter.writeAirport(airport, airportFile);
+            dataWriter.writeAirport(airport, airportFile);
 
             LOGGER.info("Airport data file modified successfully.");
         } catch (Exception e) {
@@ -309,7 +325,7 @@ public class SystemModel {
         File airportFile = airport.getDataFile();
 
         try {
-            DataWriter.writeAirport(airport, airportFile);
+            dataWriter.writeAirport(airport, airportFile);
         } catch (SAXException | IOException | TransformerException | ParserConfigurationException e) {
             throw new WritingException(LOGGER, "Failed to write new tarmac data to airport data file.");
         }
@@ -329,7 +345,7 @@ public class SystemModel {
         }
 
         try {
-            DataWriter.writeCalculationLog(airportName, _runwayDesignator, _calculations, calculationsLog);
+            dataWriter.writeCalculationLog(airportName, _runwayDesignator, _calculations, calculationsLog);
         } catch (IOException e) {
             throw new WritingException(LOGGER, "Failed to write calculations to a log file.");
         }
@@ -353,11 +369,51 @@ public class SystemModel {
         }
 
         try {
-            DataWriter.savePicture(_canvas, imageFile);
+            dataWriter.savePicture(_canvas, imageFile);
         } catch (IOException e) {
             throw new WritingException(LOGGER, "Failed to canvas as an image.");
         }
         
         return imageFile.getPath();
+    }
+
+    public static void storeNotification(String _notification) throws WritingException, LoadingException {
+        String notificationsFolderPath;
+        try {
+            notificationsFolderPath = SystemModel.class.getResource(NOTIFICATIONS_FOLDER).getPath();
+        } catch (NullPointerException e) {
+            throw new LoadingException(LOGGER, "Notifications folder not found!");
+        }
+        
+        File notificationsFolder = new File(notificationsFolderPath);
+        File notificationsFile = new File(notificationsFolder, "notifications.txt");
+
+        try {
+            dataWriter.writeNotification(notificationsFile, _notification);
+        } catch (IOException e) {
+            throw new WritingException(LOGGER, "Couldn't write to notifications.txt");
+        }
+    }
+
+    public static ArrayList<String> getNotifications() throws ReadingException, LoadingException {
+        String notificationsFolderPath;
+        try {
+            notificationsFolderPath = SystemModel.class.getResource(NOTIFICATIONS_FOLDER).getPath();
+        } catch (NullPointerException e) {
+            throw new LoadingException(LOGGER, "Notifications folder not found!");
+        }
+        
+        File notificationsFolder = new File(notificationsFolderPath);
+        File notificationsFile = new File(notificationsFolder, "notifications.txt");
+
+        ArrayList<String> notifications;
+        try {
+            notifications = dataReader.readNotifications(notificationsFile);
+        } catch (IOException e) {
+            throw new ReadingException(LOGGER, "Couldn't read from notifications.txt");
+        }
+
+
+        return notifications;
     }
 }

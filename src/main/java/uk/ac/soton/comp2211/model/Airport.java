@@ -19,10 +19,24 @@ public class Airport {
         dataFile = _dataFile;
     }
 
+    /**
+     * Returns the name of the airport.
+     */
     public String getName() { return name; }
+
+    /**
+     * Returns a list of all tarmacs on the airport.
+     */
     public List<Tarmac> getTarmacs() { return tarmacs; }
+
+    /**
+     * Returns the airport data file.
+     */
     public File getDataFile() { return dataFile; }
 
+    /**
+     * Collects all the runways from each tarmacs and returns the list.
+     */
     public Runway[] getRunways() {
         List<Runway> runways = new ArrayList<Runway>();
         for (Tarmac tarmac : tarmacs) { runways.addAll(Arrays.asList(tarmac.getRunways())); }

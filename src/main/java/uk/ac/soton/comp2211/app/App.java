@@ -206,6 +206,7 @@ public class App extends Application {
 
         // Initialise model
         try {
+            SystemModel.setup();
             SystemModel.loadObstacles();
         } catch (Exception e) {
             controller.getErrorListener().openDialog(new String[]{"Couldn't load obstacles.", e.getMessage()});

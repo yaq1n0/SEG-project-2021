@@ -29,16 +29,14 @@ public class DataWriter {
 
     protected static final Logger LOGGER = LogManager.getLogger(DataWriter.class);
 
-    private static DocumentBuilderFactory documentBuilderFactory;
-    private static DocumentBuilder documentBuilder;
-    private static Document document;
+    private DocumentBuilderFactory documentBuilderFactory;
+    private DocumentBuilder documentBuilder;
+    private Document document;
 
-    private static TransformerFactory transformerFactory;
-    private static Transformer transf;
+    private TransformerFactory transformerFactory;
+    private Transformer transf;
 
-    private static final String NOTIFICATIONS_FOLDER = "/notifications";
-
-    private static void setupDataWriter() throws ParserConfigurationException, TransformerConfigurationException {
+    private void setupDataWriter() throws ParserConfigurationException, TransformerConfigurationException {
         if (documentBuilderFactory == null)
             documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
@@ -57,7 +55,7 @@ public class DataWriter {
         }
     }
 
-    public static void writeAirport(Airport _airport, File _newAirportFile) throws SAXException, IOException, TransformerException, ParserConfigurationException {
+    public void writeAirport(Airport _airport, File _newAirportFile) throws SAXException, IOException, TransformerException, ParserConfigurationException {
         setupDataWriter();
 
         document = documentBuilder.newDocument();
@@ -120,7 +118,7 @@ public class DataWriter {
         writeFile(_newAirportFile);
     }
 
-    public static void writeObstacle(Obstacle _obstacle, File _obstacleFile) throws TransformerException, SAXException, IOException, ParserConfigurationException {
+    public void writeObstacle(Obstacle _obstacle, File _obstacleFile) throws TransformerException, SAXException, IOException, ParserConfigurationException {
         setupDataWriter();
 
         document = documentBuilder.parse(_obstacleFile);
@@ -152,7 +150,7 @@ public class DataWriter {
         writeFile(_obstacleFile);
     }
 
-    private static void writeFile(File _file) throws TransformerException {
+    private void writeFile(File _file) throws TransformerException {
         DOMSource source = new DOMSource(document);
 
         StreamResult result = new StreamResult(_file);
@@ -160,7 +158,7 @@ public class DataWriter {
         transf.transform(source, result);
     }
 
-    public static void writeCalculationLog(String _airportName, String _runwayDesignator, String[] _calculations, File _file) throws IOException {
+    public void writeCalculationLog(String _airportName, String _runwayDesignator, String[] _calculations, File _file) throws IOException {
         String fileContent = "";
         fileContent += "Date: " + LocalDate.now();
         fileContent += "\nTime: " + LocalTime.now();
@@ -181,26 +179,19 @@ public class DataWriter {
     /**
      * Append a new notification to notifications.txt
      * @param notif notification to be added
+     * @throws IOException
      */
-    public static void writeNotification(String notif) {
-        File notifFile;
+    public void writeNotification(File _notificationFile, String _notification) throws IOException {
+        FileWriter fw = new FileWriter(_notificationFile, true);
+        BufferedWriter bw = new BufferedWriter(fw);
         
-        try {
-            String folder = DataReader.class.getResource(NOTIFICATIONS_FOLDER).getPath();
-            notifFile = new File(folder, "notifications.txt");
-            FileWriter fw = new FileWriter(notifFile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            
-            bw.write(notif);
-            bw.newLine();
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            LOGGER.error("Couldn't open notifications file for writing. {}", e.getMessage());
-        }
+        bw.write(_notification);
+        bw.newLine();
+        bw.flush();
+        bw.close();
     }
 
-    public static void savePicture(Canvas _canvas, File _file) throws IOException {
+    public void savePicture(Canvas _canvas, File _file) throws IOException {
         WritableImage writableImage = new WritableImage((int) _canvas.getWidth(), (int) _canvas.getHeight());
         _canvas.snapshot(null, writableImage);
         RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);

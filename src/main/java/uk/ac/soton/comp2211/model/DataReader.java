@@ -32,14 +32,12 @@ public class DataReader {
     
     private static final Logger LOGGER = LogManager.getLogger(DataReader.class);
     
-    private static DocumentBuilderFactory documentBuilderFactory;
-    private static DocumentBuilder documentBuilder;
-    private static Document document;
+    private DocumentBuilderFactory documentBuilderFactory;
+    private DocumentBuilder documentBuilder;
+    private Document document;
 
-    private static XPathFactory factory;
-    private static XPath xpath;
-
-    private static final String NOTIFICATIONS_FOLDER = "/notifications";
+    private XPathFactory factory;
+    private XPath xpath;
 
     /**
      * Load XML file into memory so data can be extracted.
@@ -50,7 +48,7 @@ public class DataReader {
      * @param _xsdFile xsd
      * @throws SchemaException
      */
-    public static void loadFile(File _xmlFile, File _xsdFile) throws SchemaException, LoadingException {
+    public void loadFile(File _xmlFile, File _xsdFile) throws SchemaException, LoadingException {
         
         if (documentBuilderFactory == null || documentBuilder == null) {
             try {
@@ -78,7 +76,7 @@ public class DataReader {
         }
     }
 
-    private static boolean validateSchema(File _xmlFile, File _xsdFile) {
+    private boolean validateSchema(File _xmlFile, File _xsdFile) {
         try {
             SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = schemaFactory.newSchema(_xsdFile);
@@ -91,7 +89,7 @@ public class DataReader {
         return true;
     }
 
-    public static String getAirportName() throws ExtractionException {
+    public String getAirportName() throws ExtractionException {
         try {
             Node airport = (Node) xpath.evaluate("/airport", document, XPathConstants.NODE);
             return airport.getAttributes().getNamedItem("name").getTextContent();
@@ -100,7 +98,7 @@ public class DataReader {
         }
     }
 
-    public static Tarmac[] getTarmacs() throws XPathExpressionException {
+    public Tarmac[] getTarmacs() throws XPathExpressionException {
         int tarmacCount = ((Number) xpath.evaluate("count(//tarmac)", document, XPathConstants.NUMBER)).intValue();
         Tarmac[] tarmacs = new Tarmac[tarmacCount];
         for (int tarmacID = 1; tarmacID <= tarmacCount; tarmacID++) {
@@ -112,7 +110,7 @@ public class DataReader {
         return tarmacs;
     }
 
-    private static Runway[] getTarmacRunways(Tarmac _tarmac) throws XPathExpressionException {
+    private Runway[] getTarmacRunways(Tarmac _tarmac) throws XPathExpressionException {
         int runwayCount = ((Number) xpath.evaluate("count(//tarmac[@id='" + _tarmac.getID()
                                                     + "']/runway)", document, XPathConstants.NUMBER)).intValue();
         Runway[] runways = new Runway[runwayCount];
@@ -142,7 +140,7 @@ public class DataReader {
         return runways;
     }
 
-    public static Obstacle[] getObstacles() throws SizeException {
+    public Obstacle[] getObstacles() throws SizeException {
         int obstacleCount = document.getElementsByTagName("obstacle").getLength();
 
         Obstacle[] obstacles = new Obstacle[obstacleCount];
@@ -158,21 +156,15 @@ public class DataReader {
         return obstacles;
     }
     
-    public static ArrayList<String> getNotifications() throws LoadingException {
+    public ArrayList<String> readNotifications(File _notificationsFile) throws IOException {
         ArrayList<String> notifs = new ArrayList<>();
 
-        try {
-            String folder = DataReader.class.getResource(NOTIFICATIONS_FOLDER).getPath();
-            File airportFile = new File(folder, "notifications.txt");
-            BufferedReader in = new BufferedReader(new FileReader(airportFile));
-            String line;
-            while ((line = in.readLine()) != null) {
-                notifs.add(line);
-            }
-            in.close();
-        } catch (IOException e) {
-            throw new LoadingException(LOGGER, "Could not load notifications.txt");
+        BufferedReader in = new BufferedReader(new FileReader(_notificationsFile));
+        String line;
+        while ((line = in.readLine()) != null) {
+            notifs.add(line);
         }
+        in.close();
         
         // Reverse the order to put most recent first
         Collections.reverse(notifs);

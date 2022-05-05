@@ -20,6 +20,7 @@ import uk.ac.soton.comp2211.component.AirportContainer;
 import uk.ac.soton.comp2211.component.NotificationsBox;
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
+import uk.ac.soton.comp2211.exceptions.ReadingException;
 import uk.ac.soton.comp2211.model.*;
 
 import java.net.URL;
@@ -83,9 +84,9 @@ public class MainController implements Initializable {
 
         this.notbox = new NotificationsBox();
         try {
-            this.notbox.addNotifications(DataReader.getNotifications());
+            this.notbox.addNotifications(SystemModel.getNotifications());
             
-        } catch (LoadingException e) {
+        } catch (LoadingException | ReadingException e) {
             logger.error("Issue loading notifications: " + e.getMessage());
         }
         
@@ -387,9 +388,9 @@ public class MainController implements Initializable {
         notif = timestamp.toString() + " : " + notif;
         DataWriter.writeNotification(notif);
         try {
-            this.notbox.addNotifications(DataReader.getNotifications());
-        } catch (LoadingException e) {
-            logger.error("Could not read notifications file: " + e.getMessage());
+            this.notbox.addNotifications(SystemModel.getNotifications());
+        } catch (LoadingException | ReadingException e) {
+            logger.error("Couldn't get notifications: " + e.getMessage());
         }
     }
 }
