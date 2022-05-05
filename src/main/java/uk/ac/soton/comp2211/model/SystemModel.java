@@ -33,17 +33,14 @@ public class SystemModel {
     private static File airportSchemaFile;
     private static File obstalceSchemaFile;
 
-    private static DataReader dataReader;
-    private static DataWriter dataWriter;
+    private static DataReader dataReader = new DataReader();
+    private static DataWriter dataWriter = new DataWriter();
 
     private static Airport airport;
     private static Obstacle[] obstacles;
 
     public static void setup() throws LoadingException {
         LOGGER.info("Setting up system model...");
-
-        dataReader = new DataReader();
-        dataWriter = new DataWriter();
 
         loadSchemas();
     }

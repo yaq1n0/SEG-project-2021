@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.component.*;
 import uk.ac.soton.comp2211.event.ConfirmationListener;
+import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.model.SystemModel;
 
 import java.io.File;
