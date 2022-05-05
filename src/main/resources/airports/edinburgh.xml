@@ -8,7 +8,6 @@
             <toda>2616</toda>
             <asda>2616</asda>
             <lda>2344</lda>
-            <threshold>0</threshold>
         </runway>
 
         <runway id="2">
@@ -17,7 +16,6 @@
             <toda>3002</toda>
             <asda>2614</asda>
             <lda>2347</lda>
-            <threshold>0</threshold>
         </runway>
     </tarmac>
 </airport>

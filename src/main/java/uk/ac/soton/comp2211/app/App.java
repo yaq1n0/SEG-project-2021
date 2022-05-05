@@ -120,7 +120,7 @@ public class App extends Application {
                 airportSelect.setPassAirportListener(controller::setAirport);
                 airportSelect.setErrorListener(controller.getErrorListener());
 
-                Scene dialogScene = new Scene(airportSelect, SMALL_WIDTH, SMALL_HEIGHT);
+                Scene dialogScene = new Scene(airportSelect, SMALL_WIDTH, BIG_HEIGHT);
                 dialog.setScene(dialogScene);
                 dialog.show();
             } catch (Exception e) {

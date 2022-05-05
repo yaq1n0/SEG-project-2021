@@ -97,7 +97,7 @@ public class RunwayContainer extends VBox implements ObstacleClearListener, Reca
             ObstacleSelect obstacleSelect = new ObstacleSelect(dialog, SystemModel.getObstacles());
             obstacleSelect.setPassObstacleListener(this::setObstacle);
 
-            Scene dialogScene = new Scene(obstacleSelect, 300, 200);
+            Scene dialogScene = new Scene(obstacleSelect, 300, 300);
             dialog.setScene(dialogScene);
             dialog.show();
         });

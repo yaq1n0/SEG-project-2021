@@ -6,12 +6,12 @@ public class SchemaLoadingTest {
 
     @Test
     void testAirportFileCorrectFormat() {
-        Assertions.assertDoesNotThrow(() -> {SystemModel.openAirport("heathrow-correct.xml");});
+        Assertions.assertDoesNotThrow(() -> {SystemModel.openAirport("heathrow.xml");});
     }
 
     @Test
     void testAirportFileWrongFormat() {
-        Assertions.assertThrows(Exception.class, () -> {SystemModel.openAirport("heathrow-broken.xml");});
+        Assertions.assertThrows(Exception.class, () -> {SystemModel.openAirport("airport-brokenIncorrectSchema.xml");});
     }
 
     @Test
