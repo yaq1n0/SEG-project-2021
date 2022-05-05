@@ -21,6 +21,7 @@ import uk.ac.soton.comp2211.component.NotificationsBox;
 import uk.ac.soton.comp2211.event.*;
 import uk.ac.soton.comp2211.exceptions.LoadingException;
 import uk.ac.soton.comp2211.exceptions.ReadingException;
+import uk.ac.soton.comp2211.exceptions.WritingException;
 import uk.ac.soton.comp2211.model.*;
 
 import java.net.URL;
@@ -386,10 +387,10 @@ public class MainController implements Initializable {
         Timestamp timestamp = new Timestamp(date.getTime());
         
         notif = timestamp.toString() + " : " + notif;
-        DataWriter.writeNotification(notif);
         try {
+            SystemModel.storeNotification(notif);
             this.notbox.addNotifications(SystemModel.getNotifications());
-        } catch (LoadingException | ReadingException e) {
+        } catch (LoadingException | ReadingException | WritingException e) {
             logger.error("Couldn't get notifications: " + e.getMessage());
         }
     }
