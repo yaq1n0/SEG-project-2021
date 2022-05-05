@@ -81,8 +81,6 @@ public class AirportContainer extends VBox {
                 this.addTarmacListener.openAddTarmac(tid);
             }
         });
-        // Airports can have a maximum of 3 tarmacs with their naming convention
-        if (this.airport.getTarmacs().size() >= 3) addTarmac.setDisable(true);
         this.getChildren().add(addTarmac);
     }
 
