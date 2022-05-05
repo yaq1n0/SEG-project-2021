@@ -2,6 +2,7 @@ package uk.ac.soton.comp2211.component;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -12,11 +13,10 @@ import uk.ac.soton.comp2211.model.RunwayValues;
 import uk.ac.soton.comp2211.model.Tarmac;
 
 public class RunwayVBox extends VBox {
-    private Text textDesignator;
+    private static final String DESIGNATOR_INPUT_REGEX = "([0-9]|[0-2][0-9]|3[0-6])?[L, C, R]?";
+    private static final String DESIGNATOR_REGEX = "([0-2][0-9]|3[0-6])[L, C, R]?";
 
-    // private NumberField inputThreshold;
-    // private NumberField inputStopway;
-    // private NumberField inputClearway;
+    private TextField inputDesignator;
 
     private NumberField inputTORA;
     private NumberField inputTODA;
@@ -24,18 +24,27 @@ public class RunwayVBox extends VBox {
     private NumberField inputASDA;
     private ValidateListener validateListener;
 
-    public RunwayVBox(String runwayDesignator, ValidateListener listener) {
+    public RunwayVBox(ValidateListener listener) {
         this.validateListener = listener;
+
+        Text header = new Text("Runway: ");
+
+        inputDesignator = new TextField();
+        inputDesignator.setPromptText("designator");
+        inputDesignator.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches(DESIGNATOR_INPUT_REGEX)) {
+                inputDesignator.setText(oldValue);
+            }
+
+            this.validateListener.validate();
+        });
         
         HBox runwayParameters = new HBox();
-        Text header = new Text("Runway: ");
-        textDesignator = new Text(runwayDesignator);
-        runwayParameters.getChildren().addAll(header, textDesignator);
+        runwayParameters.getChildren().addAll(header, inputDesignator);
         runwayParameters.setAlignment(Pos.CENTER_LEFT);
         runwayParameters.setPadding(new Insets(10,0,10,0));
 
         HBox runwayValues = new HBox();
-        textDesignator = new Text(runwayDesignator);
         inputTORA = new NumberField(Runway.MIN_TORA, Runway.MAX_TORA);
         inputTORA.setPromptText("tora");
         inputTORA.textProperty().addListener((e) -> { this.validateListener.validate(); });
@@ -55,7 +64,7 @@ public class RunwayVBox extends VBox {
     }
 
     public Runway getRunway(Tarmac _tarmac) throws RunwayException {
-        String runwayDesignator = textDesignator.getText();
+        String runwayDesignator = inputDesignator.getText();
 
         int tora = Integer.valueOf(inputTORA.getText());
         int toda = Integer.valueOf(inputTODA.getText());
@@ -67,6 +76,8 @@ public class RunwayVBox extends VBox {
     }
 
     public boolean hasValidateFields(int _tarmacLength) {
+        if (!inputDesignator.getText().matches(DESIGNATOR_REGEX)) return false;
+
         if (inputTORA.getValue() == 0) return false;
         if (inputTORA.getValue() > _tarmacLength) return false;
 

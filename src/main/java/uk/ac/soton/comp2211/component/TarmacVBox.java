@@ -31,7 +31,7 @@ public class TarmacVBox extends VBox {
         tarmacID = _tarmacID;
 
         vboxRunways = new VBox();
-        vboxRunways.getChildren().add(new RunwayVBox(runwayDesignator(_tarmacID, _tarmacCount, 1), this.validateListener));
+        vboxRunways.getChildren().add(new RunwayVBox(this.validateListener));
 
         HBox tarmacParameters = new HBox();
         Text textTarmacName = new Text("Tarmac " + tarmacID + "   ");
@@ -46,11 +46,9 @@ public class TarmacVBox extends VBox {
         direction.setValue(directionOptions.get(0));
         direction.setOnAction(e -> {
             vboxRunways.getChildren().clear();
-            vboxRunways.getChildren().add(new RunwayVBox(
-                runwayDesignator(_tarmacID, _tarmacCount, 1), this.validateListener));
+            vboxRunways.getChildren().add(new RunwayVBox(this.validateListener));
             if (direction.getValue() == directionOptions.get(1)) {
-                vboxRunways.getChildren().add(new RunwayVBox(
-                    runwayDesignator(_tarmacID, _tarmacCount, 2), this.validateListener));
+                vboxRunways.getChildren().add(new RunwayVBox(this.validateListener));
             }
 
             this.validateListener.validate();
@@ -60,35 +58,6 @@ public class TarmacVBox extends VBox {
         tarmacParameters.setAlignment(Pos.CENTER);
 
         this.getChildren().addAll(tarmacParameters, vboxRunways);
-    }
-
-    private String runwayDesignator(int _tarmacID, int _tarmacCount, int _runwayID) {
-        
-        if (_tarmacCount == 1) {
-            if (_runwayID == 1) return "09";
-            else if (_runwayID == 2) return "27";
-        } else if (_tarmacCount == 2) {
-            if (_tarmacID == 1) {
-                if (_runwayID == 1) return "09L";
-                else if (_runwayID == 2) return "27R";
-            } else if (_tarmacID == 2) {
-                if (_runwayID == 1) return "09R";
-                else if (_runwayID == 2) return "27L";
-            }
-        } else if (_tarmacCount == 3) {
-            if (_tarmacID == 1) {
-                if (_runwayID == 1) return "09L";
-                else if (_runwayID == 2) return "27R";
-            } else if (_tarmacID == 2) {
-                if (_runwayID == 1) return "09C";
-                else if (_runwayID == 2) return "27C";
-            } else if (_tarmacID == 3) {
-                if (_runwayID == 1) return "09R";
-                else if (_runwayID == 2) return "27L";
-            }
-        }
-
-        return "error";
     }
 
     public boolean hasValidateFields() {
