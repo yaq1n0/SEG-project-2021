@@ -40,7 +40,6 @@ public class DataReader {
     private static XPath xpath;
 
     private static final String NOTIFICATIONS_FOLDER = "/notifications";
-    private static final int MAX_NOTIFS = 15;
 
     /**
      * Load XML file into memory so data can be extracted.
