@@ -100,8 +100,8 @@ public class ObstacleBox extends VBox{
         Button clearObs = new Button("Remove Obstacle");
         clearObs.setOnAction(this::clearObstacle);
 
-        leftPart.getChildren().add(obsButton);
-        rightPart.getChildren().addAll(recalculate, showSteps, logSteps, clearObs);
+        leftPart.getChildren().addAll(obsButton, clearObs);
+        rightPart.getChildren().addAll(recalculate, showSteps, logSteps);
         HBox.setHgrow(leftPart, Priority.ALWAYS);
         HBox.setHgrow(rightPart, Priority.ALWAYS);
         HBox partBox = new HBox();
